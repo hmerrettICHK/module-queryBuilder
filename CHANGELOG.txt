@@ -1,0 +1,7 @@
+CHANGELOG
+=========
+
+v1.0.00
+-------
+Settings for key to access gibbonedu.org queries
+Ability to access and run gibbonedu.org queries
