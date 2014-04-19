@@ -35,10 +35,8 @@ catch(PDOException $e) {
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
-$rand=$_GET["rand"] ;
 $queryBuilderQueryID=$_GET["queryBuilderQueryID"] ;
-$query=$_SESSION[$guid]["queryBuilder"]["sql" . $rand] ;
-unset($_SESSION[$guid]["queryBuilder"]["sql" . $rand]) ;
+$query=$_POST["query"] ;
 
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php" ;
 

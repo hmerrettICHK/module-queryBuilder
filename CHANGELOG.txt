@@ -1,6 +1,10 @@
 CHANGELOG
 =========
 
+v1.0.01
+-------
+Fixed memory leak in query export
+
 v1.0.00
 -------
 Settings for key to access gibbonedu.org queries

@@ -201,9 +201,10 @@ else {
 						print "<div class='success'>Your query has returned " . $result->rowCount() . " rows, which are displayed below.</div>" ; 
 					
 						print "<div class='linkTop'>" ;
-							$rand=rand(0,999999999) ;
-							$_SESSION[$guid]["queryBuilder"]["sql" . $rand]=$query ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/queries_run_export.php?rand=$rand&queryBuilderQueryID=$queryBuilderQueryID'><img style='margin-left: 6px' title='" . _('Export to Excel') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/download.png'/></a>" ;
+							print "<form id='queryExport' method='post' action='" . $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/queries_run_export.php?queryBuilderQueryID=$queryBuilderQueryID'>" ;
+								print "<input name='query' value=\"" . $query . "\" type='hidden'>" ;
+								print "<input style='background:url(./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/download.png) no-repeat; cursor:pointer; min-width: 25px!important; max-width: 25px!important; max-height: 25px; border: none;' type='submit' value=''>" ;
+							print "</form>" ;
 						print "</div>" ;
 						
 						print "<div style='overflow-x:auto;'>" ;
