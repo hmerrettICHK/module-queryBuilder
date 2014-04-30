@@ -66,7 +66,7 @@ else {
 	else {
 		//Proceed!
 		$exp=new ExportToExcel();
-		$exp->exportWithQuery($query,"classList.xls",$connection2);
+		$exp->exportWithQuery($query,"queryBuilderExport.xls",$connection2);
 	}
 }
 ?>
