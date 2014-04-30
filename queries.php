@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -45,21 +45,21 @@ else {
 				contentType: "application/json; charset=utf-8",
 				async:false,
 				url: "http://gibbonedu.org/gibboneducom/keyCheck.php?callback=?",
-				data: "gibboneduComOrganisationName=<? print $gibboneduComOrganisationName ?>&gibboneduComOrganisationKey=<? print $gibboneduComOrganisationKey ?>&service=queryBuilder",
+				data: "gibboneduComOrganisationName=<?php print $gibboneduComOrganisationName ?>&gibboneduComOrganisationKey=<?php print $gibboneduComOrganisationKey ?>&service=queryBuilder",
 				dataType: "jsonp",                
 				jsonpCallback: 'fnsuccesscallback',
 				jsonpResult: 'jsonpResult',
 				success: function(data) {
 					if (data['access']==='1') {
 						$("#status").attr("class","success");
-						$("#status").html('Success! Your system has a valid license to access value added Query Builder queries from gibbonedu.com. <a href=\'<? print $_SESSION[$guid]["absoluteURL"] ?>/index.php?q=/modules/Query Builder/queries_sync.php\'>Click here</a> to get the latest queries for your version of Gibbon.') ;
+						$("#status").html('Success! Your system has a valid license to access value added Query Builder queries from gibbonedu.com. <a href=\'<?php print $_SESSION[$guid]["absoluteURL"] ?>/index.php?q=/modules/Query Builder/queries_sync.php\'>Click here</a> to get the latest queries for your version of Gibbon.') ;
 					}
 					else {
 						$("#status").attr("class","error");
 						$("#status").html('Checking gibbonedu.com for a license to access value added Query Builder shows that you do not have access. You have either not set up access, or your access has expired or is invalid. Email <a href=\'mailto:support@gibbonedu.org\'>support@gibbonedu.org</a> to register for value added services, and then enter the name and key provided in reply, or to seek support as to why your key is not working. You may still you your own queries without a valid license.') ;
 						$.ajax({
-							url: "<? print $_SESSION[$guid]["absoluteURL"] ?>/modules/Query Builder/queries_gibboneducom_remove_ajax.php",
-							data: "gibboneduComOrganisationName=<? print $gibboneduComOrganisationName ?>&gibboneduComOrganisationKey=<? print $gibboneduComOrganisationKey ?>&service=queryBuilder"
+							url: "<?php print $_SESSION[$guid]["absoluteURL"] ?>/modules/Query Builder/queries_gibboneducom_remove_ajax.php",
+							data: "gibboneduComOrganisationName=<?php print $gibboneduComOrganisationName ?>&gibboneduComOrganisationKey=<?php print $gibboneduComOrganisationKey ?>&service=queryBuilder"
 						});
 					}
 				},
@@ -67,12 +67,12 @@ else {
 					$("#status").attr("class","error");
 					$("#status").html('Checking gibbonedu.com license for access to value added Query Builder queries has failed. You may still you your own queries.') ;
 					$.ajax({
-						url: "<? print $_SESSION[$guid]["absoluteURL"] ?>/modules/Query Builder/queries_gibboneducom_remove_ajax.php",
-						data: "gibboneduComOrganisationName=<? print $gibboneduComOrganisationName ?>&gibboneduComOrganisationKey=<? print $gibboneduComOrganisationKey ?>&service=queryBuilder"
+						url: "<?php print $_SESSION[$guid]["absoluteURL"] ?>/modules/Query Builder/queries_gibboneducom_remove_ajax.php",
+						data: "gibboneduComOrganisationName=<?php print $gibboneduComOrganisationName ?>&gibboneduComOrganisationKey=<?php print $gibboneduComOrganisationKey ?>&service=queryBuilder"
 					});
 				}
 			});
-			<?
+			<?php
 		print "});" ;
 	print "</script>" ;
 	

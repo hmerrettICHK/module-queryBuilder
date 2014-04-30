@@ -1,5 +1,9 @@
 CHANGELOG
 =========
+v1.0.04
+-------
+Fixed PHP short tag issues
+
 v1.0.03
 -------
 Fixed export file name issue

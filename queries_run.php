@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -90,21 +90,21 @@ else {
 				}
 			print "</table>" ;
 			?>
-			<form method="post" action="<? print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/queries_run.php&queryBuilderQueryID=$queryBuilderQueryID&sidebar=false" ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/queries_run.php&queryBuilderQueryID=$queryBuilderQueryID&sidebar=false" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td colspan=2> 
 							<b>Query *</b>
-							<?
+							<?php
 							print "<div class='linkTop' style='margin-top: 0px'>" ;
 								print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/" . $_SESSION[$guid]["module"] . "/queries_help_full.php&width=1100&height=550'><img title='Query Help' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/help.png'/></a>" ;
 							print "</div>" ;
 							?>
-							<textarea name="query" id='query' style="display: none;"><? if (isset($_POST["query"])) { print htmlPrep($_POST["query"]) ; } else { print htmlPrep($row["query"]) ; } ?></textarea>
+							<textarea name="query" id='query' style="display: none;"><?php if (isset($_POST["query"])) { print htmlPrep($_POST["query"]) ; } else { print htmlPrep($row["query"]) ; } ?></textarea>
 					
-							<div id="editor" style='width: 1058px; height: 400px;'><? if (isset($_POST["query"])) { print htmlPrep($_POST["query"]) ; } else { print htmlPrep($row["query"]) ; } ?></div>
+							<div id="editor" style='width: 1058px; height: 400px;'><?php if (isset($_POST["query"])) { print htmlPrep($_POST["query"]) ; } else { print htmlPrep($row["query"]) ; } ?></div>
 	
-							<script src="<? print $_SESSION[$guid]["absoluteURL"] ?>/modules/Query Builder/lib/ace/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+							<script src="<?php print $_SESSION[$guid]["absoluteURL"] ?>/modules/Query Builder/lib/ace/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
 							<script>
 								var editor = ace.edit("editor");
 								editor.getSession().setMode("ace/mode/mysql");
@@ -121,11 +121,11 @@ else {
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <? print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
-							<input type="hidden" name="address" value="<? print $_SESSION[$guid]["address"] ?>">
-							<?
+							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+							<?php
 							if (is_null($row["queryID"])) {
 								print "Save Query? <input " ;
 								if ($save=="Y") {
@@ -134,12 +134,12 @@ else {
 								print "type='checkbox' name='save' value='Y'/> " ;
 							}
 							?>
-							<input type="submit" value="<? print _("Run Query") ; ?>">
+							<input type="submit" value="<?php print _("Run Query") ; ?>">
 						</td>
 					</tr>
 				</table>
 			</form>
-			<?
+			<?php
 			
 			
 			//PROCESS QUERY

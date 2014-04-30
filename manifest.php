@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -25,7 +25,7 @@ $description="A module to provide SQL queries for pulling data out of Gibbon and
 $entryURL="queries.php" ;
 $type="Additional" ;
 $category="Admin" ; 
-$version="1.0.03" ; 
+$version="1.0.04" ; 
 $author="Ross Parker" ; 
 $url="http://rossparker.org" ;
 

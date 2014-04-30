@@ -1,4 +1,4 @@
-<?
+<?php
 /*
 Gibbon, Flexible & Open School System
 Copyright (C) 2010, Ross Parker
@@ -47,7 +47,7 @@ else {
 				contentType: "application/json; charset=utf-8",
 				async:false,
 				url: "http://gibbonedu.org/gibboneducom/queryBuilder.php?callback=?",
-				data: "gibboneduComOrganisationName=<? print $gibboneduComOrganisationName ?>&gibboneduComOrganisationKey=<? print $gibboneduComOrganisationKey ?>&service=queryBuilder&version=<? print $version ?>",
+				data: "gibboneduComOrganisationName=<?php print $gibboneduComOrganisationName ?>&gibboneduComOrganisationKey=<?php print $gibboneduComOrganisationKey ?>&service=queryBuilder&version=<?php print $version ?>",
 				dataType: "jsonp",                
 				jsonpCallback: 'fnsuccesscallback',
 				jsonpResult: 'jsonpResult',
@@ -61,8 +61,8 @@ else {
 						$("#status").html('Success! Your system has a valid license to access value added Query Builder queries from gibbonedu.com. We are now syncing your queries. Watch here for results.') ;
 						$.ajax({
 							type: "POST",
-            				url: "<? print $_SESSION[$guid]["absoluteURL"] ?>/modules/Query Builder/queries_gibboneducom_sync_ajax.php",
-							data: { gibboneduComOrganisationName: "<? print $gibboneduComOrganisationName ?>", gibboneduComOrganisationKey: "<? print $gibboneduComOrganisationKey ?>", service: "queryBuilder", queries: JSON.stringify(data) },
+            				url: "<?php print $_SESSION[$guid]["absoluteURL"] ?>/modules/Query Builder/queries_gibboneducom_sync_ajax.php",
+							data: { gibboneduComOrganisationName: "<?php print $gibboneduComOrganisationName ?>", gibboneduComOrganisationKey: "<?php print $gibboneduComOrganisationKey ?>", service: "queryBuilder", queries: JSON.stringify(data) },
 							success: function(data) {
 								if (data==="fail") {
 									$("#status").attr("class","error");
@@ -70,7 +70,7 @@ else {
 								}
 								else {
 									$("#status").attr("class","success");
-									$("#status").html('Your queries have been successfully synced. Please <a href=\'<? print $_SESSION[$guid]["absoluteURL"] ?>/index.php?q=/modules/Query Builder/queries.php\'>click here</a> to return to your query list.') ;
+									$("#status").html('Your queries have been successfully synced. Please <a href=\'<?php print $_SESSION[$guid]["absoluteURL"] ?>/index.php?q=/modules/Query Builder/queries.php\'>click here</a> to return to your query list.') ;
 								}
 							},
 							error: function (data, textStatus, errorThrown) {
@@ -84,12 +84,12 @@ else {
 					$("#status").attr("class","error");
 					$("#status").html('Checking gibbonedu.com license for access to value added Query Builder queries has failed. You may still you your own queries.') ;
 					$.ajax({
-						url: "<? print $_SESSION[$guid]["absoluteURL"] ?>/modules/Query Builder/queries_gibboneducom_remove_ajax.php",
-						data: "gibboneduComOrganisationName=<? print $gibboneduComOrganisationName ?>&gibboneduComOrganisationKey=<? print $gibboneduComOrganisationKey ?>&service=queryBuilder"
+						url: "<?php print $_SESSION[$guid]["absoluteURL"] ?>/modules/Query Builder/queries_gibboneducom_remove_ajax.php",
+						data: "gibboneduComOrganisationName=<?php print $gibboneduComOrganisationName ?>&gibboneduComOrganisationKey=<?php print $gibboneduComOrganisationKey ?>&service=queryBuilder"
 					});
 				}
 			});
-			<?
+			<?php
 		print "});" ;
 	print "</script>" ;
 	
