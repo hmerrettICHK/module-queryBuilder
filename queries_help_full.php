@@ -49,12 +49,12 @@ else {
 	else {
 		while ($row=$result->fetch()) {
 			print "<h2>" ;
-				print $row["Tables_in_gibbon_query"] ;
+				print $row["Tables_in_" . $databaseName] ;
 			print "</h2>" ;
 			
 			try {
 				$dataTable=array(); 
-				$sqlTable='SHOW COLUMNS FROM ' . $row["Tables_in_gibbon_query"];
+				$sqlTable='SHOW COLUMNS FROM ' . $row["Tables_in_" . $databaseName];
 				$resultTable=$connection2->prepare($sqlTable);
 				$resultTable->execute($dataTable);
 			}
