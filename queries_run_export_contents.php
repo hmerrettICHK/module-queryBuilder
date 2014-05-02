@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include "../../functions.php" ;
 include "../../config.php" ;
 
 //New PDO DB connection
@@ -41,15 +40,16 @@ $query=$_POST["query"] ;
 $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Query Builder/queries_run.php")==FALSE) {
-	//Fail 0
-	$URL=$URL . "&updateReturn=fail0" ;
-	header("Location: {$URL}");
+	print "<div class='error'>"; 
+		print _("Your request failed because you do not have access to this action.") ;
+	print "</div>" ; 
+
 }
 else {
 	if ($queryBuilderQueryID=="" OR $query=="") {
-		//Fail 1
-		$URL=$URL . "?exportReturn=fail1" ;
-		header("Location: {$URL}");
+		print "<div class='error'>"; 
+			print _("You have not specified one or more required parameters.") ;
+		print "</div>" ; 
 	}
 	else {
 		try {
@@ -59,20 +59,62 @@ else {
 			$result->execute($data);
 		}
 		catch(PDOException $e) { 
-			//Fail 0
-			$URL=$URL . "?exportReturn=fail0" ;
-			header("Location: {$URL}");
+			print "<div class='error'>"; 
+				print _("Your request failed due to a database error.") ;
+			print "</div>" ; 
 		}
 
 		if ($result->rowCount()<1) {
-			//Fail 3
-			$URL=$URL . "?exportReturn=fail3" ;
-			header("Location: {$URL}");
+			print "<div class='error'>"; 
+				print _("The selected record does not exist, or you do not have access to it.") ;
+			print "</div>" ; 
 		}
 		else {
-			//Proceed!
-			$exp=new ExportToExcel();
-			$exp->exportWithPage($guid, "./queries_run_export_contents.php","queryBuilderExport.xls");
+			try {
+				$data=array(); 
+				$result=$connection2->prepare($query);
+				$result->execute($data);
+			}
+			catch(PDOException $e) { 
+				print "<div class='error'>"; 
+					print _("Your request failed due to a database error.") ;
+				print "</div>" ; 
+			}
+
+			if ($result->rowCount()<1) {
+				print "<div class='warning'>Your query has returned 0 rows.</div>" ; 
+			}
+			else {
+				print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;	
+					print "<tr>" ;
+						for ($i=0; $i<$result->columnCount(); $i++) {
+							$col=$result->getColumnMeta($i);
+							if ($col["name"]!="password" AND $col["name"]!="passwordStrong" AND $col["name"]!="passwordStrongSalt") {
+								print "<th style='min-width: 72px'>" ;
+									print $col["name"] ;
+								print "</th>" ;
+							}
+						}
+					print "</tr>" ;
+					while ($row=$result->fetch()) {
+						print "<tr>" ;
+							for ($i=0; $i<$result->columnCount(); $i++) {
+								$col=$result->getColumnMeta($i);		
+								if ($col["name"]!="password" AND $col["name"]!="passwordStrong" AND $col["name"]!="passwordStrongSalt") {
+									print "<td>" ;
+										if (strlen($row[$col["name"]])>50) {
+											print substr($row[$col["name"]],0,50) . "..." ; 
+										}
+										else {
+											print $row[$col["name"]] ;
+										}
+									print "</td>" ;
+								}
+							}
+						print "</tr>" ;
+					}
+				print "</table>" ;
+			}
 		}
 	}
 }

@@ -211,24 +211,28 @@ else {
 							print "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>" ;	
 								print "<tr>" ;
 									for ($i=0; $i<$result->columnCount(); $i++) {
-										print "<th style='min-width: 72px'>" ;
-											$col=$result->getColumnMeta($i);
-											print $col["name"] ;
-										print "</th>" ;
+										$col=$result->getColumnMeta($i);
+										if ($col["name"]!="password" AND $col["name"]!="passwordStrong" AND $col["name"]!="passwordStrongSalt") {
+											print "<th style='min-width: 72px'>" ;
+												print $col["name"] ;
+											print "</th>" ;
+										}
 									}
 								print "</tr>" ;
 								while ($row=$result->fetch()) {
 									print "<tr>" ;
 										for ($i=0; $i<$result->columnCount(); $i++) {
-											print "<td>" ;
-												$col=$result->getColumnMeta($i);
-												if (strlen($row[$col["name"]])>50) {
-													print substr($row[$col["name"]],0,50) . "..." ; 
-												}
-												else {
-													print $row[$col["name"]] ;
-												}
-											print "</td>" ;
+											$col=$result->getColumnMeta($i);		
+											if ($col["name"]!="password" AND $col["name"]!="passwordStrong" AND $col["name"]!="passwordStrongSalt") {
+												print "<td>" ;
+													if (strlen($row[$col["name"]])>50) {
+														print substr($row[$col["name"]],0,50) . "..." ; 
+													}
+													else {
+														print $row[$col["name"]] ;
+													}
+												print "</td>" ;
+											}
 										}
 									print "</tr>" ;
 								}
