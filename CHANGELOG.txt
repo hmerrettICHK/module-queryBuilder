@@ -1,5 +1,9 @@
 CHANGELOG
 =========
+v1.0.06
+-------
+Fixed export content-shortening issue.
+
 v1.0.05
 -------
 Removed password related fields from queries

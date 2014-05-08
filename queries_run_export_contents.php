@@ -102,12 +102,7 @@ else {
 								$col=$result->getColumnMeta($i);		
 								if ($col["name"]!="password" AND $col["name"]!="passwordStrong" AND $col["name"]!="passwordStrongSalt") {
 									print "<td>" ;
-										if (strlen($row[$col["name"]])>50) {
-											print substr($row[$col["name"]],0,50) . "..." ; 
-										}
-										else {
-											print $row[$col["name"]] ;
-										}
+										print $row[$col["name"]] ;
 									print "</td>" ;
 								}
 							}
