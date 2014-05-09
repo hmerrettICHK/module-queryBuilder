@@ -46,7 +46,7 @@ else {
 				type:"GET",
 				contentType: "application/json; charset=utf-8",
 				async:false,
-				url: "http://gibbonedu.org/gibboneducom/queryBuilder.php?callback=?",
+				url: "https://gibbonedu.org/gibboneducom/queryBuilder.php?callback=?",
 				data: "gibboneduComOrganisationName=<?php print $gibboneduComOrganisationName ?>&gibboneduComOrganisationKey=<?php print $gibboneduComOrganisationKey ?>&service=queryBuilder&version=<?php print $version ?>",
 				dataType: "jsonp",                
 				jsonpCallback: 'fnsuccesscallback',
