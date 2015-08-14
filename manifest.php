@@ -25,13 +25,12 @@ $description="A module to provide SQL queries for pulling data out of Gibbon and
 $entryURL="queries.php" ;
 $type="Additional" ;
 $category="Admin" ; 
-$version="1.0.08" ; 
+$version="1.1.00" ; 
 $author="Ross Parker" ; 
 $url="http://rossparker.org" ;
 
 //Module tables & gibbonSettings entries
-$moduleTables[0]="
-CREATE TABLE `queryBuilderQuery` (  `queryBuilderQueryID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,  `name` varchar(255) NOT NULL,  `category` varchar(50) NOT NULL,  `description` text NOT NULL,  `query` text NOT NULL,  `active` enum('Y','N') NOT NULL DEFAULT 'Y',  `queryID` int(10) unsigned zerofill DEFAULT NULL COMMENT 'If based on a gibbonedu.org query.',  `gibbonPersonID` int(10) unsigned zerofill DEFAULT NULL,  PRIMARY KEY (`queryBuilderQueryID`)) ENGINE=MyISAM DEFAULT CHARSET=utf8" ; 
+$moduleTables[0]="CREATE TABLE `queryBuilderQuery` (  `queryBuilderQueryID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,  `name` varchar(255) NOT NULL,  `category` varchar(50) NOT NULL,  `description` text NOT NULL,  `query` text NOT NULL,  `active` enum('Y','N') NOT NULL DEFAULT 'Y',  `queryID` int(10) unsigned zerofill DEFAULT NULL COMMENT 'If based on a gibbonedu.org query.',  `gibbonPersonID` int(10) unsigned zerofill DEFAULT NULL,  PRIMARY KEY (`queryBuilderQueryID`)) ENGINE=MyISAM DEFAULT CHARSET=utf8" ; 
 
 //Action rows 
 $actionRows[0]["name"]="Manage Queries" ; 

@@ -1,5 +1,9 @@
 CHANGELOG
 =========
+v1.1.00
+-------
+Added query search function
+
 v1.0.08
 -------
 Added Gibbon v8 compatibility

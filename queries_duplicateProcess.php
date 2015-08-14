@@ -35,8 +35,12 @@ catch(PDOException $e) {
 //Set timezone from session variable
 date_default_timezone_set($_SESSION[$guid]["timezone"]);
 
+$search=NULL ;
+if (isset($_GET["search"])) {
+	$search=$_GET["search"] ;
+}
 $queryBuilderQueryID=$_GET["queryBuilderQueryID"] ;
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/queries_duplicate.php&queryBuilderQueryID=" . $queryBuilderQueryID ;
+$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/queries_duplicate.php&queryBuilderQueryID=" . $queryBuilderQueryID . "&search=$search" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Query Builder/queries_duplicate.php")==FALSE) {
 	//Fail 0

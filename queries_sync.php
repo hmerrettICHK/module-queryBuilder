@@ -54,7 +54,7 @@ else {
 				success: function(data) {
 					if (data['access']==='0') {
 						$("#status").attr("class","error");
-						$("#status").html('Checking gibbonedu.com for a license to access value added Query Builder shows that you do not have access. You have either not set up access, or your access has expired or is invalid. Email <a href=\'mailto:support@gibbonedu.org\'>support@gibbonedu.org</a> to register for value added services, and then enter the name and key provided in reply, or to seek support as to why your key is not working. You may still you your own queries without a valid license.') ;
+						$("#status").html('Checking gibbonedu.com for a license to access value added Query Builder shows that you do not have access. You have either not set up access, or your access has expired or is invalid. Email <a href=\'mailto:support@gibbonedu.org\'>support@gibbonedu.org</a> to register for value added services, and then enter the name and key provided in reply, or to seek support as to why your key is not working. You may still use your own queries without a valid license.') ;
 					}
 					else {
 						$("#status").attr("class","success");
@@ -82,7 +82,7 @@ else {
 				},
 				error: function (data, textStatus, errorThrown) {
 					$("#status").attr("class","error");
-					$("#status").html('Checking gibbonedu.com license for access to value added Query Builder queries has failed. You may still you your own queries.') ;
+					$("#status").html('Checking gibbonedu.com license for access to value added Query Builder queries has failed. You may still use your own queries.') ;
 					$.ajax({
 						url: "<?php print $_SESSION[$guid]["absoluteURL"] ?>/modules/Query Builder/queries_gibboneducom_remove_ajax.php",
 						data: "gibboneduComOrganisationName=<?php print $gibboneduComOrganisationName ?>&gibboneduComOrganisationKey=<?php print $gibboneduComOrganisationKey ?>&service=queryBuilder"

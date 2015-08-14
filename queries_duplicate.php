@@ -59,6 +59,16 @@ else {
 		print "</div>" ;
 	} 
 	
+	$search=NULL ;
+	if (isset($_GET["search"])) {
+		$search=$_GET["search"] ;
+	}
+	if ($search!="") {
+		print "<div class='linkTop'>" ;
+			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Query Builder/queries.php&search=$search'>" . _('Back to Search Results') . "</a>" ;
+		print "</div>" ;
+	}
+	
 	//Check if school year specified
 	$queryBuilderQueryID=$_GET["queryBuilderQueryID"] ;
 	if ($queryBuilderQueryID=="") {
@@ -86,7 +96,7 @@ else {
 			//Let's go!
 			$row=$result->fetch() ;
 			?>
-			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/queries_duplicateProcess.php?queryBuilderQueryID=$queryBuilderQueryID" ?>">
+			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/queries_duplicateProcess.php?queryBuilderQueryID=$queryBuilderQueryID&search=$search" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
 					<tr>
 						<td> 

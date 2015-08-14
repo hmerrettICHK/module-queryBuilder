@@ -56,7 +56,7 @@ else {
 					}
 					else {
 						$("#status").attr("class","error");
-						$("#status").html('Checking gibbonedu.com for a license to access value added Query Builder shows that you do not have access. You have either not set up access, or your access has expired or is invalid. Email <a href=\'mailto:support@gibbonedu.org\'>support@gibbonedu.org</a> to register for value added services, and then enter the name and key provided in reply, or to seek support as to why your key is not working. You may still you your own queries without a valid license.') ;
+						$("#status").html('Checking gibbonedu.com for a license to access value added Query Builder shows that you do not have access. You have either not set up access, or your access has expired or is invalid. Email <a href=\'mailto:support@gibbonedu.org\'>support@gibbonedu.org</a> to register for value added services, and then enter the name and key provided in reply, or to seek support as to why your key is not working. You may still use your own queries without a valid license.') ;
 						$.ajax({
 							url: "<?php print $_SESSION[$guid]["absoluteURL"] ?>/modules/Query Builder/queries_gibboneducom_remove_ajax.php",
 							data: "gibboneduComOrganisationName=<?php print $gibboneduComOrganisationName ?>&gibboneduComOrganisationKey=<?php print $gibboneduComOrganisationKey ?>&service=queryBuilder"
@@ -65,7 +65,7 @@ else {
 				},
 				error: function (data, textStatus, errorThrown) {
 					$("#status").attr("class","error");
-					$("#status").html('Checking gibbonedu.com license for access to value added Query Builder queries has failed. You may still you your own queries.') ;
+					$("#status").html('Checking gibbonedu.com license for access to value added Query Builder queries has failed. You may still use your own queries.') ;
 					$.ajax({
 						url: "<?php print $_SESSION[$guid]["absoluteURL"] ?>/modules/Query Builder/queries_gibboneducom_remove_ajax.php",
 						data: "gibboneduComOrganisationName=<?php print $gibboneduComOrganisationName ?>&gibboneduComOrganisationKey=<?php print $gibboneduComOrganisationKey ?>&service=queryBuilder"
@@ -83,10 +83,54 @@ else {
 				print "Checking gibbonedu.com value added license status." ;
 			print "</div>" ;
 		print "</div>" ;
+		
+		$search=NULL ;
+		if (isset($_GET["search"])) {
+			$search=$_GET["search"] ;
+		}
+		
+		print "<h3>" ;
+		print _("Search") ;
+		print "</h3>" ;
+		?>
+		<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
+			<table class='noIntBorder' cellspacing='0' style="width: 100%">	
+				<tr><td style="width: 30%"></td><td></td></tr>
+				<tr>
+					<td> 
+						<b><?php print _('Search For') ?></b><br/>
+						<span style="font-size: 90%"><i><?php print _('Query name and category.') ?></i></span>
+					</td>
+					<td class="right">
+						<input name="search" id="search" maxlength=20 value="<?php print $search ; ?>" type="text" style="width: 300px">
+					</td>
+				</tr>
+				<tr>
+					<td colspan=2 class="right">
+						<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/queries.php">
+						<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
+						<?php
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/queries.php'>" . _('Clear Search') . "</a>" ;
+						?>
+						<input type="submit" value="<?php print _("Submit") ; ?>">
+					</td>
+				</tr>
+			</table>
+		</form>
+		<?php
+		
+		print "<h3>" ;
+		print _("Queries") ;
+		print "</h3>" ;
 	
 		try {
 			$data=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
 			$sql="SELECT * FROM queryBuilderQuery WHERE (gibbonPersonID IS NULL OR gibbonPersonID=:gibbonPersonID) ORDER BY category, gibbonPersonID, name" ; 
+			if ($search!="") {
+				$data["search"]="%$search%"; 
+				$data["search2"]="%$search%"; 
+				$sql="SELECT * FROM queryBuilderQuery WHERE (gibbonPersonID IS NULL OR gibbonPersonID=:gibbonPersonID) AND (name LIKE :search OR category LIKE :search2) ORDER BY category, gibbonPersonID, name" ; 
+			}
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
@@ -95,7 +139,7 @@ else {
 		}
 
 		print "<div class='linkTop'>" ;
-		print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/queries_add.php&sidebar=false'><img title='" . _('Add New Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
+		print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/queries_add.php&sidebar=false&search=$search'><img title='" . _('Add New Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
 		print "</div>" ;
 	
 		if ($result->rowCount()<1) {
@@ -158,12 +202,12 @@ else {
 						print "</td>" ;
 						print "<td>" ;
 							if (is_null($row["queryID"])) {
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/queries_edit.php&queryBuilderQueryID=" . $row["queryBuilderQueryID"] . "&sidebar=false'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/queries_delete.php&queryBuilderQueryID=" . $row["queryBuilderQueryID"] . "'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/queries_edit.php&queryBuilderQueryID=" . $row["queryBuilderQueryID"] . "&sidebar=false&search=$search'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/queries_delete.php&queryBuilderQueryID=" . $row["queryBuilderQueryID"] . "&search=$search'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
 							}
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/queries_duplicate.php&queryBuilderQueryID=" . $row["queryBuilderQueryID"] . "'><img title='Duplicate' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/copy.png'/></a>" ;
+							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/queries_duplicate.php&queryBuilderQueryID=" . $row["queryBuilderQueryID"] . "&search=$search'><img title='Duplicate' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/copy.png'/></a>" ;
 							if ($row["active"]=="Y") {
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/queries_run.php&queryBuilderQueryID=" . $row["queryBuilderQueryID"] . "&sidebar=false'><img style='margin-left: 6px' title='Run Query' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/run.png'/></a>" ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/queries_run.php&queryBuilderQueryID=" . $row["queryBuilderQueryID"] . "&sidebar=false&search=$search'><img style='margin-left: 6px' title='Run Query' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/run.png'/></a>" ;
 							}
 						print "</td>" ;
 					print "</tr>" ;
