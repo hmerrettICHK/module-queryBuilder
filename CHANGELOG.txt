@@ -1,5 +1,9 @@
 CHANGELOG
 =========
+v1.2.00
+-------
+Added school-wide shared queries
+
 v1.1.00
 -------
 Added query search function

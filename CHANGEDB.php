@@ -54,4 +54,12 @@ $count++;
 $sql[$count][0]="1.1.00" ;
 $sql[$count][1]="" ;
 
+//v1.2.00
+$count++;
+$sql[$count][0]="1.2.00" ;
+$sql[$count][1]="
+ALTER TABLE `queryBuilderQuery` ADD `type` ENUM('gibbonedu.com','Personal','School') NOT NULL DEFAULT 'gibbonedu.com' AFTER `queryBuilderQueryID`;end
+UPDATE queryBuilderQuery SET type='Personal' WHERE queryID IS NULL;end
+" ;
+
 ?>

@@ -79,6 +79,7 @@ else {
 			
 			//Validate Inputs
 			$name=$_POST["name"] ;
+			$type=$row["type"] ;
 			$category=$row["category"] ;
 			$active=$row["active"] ;
 			$description=$row["description"] ;
@@ -93,8 +94,8 @@ else {
 			else {
 				//Write to database
 				try {
-					$data=array("name"=>$name, "category"=>$category, "active"=>$active, "description"=>$description, "query"=>$query, "gibbonPersonID"=>$gibbonPersonID); 
-					$sql="INSERT INTO queryBuilderQuery SET name=:name, category=:category, active=:active, description=:description, query=:query, gibbonPersonID=:gibbonPersonID" ;
+					$data=array("type"=>$type, "name"=>$name, "category"=>$category, "active"=>$active, "description"=>$description, "query"=>$query, "gibbonPersonID"=>$gibbonPersonID); 
+					$sql="INSERT INTO queryBuilderQuery SET type=:type, name=:name, category=:category, active=:active, description=:description, query=:query, gibbonPersonID=:gibbonPersonID" ;
 					$result=$connection2->prepare($sql);
 					$result->execute($data);
 				}

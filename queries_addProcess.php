@@ -49,6 +49,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Query Builder/queries_add.
 else {
 	//Proceed!
 	//Validate Inputs
+	$type=$_POST["type"] ;
 	$name=$_POST["name"] ;
 	$category=$_POST["category"] ;
 	$active=$_POST["active"] ;
@@ -56,7 +57,7 @@ else {
 	$query=$_POST["query"] ;
 	$gibbonPersonID=$_SESSION[$guid]["gibbonPersonID"] ;
 	
-	if ($name=="" OR $category=="" OR $active=="" OR $query=="") {
+	if ($type=="" OR $name=="" OR $category=="" OR $active=="" OR $query=="") {
 		//Fail 3
 		$URL=$URL . "&addReturn=fail3" ;
 		header("Location: {$URL}");
@@ -64,8 +65,8 @@ else {
 	else {
 		//Write to database
 		try {
-			$data=array("name"=>$name, "category"=>$category, "active"=>$active, "description"=>$description, "query"=>$query, "gibbonPersonID"=>$gibbonPersonID); 
-			$sql="INSERT INTO queryBuilderQuery SET name=:name, category=:category, active=:active, description=:description, query=:query, gibbonPersonID=:gibbonPersonID" ;
+			$data=array("type"=>$type, "name"=>$name, "category"=>$category, "active"=>$active, "description"=>$description, "query"=>$query, "gibbonPersonID"=>$gibbonPersonID); 
+			$sql="INSERT INTO queryBuilderQuery SET type=:type, name=:name, category=:category, active=:active, description=:description, query=:query, gibbonPersonID=:gibbonPersonID" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}

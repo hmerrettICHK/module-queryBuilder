@@ -125,11 +125,11 @@ else {
 	
 		try {
 			$data=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-			$sql="SELECT * FROM queryBuilderQuery WHERE (gibbonPersonID IS NULL OR gibbonPersonID=:gibbonPersonID) ORDER BY category, gibbonPersonID, name" ; 
+			$sql="SELECT * FROM queryBuilderQuery WHERE ((type='Personal' AND gibbonPersonID=:gibbonPersonID) OR type='School' OR type='gibbonedu.com') ORDER BY category, gibbonPersonID, name" ; 
 			if ($search!="") {
 				$data["search"]="%$search%"; 
 				$data["search2"]="%$search%"; 
-				$sql="SELECT * FROM queryBuilderQuery WHERE (gibbonPersonID IS NULL OR gibbonPersonID=:gibbonPersonID) AND (name LIKE :search OR category LIKE :search2) ORDER BY category, gibbonPersonID, name" ; 
+				$sql="SELECT * FROM queryBuilderQuery WHERE ((type='Personal' AND gibbonPersonID=:gibbonPersonID) OR type='School' OR type='gibbonedu.com') AND (name LIKE :search OR category LIKE :search2) ORDER BY category, gibbonPersonID, name" ; 
 			}
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
@@ -188,7 +188,7 @@ else {
 								print "gibbonedu.com" ;
 							}
 							else {
-								print "Personal" ;
+								print $row["type"] ;
 							}
 						print "</td>" ;
 						print "<td>" ;
@@ -201,7 +201,7 @@ else {
 							print $row["active"] ;
 						print "</td>" ;
 						print "<td>" ;
-							if (is_null($row["queryID"])) {
+							if ($row["type"]=="Personal" OR ($row["type"]=="School" AND $row["gibbonPersonID"]==$_SESSION[$guid]["gibbonPersonID"])) {
 								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/queries_edit.php&queryBuilderQueryID=" . $row["queryBuilderQueryID"] . "&sidebar=false&search=$search'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
 								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/queries_delete.php&queryBuilderQueryID=" . $row["queryBuilderQueryID"] . "&search=$search'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
 							}

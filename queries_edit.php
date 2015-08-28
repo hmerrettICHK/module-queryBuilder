@@ -79,7 +79,7 @@ else {
 	else {
 		try {
 			$data=array("queryBuilderQueryID"=>$queryBuilderQueryID, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-			$sql="SELECT * FROM queryBuilderQuery WHERE queryBuilderQueryID=:queryBuilderQueryID AND queryID IS NULL AND gibbonPersonID=:gibbonPersonID" ;
+			$sql="SELECT * FROM queryBuilderQuery WHERE queryBuilderQueryID=:queryBuilderQueryID AND NOT type='gibbonedu.com' AND gibbonPersonID=:gibbonPersonID" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
@@ -98,6 +98,14 @@ else {
 			?>
 			<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/queries_editProcess.php?queryBuilderQueryID=$queryBuilderQueryID&search=$search" ?>">
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+					<tr>
+						<td> 
+							<b><?php print _('Type') ?> *</b><br/>
+						</td>
+						<td class="right">
+							<input readonly name="type" id="type" maxlength=255 value="<?php print htmlPrep($row["type"]) ?>" type="text" style="width: 300px">
+						</td>
+					</tr>
 					<tr>
 						<td> 
 							<b><?php print _('Name') ?> *</b><br/>

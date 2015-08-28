@@ -68,7 +68,19 @@ else {
 	
 	?>
 	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/queries_addProcess.php?search=$search" ?>">
-		<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+		<table class='smallIntBorder' cellspacing='0' style="width: 100%">
+			<tr>
+				<td> 
+					<b><?php print _('Type') ?> *</b><br/>
+					<span style="font-size: 90%"><i></i></span>
+				</td>
+				<td class="right">
+					<select name="type" id="type" style="width: 302px">
+						<option value="Personal"><?php print _('Personal') ?></option>
+						<option value="School"><?php print _('School') ?></option>
+					</select>
+				</td>
+			</tr>	
 			<tr>
 				<td> 
 					<b><?php print _('Name') ?> *</b><br/>

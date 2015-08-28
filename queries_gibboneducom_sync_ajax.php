@@ -60,7 +60,7 @@ else { //Success, let's write them to the database.
 	for ($i=0; $i<count($queries); $i++) {
 		try {
 			$data=array("queryID"=>$queries[$i]["queryID"], "name"=>$queries[$i]["name"], "category"=>$queries[$i]["category"], "description"=>$queries[$i]["description"], "query"=>$queries[$i]["query"]); 
-			$sql="INSERT INTO queryBuilderQuery SET queryID=:queryID, name=:name, category=:category, description=:description, query=:query" ;
+			$sql="INSERT INTO queryBuilderQuery SET type='gibbonedu.com', queryID=:queryID, name=:name, category=:category, description=:description, query=:query" ;
 			$result=$connection2->prepare($sql);
 			$result->execute($data);
 		}
