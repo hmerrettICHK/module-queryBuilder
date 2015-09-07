@@ -136,7 +136,7 @@ else {
 						<td class="right">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 							<?php
-							if (is_null($row["queryID"])) {
+							if ($row["type"]=="Personal" OR ($row["type"]=="School" AND $row["gibbonPersonID"]==$_SESSION[$guid]["gibbonPersonID"])) {
 								print "Save Query? <input " ;
 								if ($save=="Y") {
 									print "checked " ;

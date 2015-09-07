@@ -1,5 +1,9 @@
 CHANGELOG
 =========
+v1.2.01
+-------
+Prevented "Save Query?" being used in school-wide shared queries, unless it is the owner viewing
+
 v1.2.00
 -------
 Added school-wide shared queries

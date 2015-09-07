@@ -62,4 +62,9 @@ ALTER TABLE `queryBuilderQuery` ADD `type` ENUM('gibbonedu.com','Personal','Scho
 UPDATE queryBuilderQuery SET type='Personal' WHERE queryID IS NULL;end
 " ;
 
+//v1.2.01
+$count++;
+$sql[$count][0]="1.2.01" ;
+$sql[$count][1]="" ;
+
 ?>
