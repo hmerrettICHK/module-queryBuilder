@@ -41,10 +41,10 @@ $gibboneduComOrganisationName=$_GET["gibboneduComOrganisationName"] ;
 $gibboneduComOrganisationKey=$_GET["gibboneduComOrganisationKey"] ;
 $service=$_GET["service"] ;
 
-//Remove all queries
+//Remove all gibbonedu.com queries
 try {
 	$data=array(); 
-	$sql="DELETE FROM queryBuilderQuery WHERE gibbonPersonID IS NULL" ;
+	$sql="DELETE FROM queryBuilderQuery WHERE type='gibbonedu.com'" ;
 	$result=$connection2->prepare($sql);
 	$result->execute($data); 
 }

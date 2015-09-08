@@ -1,9 +1,12 @@
 CHANGELOG
 =========
+v1.2.03
+-------
+Fixed bug which deletes school wide queries on failed sync
+
 v1.2.02
 -------
 Fixed bug preventing viewing of school-wide shared queries
-
 
 v1.2.01
 -------

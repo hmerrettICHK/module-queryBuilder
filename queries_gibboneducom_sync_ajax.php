@@ -47,10 +47,10 @@ if (count($queries)<1) { //We have a problem, report it.
 	print "fail" ;
 }
 else { //Success, let's write them to the database.
-	//But first let's remove all of the old queries
+	//But first let's remove all of the gibbonedu.com old queries
 	try {
 		$data=array(); 
-		$sql="DELETE FROM queryBuilderQuery WHERE gibbonPersonID IS NULL" ;
+		$sql="DELETE FROM queryBuilderQuery WHERE type='gibbonedu.com'" ;
 		$result=$connection2->prepare($sql);
 		$result->execute($data); 
 	}
