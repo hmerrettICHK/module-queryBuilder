@@ -1,5 +1,9 @@
 CHANGELOG
 =========
+v1.2.04
+-------
+Sub folder tweak
+
 v1.2.03
 -------
 Fixed bug which deletes school wide queries on failed sync
