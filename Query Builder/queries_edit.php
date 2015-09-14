@@ -130,6 +130,25 @@ else {
 								category.add(Validate.Presence);
 							 </script> 
 						</td>
+						<script type="text/javascript">
+							$(function() {
+								var availableTags=[
+									<?php
+									try {
+										$dataAuto=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
+										$sqlAuto="SELECT DISTINCT category FROM queryBuilderQuery WHERE type='School' OR type='gibbonedu.com' OR (type='Personal' AND gibbonPersonID=:gibbonPersonID) ORDER BY category" ;
+										$resultAuto=$connection2->prepare($sqlAuto);
+										$resultAuto->execute($dataAuto);
+									}
+									catch(PDOException $e) { }
+									while ($rowAuto=$resultAuto->fetch()) {
+										print "\"" . $rowAuto["category"] . "\", " ;
+									}
+									?>
+								];
+								$( "#category" ).autocomplete({source: availableTags});
+							});
+						</script>
 					</tr>
 					<tr>
 						<td> 

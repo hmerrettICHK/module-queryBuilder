@@ -111,6 +111,18 @@ else {
 						</td>
 					</tr>
 					<tr>
+						<td> 
+							<b><?php print _('Type') ?> *</b><br/>
+							<span style="font-size: 90%"><i></i></span>
+						</td>
+						<td class="right">
+							<select name="type" id="type" style="width: 302px">
+								<option value="Personal"><?php print _('Personal') ?></option>
+								<option value="School"><?php print _('School') ?></option>
+							</select>
+						</td>
+					</tr>	
+					<tr>
 						<td>
 							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
 						</td>

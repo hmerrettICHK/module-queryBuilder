@@ -79,7 +79,7 @@ else {
 			
 			//Validate Inputs
 			$name=$_POST["name"] ;
-			$type=$row["type"] ;
+			$type=$_POST["type"] ;
 			$category=$row["category"] ;
 			$active=$row["active"] ;
 			$description=$row["description"] ;

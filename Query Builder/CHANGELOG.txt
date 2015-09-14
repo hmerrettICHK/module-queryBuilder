@@ -1,5 +1,10 @@
 CHANGELOG
 =========
+v1.2.05
+-------
+Added category auto suggest in edit/add mode
+Fixed duplicate bug
+
 v1.2.04
 -------
 Sub folder tweak
