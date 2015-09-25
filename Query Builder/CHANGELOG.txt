@@ -1,5 +1,9 @@
 CHANGELOG
 =========
+v1.2.06
+-------
+Fixed OTT gibbonedu.com query deletion
+
 v1.2.05
 -------
 Added category auto suggest in edit/add mode

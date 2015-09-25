@@ -63,14 +63,7 @@ else {
 						});
 					}
 				},
-				error: function (data, textStatus, errorThrown) {
-					$("#status").attr("class","error");
-					$("#status").html('Checking gibbonedu.com license for access to value added Query Builder queries has failed. You may still use your own queries.') ;
-					$.ajax({
-						url: "<?php print $_SESSION[$guid]["absoluteURL"] ?>/modules/Query Builder/queries_gibboneducom_remove_ajax.php",
-						data: "gibboneduComOrganisationName=<?php print $gibboneduComOrganisationName ?>&gibboneduComOrganisationKey=<?php print $gibboneduComOrganisationKey ?>&service=queryBuilder"
-					});
-				}
+				error: function (data, textStatus, errorThrown) { }
 			});
 			<?php
 		print "});" ;
