@@ -89,7 +89,7 @@ else {
 					print "<tr>" ;
 						for ($i=0; $i<$result->columnCount(); $i++) {
 							$col=$result->getColumnMeta($i);
-							if ($col["name"]!="password" AND $col["name"]!="passwordStrong" AND $col["name"]!="passwordStrongSalt") {
+							if ($col["name"]!="password" AND $col["name"]!="passwordStrong" AND $col["name"]!="passwordStrongSalt" AND $col["table"]!="gibbonStaffContract" AND $col["table"]!="gibbonStaffApplicationForm" AND $col["table"]!="gibbonStaffApplicationFormFile") {
 								print "<th style='min-width: 72px'>" ;
 									print $col["name"] ;
 								print "</th>" ;
@@ -100,7 +100,7 @@ else {
 						print "<tr>" ;
 							for ($i=0; $i<$result->columnCount(); $i++) {
 								$col=$result->getColumnMeta($i);		
-								if ($col["name"]!="password" AND $col["name"]!="passwordStrong" AND $col["name"]!="passwordStrongSalt") {
+								if ($col["name"]!="password" AND $col["name"]!="passwordStrong" AND $col["name"]!="passwordStrongSalt" AND $col["table"]!="gibbonStaffContract" AND $col["table"]!="gibbonStaffApplicationForm" AND $col["table"]!="gibbonStaffApplicationFormFile") {
 									print "<td>" ;
 										print $row[$col["name"]] ;
 									print "</td>" ;

@@ -1,5 +1,9 @@
 CHANGELOG
 =========
+v1.2.09
+-------
+Added protection against exporting contract data from staff section (coming in Core v12)
+
 v1.2.08
 -------
 Fixed export bug affecting School queries (again!)
