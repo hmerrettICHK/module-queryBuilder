@@ -25,13 +25,13 @@ include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
 if (isActionAccessible($guid, $connection2, "/modules/Query Builder/queries_run.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print _("You do not have access to this action.") ;
+		print __($guid, "You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
 	//Proceed!
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/queries.php'>" . _('Manage Queries') . "</a> > </div><div class='trailEnd'>" . _('Run Query') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/queries.php'>" . __($guid, 'Manage Queries') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Run Query') . "</div>" ;
 	print "</div>" ;
 	
 	$search=NULL ;
@@ -40,7 +40,7 @@ else {
 	}
 	if ($search!="") {
 		print "<div class='linkTop'>" ;
-			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Query Builder/queries.php&search=$search'>" . _('Back to Search Results') . "</a>" ;
+			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Query Builder/queries.php&search=$search'>" . __($guid, 'Back to Search Results') . "</a>" ;
 		print "</div>" ;
 	}
 	
@@ -53,7 +53,7 @@ else {
 	
 	if ($queryBuilderQueryID=="") {
 		print "<div class='error'>" ;
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ;
 	}
 	else {
@@ -69,7 +69,7 @@ else {
 		
 		if ($result->rowCount()!=1) {
 			print "<div class='error'>" ;
-				print _("The specified record cannot be found.") ;
+				print __($guid, "The specified record cannot be found.") ;
 			print "</div>" ;
 		}
 		else {
@@ -131,7 +131,7 @@ else {
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php print _("denotes a required field") ; ?></i></span>
+							<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
@@ -144,7 +144,7 @@ else {
 								print "type='checkbox' name='save' value='Y'/> " ;
 							}
 							?>
-							<input type="submit" value="<?php print _("Run Query") ; ?>">
+							<input type="submit" value="<?php print __($guid, "Run Query") ; ?>">
 						</td>
 					</tr>
 				</table>
@@ -177,7 +177,7 @@ else {
 				}
 				if ($illegal) {
 					print "<div class='error'>" ;
-						print _("Your query contains the following illegal term(s), and so cannot be run:") . " <b>" . substr($illegalList, 0, -2) . "</b>." ;
+						print __($guid, "Your query contains the following illegal term(s), and so cannot be run:") . " <b>" . substr($illegalList, 0, -2) . "</b>." ;
 					print "</div>" ;
 				}
 				else {

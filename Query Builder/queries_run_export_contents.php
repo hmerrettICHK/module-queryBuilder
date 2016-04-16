@@ -41,14 +41,14 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php" ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Query Builder/queries_run.php")==FALSE) {
 	print "<div class='error'>"; 
-		print _("Your request failed because you do not have access to this action.") ;
+		print __($guid, "Your request failed because you do not have access to this action.") ;
 	print "</div>" ; 
 
 }
 else {
 	if ($queryBuilderQueryID=="" OR $query=="") {
 		print "<div class='error'>"; 
-			print _("You have not specified one or more required parameters.") ;
+			print __($guid, "You have not specified one or more required parameters.") ;
 		print "</div>" ; 
 	}
 	else {
@@ -60,13 +60,13 @@ else {
 		}
 		catch(PDOException $e) { 
 			print "<div class='error'>"; 
-				print _("Your request failed due to a database error.") ;
+				print __($guid, "Your request failed due to a database error.") ;
 			print "</div>" ; 
 		}
 
 		if ($result->rowCount()<1) {
 			print "<div class='error'>"; 
-				print _("The selected record does not exist, or you do not have access to it.") ;
+				print __($guid, "The selected record does not exist, or you do not have access to it.") ;
 			print "</div>" ; 
 		}
 		else {
@@ -77,7 +77,7 @@ else {
 			}
 			catch(PDOException $e) { 
 				print "<div class='error'>"; 
-					print _("Your request failed due to a database error.") ;
+					print __($guid, "Your request failed due to a database error.") ;
 				print "</div>" ; 
 			}
 

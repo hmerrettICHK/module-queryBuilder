@@ -30,7 +30,7 @@ if (isModuleAccessible($guid, $connection2)==FALSE) {
 }
 else {
 	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . _("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . _('Queries') . "</div>" ;
+	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Queries') . "</div>" ;
 	print "</div>" ;
 	
 	$gibboneduComOrganisationName=getSettingByScope( $connection2, "System", "gibboneduComOrganisationName" ) ;
@@ -83,7 +83,7 @@ else {
 		}
 		
 		print "<h3>" ;
-		print _("Search") ;
+		print __($guid, "Search") ;
 		print "</h3>" ;
 		?>
 		<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
@@ -91,8 +91,8 @@ else {
 				<tr><td style="width: 30%"></td><td></td></tr>
 				<tr>
 					<td> 
-						<b><?php print _('Search For') ?></b><br/>
-						<span style="font-size: 90%"><i><?php print _('Query name and category.') ?></i></span>
+						<b><?php print __($guid, 'Search For') ?></b><br/>
+						<span style="font-size: 90%"><i><?php print __($guid, 'Query name and category.') ?></i></span>
 					</td>
 					<td class="right">
 						<input name="search" id="search" maxlength=20 value="<?php print $search ; ?>" type="text" style="width: 300px">
@@ -103,9 +103,9 @@ else {
 						<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/queries.php">
 						<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
 						<?php
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/queries.php'>" . _('Clear Search') . "</a>" ;
+						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/queries.php'>" . __($guid, 'Clear Search') . "</a>" ;
 						?>
-						<input type="submit" value="<?php print _("Submit") ; ?>">
+						<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
 					</td>
 				</tr>
 			</table>
@@ -113,7 +113,7 @@ else {
 		<?php
 		
 		print "<h3>" ;
-		print _("Queries") ;
+		print __($guid, "Queries") ;
 		print "</h3>" ;
 	
 		try {
@@ -132,31 +132,31 @@ else {
 		}
 
 		print "<div class='linkTop'>" ;
-		print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/queries_add.php&sidebar=false&search=$search'><img title='" . _('Add New Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
+		print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/queries_add.php&sidebar=false&search=$search'><img title='" . __($guid, 'Add New Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new.png'/></a>" ;
 		print "</div>" ;
 	
 		if ($result->rowCount()<1) {
 			print "<div class='error'>" ;
-			print _("There are no records to display.") ;
+			print __($guid, "There are no records to display.") ;
 			print "</div>" ;
 		}
 		else {
 			print "<table cellspacing='0' style='width: 100%'>" ;
 				print "<tr class='head'>" ;
 					print "<th>" ;
-						print _("Type") ;
+						print __($guid, "Type") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Category") ;
+						print __($guid, "Category") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Name") ;
+						print __($guid, "Name") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Active") ;
+						print __($guid, "Active") ;
 					print "</th>" ;
 					print "<th>" ;
-						print _("Actions") ;
+						print __($guid, "Actions") ;
 					print "</th>" ;
 				print "</tr>" ;
 			
@@ -195,8 +195,8 @@ else {
 						print "</td>" ;
 						print "<td>" ;
 							if ($row["type"]=="Personal" OR ($row["type"]=="School" AND $row["gibbonPersonID"]==$_SESSION[$guid]["gibbonPersonID"])) {
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/queries_edit.php&queryBuilderQueryID=" . $row["queryBuilderQueryID"] . "&sidebar=false&search=$search'><img title='" . _('Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/queries_delete.php&queryBuilderQueryID=" . $row["queryBuilderQueryID"] . "&search=$search'><img title='" . _('Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/queries_edit.php&queryBuilderQueryID=" . $row["queryBuilderQueryID"] . "&sidebar=false&search=$search'><img title='" . __($guid, 'Edit Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
+								print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/queries_delete.php&queryBuilderQueryID=" . $row["queryBuilderQueryID"] . "&search=$search'><img title='" . __($guid, 'Delete Record') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
 							}
 							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/queries_duplicate.php&queryBuilderQueryID=" . $row["queryBuilderQueryID"] . "&search=$search'><img title='Duplicate' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/copy.png'/></a>" ;
 							if ($row["active"]=="Y") {

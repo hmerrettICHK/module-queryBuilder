@@ -43,7 +43,7 @@ else {
 	}
 	if ($result->rowCount()<1) {
 		print "<div class='error'>" ;
-			print _("There are no tables to show.") ;
+			print __($guid, "There are no tables to show.") ;
 		print "</div>" ;
 	}
 	else {
@@ -64,7 +64,7 @@ else {
 			
 			if ($resultTable->rowCount()<1) {
 				print "<div class='error'>" ;
-					print _("There are no columns to show.") ;
+					print __($guid, "There are no columns to show.") ;
 				print "</div>" ;
 			}
 			else {
