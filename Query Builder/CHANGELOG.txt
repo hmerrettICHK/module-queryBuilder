@@ -1,5 +1,9 @@
 CHANGELOG
 =========
+v1.2.11
+-------
+Fixed lib bug introduced in v1.2.10
+
 v1.2.10
 -------
 Gibbon Core v12 & PHP 7 Compatibility 
