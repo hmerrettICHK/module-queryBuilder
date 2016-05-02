@@ -17,37 +17,36 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start() ;
+@session_start();
 
-if (isActionAccessible($guid, $connection2, "/modules/Query Builder/queries_sync.php")==FALSE) {
-	//Acess denied
-	print "<div class='error'>" ;
-		print __($guid, "You do not have access to this action.") ;
-	print "</div>" ;
-}
-else {
-	//Proceed!
-	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/queries.php'>" . __($guid, 'Manage Queries') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Sync Queries') . "</div>" ;
-	print "</div>" ;
-	
-	print "<p>" ;
-		print "This page will automatically attempt to sync queries from the gibbonedu.com Query Builder valued added service. The results of the sync will be given below." ;
-	print "<p>" ;
-	
-	$gibboneduComOrganisationName=getSettingByScope( $connection2, "System", "gibboneduComOrganisationName" ) ;
-	$gibboneduComOrganisationKey=getSettingByScope( $connection2, "System", "gibboneduComOrganisationKey" ) ;
-	
-	print "<script type=\"text/javascript\">" ;
-		print "$(document).ready(function(){" ;
-			?>
+if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_sync.php') == false) {
+    //Acess denied
+    echo "<div class='error'>";
+    echo __($guid, 'You do not have access to this action.');
+    echo '</div>';
+} else {
+    //Proceed!
+    echo "<div class='trail'>";
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".getModuleName($_GET['q'])."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/queries.php'>".__($guid, 'Manage Queries')."</a> > </div><div class='trailEnd'>".__($guid, 'Sync Queries').'</div>';
+    echo '</div>';
+
+    echo '<p>';
+    echo 'This page will automatically attempt to sync queries from the gibbonedu.com Query Builder valued added service. The results of the sync will be given below.';
+    echo '<p>';
+
+    $gibboneduComOrganisationName = getSettingByScope($connection2, 'System', 'gibboneduComOrganisationName');
+    $gibboneduComOrganisationKey = getSettingByScope($connection2, 'System', 'gibboneduComOrganisationKey');
+
+    echo '<script type="text/javascript">';
+    echo '$(document).ready(function(){';
+    ?>
 			$.ajax({
 				crossDomain: true,
 				type:"GET",
 				contentType: "application/json; charset=utf-8",
 				async:false,
 				url: "https://gibbonedu.org/gibboneducom/queryBuilder.php?callback=?",
-				data: "gibboneduComOrganisationName=<?php print $gibboneduComOrganisationName ?>&gibboneduComOrganisationKey=<?php print $gibboneduComOrganisationKey ?>&service=queryBuilder&version=<?php print $version ?>",
+				data: "gibboneduComOrganisationName=<?php echo $gibboneduComOrganisationName ?>&gibboneduComOrganisationKey=<?php echo $gibboneduComOrganisationKey ?>&service=queryBuilder&version=<?php echo $version ?>",
 				dataType: "jsonp",                
 				jsonpCallback: 'fnsuccesscallback',
 				jsonpResult: 'jsonpResult',
@@ -61,8 +60,8 @@ else {
 						$("#status").html('Success! Your system has a valid license to access value added Query Builder queries from gibbonedu.com. We are now syncing your queries. Watch here for results.') ;
 						$.ajax({
 							type: "POST",
-            				url: "<?php print $_SESSION[$guid]["absoluteURL"] ?>/modules/Query Builder/queries_gibboneducom_sync_ajax.php",
-							data: { gibboneduComOrganisationName: "<?php print $gibboneduComOrganisationName ?>", gibboneduComOrganisationKey: "<?php print $gibboneduComOrganisationKey ?>", service: "queryBuilder", queries: JSON.stringify(data) },
+            				url: "<?php echo $_SESSION[$guid]['absoluteURL'] ?>/modules/Query Builder/queries_gibboneducom_sync_ajax.php",
+							data: { gibboneduComOrganisationName: "<?php echo $gibboneduComOrganisationName ?>", gibboneduComOrganisationKey: "<?php echo $gibboneduComOrganisationKey ?>", service: "queryBuilder", queries: JSON.stringify(data) },
 							success: function(data) {
 								if (data==="fail") {
 									$("#status").attr("class","error");
@@ -70,7 +69,7 @@ else {
 								}
 								else {
 									$("#status").attr("class","success");
-									$("#status").html('Your queries have been successfully synced. Please <a href=\'<?php print $_SESSION[$guid]["absoluteURL"] ?>/index.php?q=/modules/Query Builder/queries.php\'>click here</a> to return to your query list.') ;
+									$("#status").html('Your queries have been successfully synced. Please <a href=\'<?php echo $_SESSION[$guid]['absoluteURL'] ?>/index.php?q=/modules/Query Builder/queries.php\'>click here</a> to return to your query list.') ;
 								}
 							},
 							error: function (data, textStatus, errorThrown) {
@@ -84,21 +83,20 @@ else {
 					$("#status").attr("class","error");
 					$("#status").html('Checking gibbonedu.com license for access to value added Query Builder queries has failed. You may still use your own queries.') ;
 					$.ajax({
-						url: "<?php print $_SESSION[$guid]["absoluteURL"] ?>/modules/Query Builder/queries_gibboneducom_remove_ajax.php",
-						data: "gibboneduComOrganisationName=<?php print $gibboneduComOrganisationName ?>&gibboneduComOrganisationKey=<?php print $gibboneduComOrganisationKey ?>&service=queryBuilder"
+						url: "<?php echo $_SESSION[$guid]['absoluteURL'] ?>/modules/Query Builder/queries_gibboneducom_remove_ajax.php",
+						data: "gibboneduComOrganisationName=<?php echo $gibboneduComOrganisationName ?>&gibboneduComOrganisationKey=<?php echo $gibboneduComOrganisationKey ?>&service=queryBuilder"
 					});
 				}
 			});
 			<?php
-		print "});" ;
-	print "</script>" ;
-	
-	print "<div id='status' class='warning'>" ;
-		print "<div style='width: 100%; text-align: center'>" ;
-			print "<img style='margin: 10px 0 5px 0' src='" . $_SESSION[$guid]["absoluteURL"] . "/themes/Default/img/loading.gif' alt='Loading'/><br/>" ;
-			print "Checking gibbonedu.com value added license status." ;
-		print "</div>" ;
-	print "</div>" ;
-	
+        echo '});';
+    echo '</script>';
+
+    echo "<div id='status' class='warning'>";
+    echo "<div style='width: 100%; text-align: center'>";
+    echo "<img style='margin: 10px 0 5px 0' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/loading.gif' alt='Loading'/><br/>";
+    echo 'Checking gibbonedu.com value added license status.';
+    echo '</div>';
+    echo '</div>';
 }
 ?>

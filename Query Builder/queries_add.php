@@ -17,85 +17,69 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start() ;
+@session_start();
 
-if (isActionAccessible($guid, $connection2, "/modules/Query Builder/queries_add.php")==FALSE) {
-	//Acess denied
-	print "<div class='error'>" ;
-		print __($guid, "You do not have access to this action.") ;
-	print "</div>" ;
-}
-else {
-	//Proceed!
-	print "<div class='trail'>" ;
-	print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . getModuleName($_GET["q"]) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/queries.php'>" . __($guid, 'Manage Queries') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Add Query') . "</div>" ;
-	print "</div>" ;
-	
-	if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
-	$addReturnMessage="" ;
-	$class="error" ;
-	if (!($addReturn=="")) {
-		if ($addReturn=="fail0") {
-			$addReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;	
-		}
-		else if ($addReturn=="fail2") {
-			$addReturnMessage=__($guid, "Your request failed due to a database error.") ;	
-		}
-		else if ($addReturn=="fail3") {
-			$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($addReturn=="fail4") {
-			$addReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;	
-		}
-		else if ($addReturn=="success0") {
-			$addReturnMessage=__($guid, "Your request was completed successfully.You can now add another record if you wish.") ;	
-			$class="success" ;
-		}
-		print "<div class='$class'>" ;
-			print $addReturnMessage;
-		print "</div>" ;
-	} 
-	
-	$search=NULL ;
-	if (isset($_GET["search"])) {
-		$search=$_GET["search"] ;
-	}
-	if ($search!="") {
-		print "<div class='linkTop'>" ;
-			print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Query Builder/queries.php&search=$search'>" . __($guid, 'Back to Search Results') . "</a>" ;
-		print "</div>" ;
-	}
-	
-	?>
-	<form method="post" action="<?php print $_SESSION[$guid]["absoluteURL"] . "/modules/" . $_SESSION[$guid]["module"] . "/queries_addProcess.php?search=$search" ?>">
+if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_add.php') == false) {
+    //Acess denied
+    echo "<div class='error'>";
+    echo __($guid, 'You do not have access to this action.');
+    echo '</div>';
+} else {
+    //Proceed!
+    echo "<div class='trail'>";
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".getModuleName($_GET['q'])."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/queries.php'>".__($guid, 'Manage Queries')."</a> > </div><div class='trailEnd'>".__($guid, 'Add Query').'</div>';
+    echo '</div>';
+
+    $returns = array();
+    $editLink = '';
+    if (isset($_GET['editID'])) {
+        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Query Builder/queries_edit.php&queryBuilderQueryID='.$_GET['editID'].'&search='.$_GET['search'].'&sidebar=false';
+    }
+    if (isset($_GET['return'])) {
+        returnProcess($guid, $_GET['return'], $editLink, $returns);
+    }
+
+    $search = null;
+    if (isset($_GET['search'])) {
+        $search = $_GET['search'];
+    }
+    if ($search != '') {
+        echo "<div class='linkTop'>";
+        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Query Builder/queries.php&search=$search'>".__($guid, 'Back to Search Results').'</a>';
+        echo '</div>';
+    }
+
+    ?>
+	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/queries_addProcess.php?search=$search" ?>">
 		<table class='smallIntBorder' cellspacing='0' style="width: 100%">
 			<tr>
-				<td> 
-					<b><?php print __($guid, 'Type') ?> *</b><br/>
+				<td>
+					<b><?php echo __($guid, 'Type') ?> *</b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
 					<select name="type" id="type" style="width: 302px">
-						<option value="Personal"><?php print __($guid, 'Personal') ?></option>
-						<option value="School"><?php print __($guid, 'School') ?></option>
+						<option value="Personal"><?php echo __($guid, 'Personal') ?></option>
+						<option value="School"><?php echo __($guid, 'School') ?></option>
 					</select>
 				</td>
-			</tr>	
+			</tr>
 			<tr>
-				<td> 
-					<b><?php print __($guid, 'Name') ?> *</b><br/>
+				<td>
+					<b><?php echo __($guid, 'Name') ?> *</b><br/>
 				</td>
 				<td class="right">
 					<input name="name" id="name" maxlength=255 value="" type="text" style="width: 300px">
 					<script type="text/javascript">
 						var name=new LiveValidation('name');
 						name.add(Validate.Presence);
-					 </script> 
+					 </script>
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<?php print "<b>" . __($guid, 'Category') . " *</b><br/>" ; ?>
+				<td>
+					<?php echo '<b>'.__($guid, 'Category').' *</b><br/>';
+    ?>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
@@ -108,17 +92,17 @@ else {
 						$(function() {
 							var availableTags=[
 								<?php
-								try {
-									$dataAuto=array("gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-									$sqlAuto="SELECT DISTINCT category FROM queryBuilderQuery WHERE type='School' OR type='gibbonedu.com' OR (type='Personal' AND gibbonPersonID=:gibbonPersonID) ORDER BY category" ;
-									$resultAuto=$connection2->prepare($sqlAuto);
-									$resultAuto->execute($dataAuto);
-								}
-								catch(PDOException $e) { }
-								while ($rowAuto=$resultAuto->fetch()) {
-									print "\"" . $rowAuto["category"] . "\", " ;
-								}
-								?>
+                                try {
+                                    $dataAuto = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                                    $sqlAuto = "SELECT DISTINCT category FROM queryBuilderQuery WHERE type='School' OR type='gibbonedu.com' OR (type='Personal' AND gibbonPersonID=:gibbonPersonID) ORDER BY category";
+                                    $resultAuto = $connection2->prepare($sqlAuto);
+                                    $resultAuto->execute($dataAuto);
+                                } catch (PDOException $e) {
+                                }
+    while ($rowAuto = $resultAuto->fetch()) {
+        echo '"'.$rowAuto['category'].'", ';
+    }
+    ?>
 							];
 							$( "#category" ).autocomplete({source: availableTags});
 						});
@@ -126,38 +110,38 @@ else {
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print __($guid, 'Active') ?> *</b><br/>
+				<td>
+					<b><?php echo __($guid, 'Active') ?> *</b><br/>
 					<span style="font-size: 90%"><i></i></span>
 				</td>
 				<td class="right">
 					<select name="active" id="active" style="width: 302px">
-						<option value="Y"><?php print __($guid, 'Y') ?></option>
-						<option value="N"><?php print __($guid, 'N') ?></option>
+						<option value="Y"><?php echo __($guid, 'Y') ?></option>
+						<option value="N"><?php echo __($guid, 'N') ?></option>
 					</select>
 				</td>
 			</tr>
 			<tr>
-				<td> 
-					<b><?php print __($guid, 'Description') ?></b><br/>
+				<td>
+					<b><?php echo __($guid, 'Description') ?></b><br/>
 				</td>
 				<td class="right">
 					<textarea name="description" id="description" rows=8 style="width: 300px"></textarea>
 				</td>
 			</tr>
 			<tr>
-				<td colspan=2> 
+				<td colspan=2>
 					<b>Query *</b>
 					<?php
-					print "<div class='linkTop' style='margin-top: 0px'>" ;
-						print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/" . $_SESSION[$guid]["module"] . "/queries_help_full.php&width=1100&height=550'><img title='Query Help' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/help.png'/></a>" ;
-					print "</div>" ;
-					?>
+                    echo "<div class='linkTop' style='margin-top: 0px'>";
+    echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module']."/queries_help_full.php&width=1100&height=550'><img title='Query Help' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/help.png'/></a>";
+    echo '</div>';
+    ?>
 					<textarea name="query" id='query' style="display: none;"></textarea>
-					
+
 					<div id="editor" style='width: 1058px; height: 400px;'></div>
-	
-					<script src="<?php print $_SESSION[$guid]["absoluteURL"] ?>/modules/Query Builder/lib/ace/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+
+					<script src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/modules/Query Builder/lib/ace/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
 					<script>
 						var editor = ace.edit("editor");
 						editor.getSession().setMode("ace/mode/mysql");
@@ -174,15 +158,18 @@ else {
 			</tr>
 			<tr>
 				<td>
-					<span style="font-size: 90%"><i>* <?php print __($guid, "denotes a required field") ; ?></i></span>
+					<span style="font-size: 90%"><i>* <?php echo __($guid, 'denotes a required field');
+    ?></i></span>
 				</td>
 				<td class="right">
-					<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-					<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
+					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
+					<input type="submit" value="<?php echo __($guid, 'Submit');
+    ?>">
 				</td>
 			</tr>
 		</table>
 	</form>
 	<?php
+
 }
 ?>

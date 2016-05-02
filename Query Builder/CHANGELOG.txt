@@ -1,12 +1,18 @@
 CHANGELOG
 =========
+v1.2.12
+-------
+Beautified PHP code
+Improved error handling
+Edit link added to add return
+
 v1.2.11
 -------
 Fixed lib bug introduced in v1.2.10
 
 v1.2.10
 -------
-Gibbon Core v12 & PHP 7 Compatibility 
+Gibbon Core v12 & PHP 7 Compatibility
 
 v1.2.09
 -------

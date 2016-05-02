@@ -17,37 +17,34 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start() ;
+@session_start();
 
 //Gibbon system-wide includes
-include "../../functions.php" ;
-include "../../config.php" ;
+include '../../functions.php';
+include '../../config.php';
 
 //New PDO DB connection
 try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
+    $connection2 = new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
+    $connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    echo $e->getMessage();
 }
 
 //Module includes
-include $_SESSION[$guid]["absolutePath"] . "/modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
+include $_SESSION[$guid]['absolutePath'].'/modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
 //Setup variables
-$gibboneduComOrganisationName=$_GET["gibboneduComOrganisationName"] ;
-$gibboneduComOrganisationKey=$_GET["gibboneduComOrganisationKey"] ;
-$service=$_GET["service"] ;
+$gibboneduComOrganisationName = $_GET['gibboneduComOrganisationName'];
+$gibboneduComOrganisationKey = $_GET['gibboneduComOrganisationKey'];
+$service = $_GET['service'];
 
 //Remove all gibbonedu.com queries
 try {
-	$data=array(); 
-	$sql="DELETE FROM queryBuilderQuery WHERE type='gibbonedu.com'" ;
-	$result=$connection2->prepare($sql);
-	$result->execute($data); 
+    $data = array();
+    $sql = "DELETE FROM queryBuilderQuery WHERE type='gibbonedu.com'";
+    $result = $connection2->prepare($sql);
+    $result->execute($data);
+} catch (PDOException $e) {
 }
-catch(PDOException $e) { }
-
-?>

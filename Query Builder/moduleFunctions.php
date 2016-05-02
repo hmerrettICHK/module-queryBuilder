@@ -18,33 +18,33 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Returns are array with illeagel SQL keywords
-function getIllegals() {
-	$illegals=array() ;
-	
-	$illegals[0]="USE" ;
-	$illegals[1]="SHOW DATABASES" ;
-	$illegals[2]="SHOW TABLES" ;
-	$illegals[3]="DESCRIBE" ;
-	$illegals[4]="SHOW FIELDS FROM" ;
-	$illegals[5]="SHOW COLUMNS FROM" ;
-	$illegals[6]="SHOW INDEX FROM" ;
-	$illegals[7]="SET PASSWORD" ;
-	$illegals[8]="CREATE TABLE" ;
-	$illegals[9]="DROP TABLE" ;
-	$illegals[10]="ALTER TABLE" ;
-	$illegals[11]="CREATE INDEX" ;
-	$illegals[12]="INSERT" ;
-	$illegals[13]="INSERT INTO" ;
-	$illegals[14]="DELETE FROM" ;
-	$illegals[15]="UPDATE" ;
-	$illegals[16]="LOAD DATA LOCAL INFILE" ;
-	$illegals[17]="GRANT USAGE ON" ;
-	$illegals[18]="GRANT SELECT ON" ;
-	$illegals[19]="GRANT ALL ON" ;
-	$illegals[20]="FLUSH PRIVILEGES" ;
-	$illegals[21]="REVOKE ALL ON" ;
-	$illegals[22]="UPDATE" ;
-	
-	return $illegals ;
+function getIllegals()
+{
+    $illegals = array();
+
+    $illegals[0] = 'USE';
+    $illegals[1] = 'SHOW DATABASES';
+    $illegals[2] = 'SHOW TABLES';
+    $illegals[3] = 'DESCRIBE';
+    $illegals[4] = 'SHOW FIELDS FROM';
+    $illegals[5] = 'SHOW COLUMNS FROM';
+    $illegals[6] = 'SHOW INDEX FROM';
+    $illegals[7] = 'SET PASSWORD';
+    $illegals[8] = 'CREATE TABLE';
+    $illegals[9] = 'DROP TABLE';
+    $illegals[10] = 'ALTER TABLE';
+    $illegals[11] = 'CREATE INDEX';
+    $illegals[12] = 'INSERT';
+    $illegals[13] = 'INSERT INTO';
+    $illegals[14] = 'DELETE FROM';
+    $illegals[15] = 'UPDATE';
+    $illegals[16] = 'LOAD DATA LOCAL INFILE';
+    $illegals[17] = 'GRANT USAGE ON';
+    $illegals[18] = 'GRANT SELECT ON';
+    $illegals[19] = 'GRANT ALL ON';
+    $illegals[20] = 'FLUSH PRIVILEGES';
+    $illegals[21] = 'REVOKE ALL ON';
+    $illegals[22] = 'UPDATE';
+
+    return $illegals;
 }
-?>

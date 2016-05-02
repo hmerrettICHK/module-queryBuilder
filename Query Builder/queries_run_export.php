@@ -17,63 +17,57 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include "../../functions.php" ;
-include "../../config.php" ;
+include '../../functions.php';
+include '../../config.php';
 
 //New PDO DB connection
 try {
-  	$connection2=new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-}
-catch(PDOException $e) {
-  echo $e->getMessage();
+    $connection2 = new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
+    $connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    echo $e->getMessage();
 }
 
-@session_start() ;
+@session_start();
 
 //Set timezone from session variable
-date_default_timezone_set($_SESSION[$guid]["timezone"]);
+date_default_timezone_set($_SESSION[$guid]['timezone']);
 
-$queryBuilderQueryID=$_GET["queryBuilderQueryID"] ;
-$query=$_POST["query"] ;
+$queryBuilderQueryID = $_GET['queryBuilderQueryID'];
+$query = $_POST['query'];
 
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php" ;
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php';
 
-if (isActionAccessible($guid, $connection2, "/modules/Query Builder/queries_run.php")==FALSE) {
-	//Fail 0
-	$URL=$URL . "&updateReturn=fail0" ;
-	header("Location: {$URL}");
+if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.php') == false) {
+    //Fail 0
+    $URL = $URL.'&updateReturn=fail0';
+    header("Location: {$URL}");
+} else {
+    if ($queryBuilderQueryID == '' or $query == '') {
+        //Fail 1
+        $URL = $URL.'?exportReturn=fail1';
+        header("Location: {$URL}");
+    } else {
+        try {
+            $data = array('queryBuilderQueryID' => $queryBuilderQueryID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+            $sql = "SELECT * FROM queryBuilderQuery WHERE queryBuilderQueryID=:queryBuilderQueryID AND (gibbonPersonID=:gibbonPersonID OR NOT type='Personal') AND active='Y'";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            //Fail 0
+            $URL = $URL.'?exportReturn=fail0';
+            header("Location: {$URL}");
+        }
+
+        if ($result->rowCount() < 1) {
+            //Fail 3
+            $URL = $URL.'?exportReturn=fail3';
+            header("Location: {$URL}");
+        } else {
+            //Proceed!
+            $exp = new ExportToExcel();
+            $exp->exportWithPage($guid, './queries_run_export_contents.php', 'queryBuilderExport.xls');
+        }
+    }
 }
-else {
-	if ($queryBuilderQueryID=="" OR $query=="") {
-		//Fail 1
-		$URL=$URL . "?exportReturn=fail1" ;
-		header("Location: {$URL}");
-	}
-	else {
-		try {
-			$data=array("queryBuilderQueryID"=>$queryBuilderQueryID, "gibbonPersonID"=>$_SESSION[$guid]["gibbonPersonID"]); 
-			$sql="SELECT * FROM queryBuilderQuery WHERE queryBuilderQueryID=:queryBuilderQueryID AND (gibbonPersonID=:gibbonPersonID OR NOT type='Personal') AND active='Y'" ;
-			$result=$connection2->prepare($sql);
-			$result->execute($data);
-		}
-		catch(PDOException $e) { 
-			//Fail 0
-			$URL=$URL . "?exportReturn=fail0" ;
-			header("Location: {$URL}");
-		}
-
-		if ($result->rowCount()<1) {
-			//Fail 3
-			$URL=$URL . "?exportReturn=fail3" ;
-			header("Location: {$URL}");
-		}
-		else {
-			//Proceed!
-			$exp=new ExportToExcel();
-			$exp->exportWithPage($guid, "./queries_run_export_contents.php","queryBuilderExport.xls");
-		}
-	}
-}
-?>
