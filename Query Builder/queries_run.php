@@ -37,8 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
     if (isset($_GET['search'])) {
         $search = $_GET['search'];
     }
-    if ($search != '') {
-        echo "<div class='linkTop'>";
+    if ($search != '') { echo "<div class='linkTop'>";
         echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Query Builder/queries.php&search=$search'>".__($guid, 'Back to Search Results').'</a>';
         echo '</div>';
     }
@@ -50,8 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
         $save = $_POST['save'];
     }
 
-    if ($queryBuilderQueryID == '') {
-        echo "<div class='error'>";
+    if ($queryBuilderQueryID == '') { echo "<div class='error'>";
         echo __($guid, 'You have not specified one or more required parameters.');
         echo '</div>';
     } else {
@@ -103,22 +101,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
 							<b>Query *</b>
 							<?php
                             echo "<div class='linkTop' style='margin-top: 0px'>";
-            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module']."/queries_help_full.php&width=1100&height=550'><img title='Query Help' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/help.png'/></a>";
-            echo '</div>';
-            ?>
+							echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module']."/queries_help_full.php&width=1100&height=550'><img title='Query Help' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/help.png'/></a>";
+							echo '</div>';
+							?>
 							<textarea name="query" id='query' style="display: none;"><?php if (isset($_POST['query'])) {
-    echo htmlPrep($_POST['query']);
-} else {
-    echo htmlPrep($row['query']);
-}
-            ?></textarea>
+								echo htmlPrep($_POST['query']);
+							} else {
+								echo htmlPrep($row['query']);
+							}
+							?></textarea>
 					
 							<div id="editor" style='width: 1058px; height: 400px;'><?php if (isset($_POST['query'])) {
-    echo htmlPrep($_POST['query']);
-} else {
-    echo htmlPrep($row['query']);
-}
-            ?></div>
+									echo htmlPrep($_POST['query']);
+								} else {
+									echo htmlPrep($row['query']);
+								}
+							?></div>
 	
 							<script src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/modules/Query Builder/lib/ace/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
 							<script>
@@ -137,8 +135,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php echo __($guid, 'denotes a required field');
-            ?></i></span>
+							<span style="font-size: 90%"><i>* <?php echo __($guid, 'denotes a required field'); ?></i></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
@@ -150,9 +147,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
                                 }
                                 echo "type='checkbox' name='save' value='Y'/> ";
                             }
-            ?>
-							<input type="submit" value="<?php echo __($guid, 'Run Query');
-            ?>">
+            				?>
+							<input type="submit" value="<?php echo __($guid, 'Run Query'); ?>">
 						</td>
 					</tr>
 				</table>

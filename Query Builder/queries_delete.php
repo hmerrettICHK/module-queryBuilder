@@ -38,16 +38,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_dele
     if (isset($_GET['search'])) {
         $search = $_GET['search'];
     }
-    if ($search != '') {
-        echo "<div class='linkTop'>";
+    if ($search != '') { echo "<div class='linkTop'>";
         echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Query Builder/queries.php&search=$search'>".__($guid, 'Back to Search Results').'</a>';
         echo '</div>';
     }
 
     //Check if school year specified
     $queryBuilderQueryID = $_GET['queryBuilderQueryID'];
-    if ($queryBuilderQueryID == '') {
-        echo "<div class='error'>";
+    if ($queryBuilderQueryID == '') { echo "<div class='error'>";
         echo __($guid, 'You have not specified one or more required parameters.');
         echo '</div>';
     } else {
@@ -72,10 +70,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_dele
 				<table class='smallIntBorder' cellspacing='0' style="width: 100%">
 					<tr>
 						<td>
-							<b><?php echo __($guid, 'Are you sure you want to delete this record?');
-            ?></b><br/>
-							<span style="font-size: 90%; color: #cc0000"><i><?php echo __($guid, 'This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!');
-            ?></i></span>
+							<b><?php echo __($guid, 'Are you sure you want to delete this record?'); ?></b><br/>
+							<span style="font-size: 90%; color: #cc0000"><i><?php echo __($guid, 'This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!'); ?></i></span>
 						</td>
 						<td class="right">
 
@@ -84,8 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_dele
 					<tr>
 						<td>
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Yes');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Yes'); ?>">
 						</td>
 						<td class="right">
 

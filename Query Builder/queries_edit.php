@@ -38,16 +38,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_edit
     if (isset($_GET['search'])) {
         $search = $_GET['search'];
     }
-    if ($search != '') {
-        echo "<div class='linkTop'>";
+    if ($search != '') { echo "<div class='linkTop'>";
         echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Query Builder/queries.php&search=$search'>".__($guid, 'Back to Search Results').'</a>';
         echo '</div>';
     }
 
     //Check if school year specified
     $queryBuilderQueryID = $_GET['queryBuilderQueryID'];
-    if ($queryBuilderQueryID == '') {
-        echo "<div class='error'>";
+    if ($queryBuilderQueryID == '') { echo "<div class='error'>";
         echo __($guid, 'You have not specified one or more required parameters.');
         echo '</div>';
     } else {
@@ -92,8 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_edit
 					</tr>
 					<tr>
 						<td>
-							<?php echo '<b>'.__($guid, 'Category').' *</b><br/>';
-            ?>
+							<?php echo '<b>'.__($guid, 'Category').' *</b><br/>'; ?>
 							<span style="font-size: 90%"><i></i></span>
 						</td>
 						<td class="right">
@@ -114,10 +111,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_edit
                                         $resultAuto->execute($dataAuto);
                                     } catch (PDOException $e) {
                                     }
-            while ($rowAuto = $resultAuto->fetch()) {
-                echo '"'.$rowAuto['category'].'", ';
-            }
-            ?>
+									while ($rowAuto = $resultAuto->fetch()) {
+										echo '"'.$rowAuto['category'].'", ';
+									}
+									?>
 								];
 								$( "#category" ).autocomplete({source: availableTags});
 							});
@@ -130,14 +127,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_edit
 						</td>
 						<td class="right">
 							<select name="active" id="active" style="width: 302px">
-								<option <?php if ($row['active'] == 'Y') {
-    echo 'selected';
-}
-            ?> value="Y"><?php echo __($guid, 'Y') ?></option>
-								<option <?php if ($row['active'] == 'N') {
-    echo 'selected';
-}
-            ?> value="N"><?php echo __($guid, 'N') ?></option>
+								<option <?php if ($row['active'] == 'Y') { echo 'selected'; } ?> value="Y"><?php echo __($guid, 'Y') ?></option>
+								<option <?php if ($row['active'] == 'N') { echo 'selected'; } ?> value="N"><?php echo __($guid, 'N') ?></option>
 							</select>
 						</td>
 					</tr>
@@ -154,9 +145,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_edit
 							<b>Query *</b>
 							<?php
                             echo "<div class='linkTop' style='margin-top: 0px'>";
-            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module']."/queries_help_full.php&width=1100&height=550'><img title='Query Help' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/help.png'/></a>";
-            echo '</div>';
-            ?>
+							echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module']."/queries_help_full.php&width=1100&height=550'><img title='Query Help' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/help.png'/></a>";
+							echo '</div>';
+							?>
 							<textarea name="query" id='query' style="display: none;"><?php echo htmlPrep($row['query']) ?></textarea>
 
 							<div id="editor" style='width: 1058px; height: 400px;'><?php echo htmlPrep($row['query']) ?></div>
@@ -178,13 +169,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_edit
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php echo __($guid, 'denotes a required field');
-            ?></i></span>
+							<span style="font-size: 90%"><i>* <?php echo __($guid, 'denotes a required field'); ?></i></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

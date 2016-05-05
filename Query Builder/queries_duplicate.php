@@ -38,16 +38,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_dupl
     if (isset($_GET['search'])) {
         $search = $_GET['search'];
     }
-    if ($search != '') {
-        echo "<div class='linkTop'>";
+    if ($search != '') { echo "<div class='linkTop'>";
         echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Query Builder/queries.php&search=$search'>".__($guid, 'Back to Search Results').'</a>';
         echo '</div>';
     }
 
     //Check if school year specified
     $queryBuilderQueryID = $_GET['queryBuilderQueryID'];
-    if ($queryBuilderQueryID == '') {
-        echo "<div class='error'>";
+    if ($queryBuilderQueryID == '') { echo "<div class='error'>";
         echo __($guid, 'You have not specified one or more required parameters.');
         echo '</div>';
     } else {
@@ -96,13 +94,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_dupl
 					</tr>
 					<tr>
 						<td>
-							<span style="font-size: 90%"><i>* <?php echo __($guid, 'denotes a required field');
-            ?></i></span>
+							<span style="font-size: 90%"><i>* <?php echo __($guid, 'denotes a required field'); ?></i></span>
 						</td>
 						<td class="right">
 							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit');
-            ?>">
+							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
 				</table>

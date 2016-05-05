@@ -122,3 +122,8 @@ $sql[$count][0] = '1.2.12';
 $sql[$count][1] = "
 UPDATE gibbonAction SET category='Queries' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Query Builder');end
 ";
+
+//v1.2.13
+++$count;
+$sql[$count][0] = '1.2.13';
+$sql[$count][1] = '';

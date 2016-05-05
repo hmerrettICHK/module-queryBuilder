@@ -38,8 +38,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_sync
     $gibboneduComOrganisationKey = getSettingByScope($connection2, 'System', 'gibboneduComOrganisationKey');
 
     echo '<script type="text/javascript">';
-    echo '$(document).ready(function(){';
-    ?>
+		echo '$(document).ready(function(){';
+		?>
 			$.ajax({
 				crossDomain: true,
 				type:"GET",

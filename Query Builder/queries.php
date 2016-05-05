@@ -41,8 +41,8 @@ if (isModuleAccessible($guid, $connection2) == false) {
     $gibboneduComOrganisationKey = getSettingByScope($connection2, 'System', 'gibboneduComOrganisationKey');
 
     echo '<script type="text/javascript">';
-    echo '$(document).ready(function(){';
-    ?>
+		echo '$(document).ready(function(){';
+			?>
 			$.ajax({
 				crossDomain: true,
 				type:"GET",
@@ -99,8 +99,7 @@ if (isModuleAccessible($guid, $connection2) == false) {
 						<span style="font-size: 90%"><i><?php echo __($guid, 'Query name and category.') ?></i></span>
 					</td>
 					<td class="right">
-						<input name="search" id="search" maxlength=20 value="<?php echo $search;
-    ?>" type="text" style="width: 300px">
+						<input name="search" id="search" maxlength=20 value="<?php echo $search; ?>" type="text" style="width: 300px">
 					</td>
 				</tr>
 				<tr>
@@ -109,16 +108,15 @@ if (isModuleAccessible($guid, $connection2) == false) {
 						<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 						<?php
                         echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/queries.php'>".__($guid, 'Clear Search').'</a>';
-    ?>
-						<input type="submit" value="<?php echo __($guid, 'Submit');
-    ?>">
+    					?>
+						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 					</td>
 				</tr>
 			</table>
 		</form>
 		<?php
 
-        echo '<h3>';
+    echo '<h3>';
     echo __($guid, 'Queries');
     echo '</h3>';
 
@@ -132,16 +130,14 @@ if (isModuleAccessible($guid, $connection2) == false) {
         }
         $result = $connection2->prepare($sql);
         $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
+    } catch (PDOException $e) { echo "<div class='error'>".$e->getMessage().'</div>';
     }
 
     echo "<div class='linkTop'>";
     echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/queries_add.php&sidebar=false&search=$search'><img title='".__($guid, 'Add New Record')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
     echo '</div>';
 
-    if ($result->rowCount() < 1) {
-        echo "<div class='error'>";
+    if ($result->rowCount() < 1) { echo "<div class='error'>";
         echo __($guid, 'There are no records to display.');
         echo '</div>';
     } else {
@@ -177,8 +173,8 @@ if (isModuleAccessible($guid, $connection2) == false) {
                 $rowNum = 'error';
             }
 
-                    //COLOR ROW BY STATUS!
-                    echo "<tr class=$rowNum>";
+			//COLOR ROW BY STATUS!
+			echo "<tr class=$rowNum>";
             echo '<td>';
             if (is_null($row['queryID']) == false) {
                 echo 'gibbonedu.com';

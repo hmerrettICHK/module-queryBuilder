@@ -43,8 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
     echo __($guid, 'Your request failed because you do not have access to this action.');
     echo '</div>';
 } else {
-    if ($queryBuilderQueryID == '' or $query == '') {
-        echo "<div class='error'>";
+    if ($queryBuilderQueryID == '' or $query == '') { echo "<div class='error'>";
         echo __($guid, 'You have not specified one or more required parameters.');
         echo '</div>';
     } else {
