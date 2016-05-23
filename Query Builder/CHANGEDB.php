@@ -127,3 +127,8 @@ UPDATE gibbonAction SET category='Queries' WHERE gibbonModuleID=(SELECT gibbonMo
 ++$count;
 $sql[$count][0] = '1.2.13';
 $sql[$count][1] = '';
+
+//v1.2.14
+++$count;
+$sql[$count][0] = '1.2.14';
+$sql[$count][1] = '';

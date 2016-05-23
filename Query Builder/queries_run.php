@@ -95,9 +95,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
             echo '</table>';
             ?>
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/queries_run.php&queryBuilderQueryID=$queryBuilderQueryID&sidebar=false&search=$search" ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">	
+				<table class='smallIntBorder' cellspacing='0' style="width: 100%">
 					<tr>
-						<td colspan=2> 
+						<td colspan=2>
 							<b>Query *</b>
 							<?php
                             echo "<div class='linkTop' style='margin-top: 0px'>";
@@ -110,14 +110,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
 								echo htmlPrep($row['query']);
 							}
 							?></textarea>
-					
+
 							<div id="editor" style='width: 1058px; height: 400px;'><?php if (isset($_POST['query'])) {
 									echo htmlPrep($_POST['query']);
 								} else {
 									echo htmlPrep($row['query']);
 								}
 							?></div>
-	
+
 							<script src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/modules/Query Builder/lib/ace/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
 							<script>
 								var editor = ace.edit("editor");
@@ -235,7 +235,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
                                 $col = $result->getColumnMeta($i);
                                 if ($col['name'] != 'password' and $col['name'] != 'passwordStrong' and $col['name'] != 'passwordStrongSalt' and $col['table'] != 'gibbonStaffContract' and $col['table'] != 'gibbonStaffApplicationForm' and $col['table'] != 'gibbonStaffApplicationFormFile') {
                                     echo '<td>';
-                                    if (strlen($row[$col['name']]) > 50) {
+                                    if (strlen($row[$col['name']]) > 50 AND $col['name']!='image') {
                                         echo substr($row[$col['name']], 0, 50).'...';
                                     } else {
                                         echo $row[$col['name']];
