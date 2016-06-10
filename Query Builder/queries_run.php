@@ -235,7 +235,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
                                 $col = $result->getColumnMeta($i);
                                 if ($col['name'] != 'password' and $col['name'] != 'passwordStrong' and $col['name'] != 'passwordStrongSalt' and $col['table'] != 'gibbonStaffContract' and $col['table'] != 'gibbonStaffApplicationForm' and $col['table'] != 'gibbonStaffApplicationFormFile') {
                                     echo '<td>';
-                                    if (strlen($row[$col['name']]) > 50 AND $col['name']!='image') {
+                                    if (strlen($row[$col['name']]) > 50 AND $col['name']!='image' AND $col['name']!='image_240') {
                                         echo substr($row[$col['name']], 0, 50).'...';
                                     } else {
                                         echo $row[$col['name']];

@@ -1,5 +1,9 @@
 CHANGELOG
 =========
+v1.2.15
+-------
+Exempted fields called "image_240" from auto-field-shortening
+
 v1.2.14
 -------
 Exempted fields called "image" from auto-field-shortening
