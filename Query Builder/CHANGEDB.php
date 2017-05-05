@@ -137,3 +137,8 @@ $sql[$count][1] = '';
 ++$count;
 $sql[$count][0] = '1.2.15';
 $sql[$count][1] = '';
+
+//v1.2.16
+++$count;
+$sql[$count][0] = '1.2.16';
+$sql[$count][1] = '';
