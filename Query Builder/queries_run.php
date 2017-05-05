@@ -212,7 +212,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
 
                         echo "<div class='linkTop'>";
                         echo "<form id='queryExport' method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/queries_run_export.php?queryBuilderQueryID=$queryBuilderQueryID'>";
-                        echo "<input name='query' value=\"".$query."\" type='hidden'>";
+                        echo "<input name='query' value=\"".htmlPrep($query)."\" type='hidden'>";
                         echo "<input style='background:url(./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png) no-repeat; cursor:pointer; min-width: 25px!important; max-width: 25px!important; max-height: 25px; border: none;' type='submit' value=''>";
                         echo '</form>';
                         echo '</div>';
