@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../config.php';
 
+include 'moduleFunctions.php';
+
 //New PDO DB connection
 try {
     $connection2 = new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
@@ -63,43 +65,60 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
             echo __($guid, 'The selected record does not exist, or you do not have access to it.');
             echo '</div>';
         } else {
-            try {
-                $data = array();
-                $result = $connection2->prepare($query);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>";
-                echo __($guid, 'Your request failed due to a database error.');
-                echo '</div>';
-            }
-
-            if ($result->rowCount() < 1) {
-                echo "<div class='warning'>Your query has returned 0 rows.</div>";
-            } else {
-                echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-                echo '<tr>';
-                for ($i = 0; $i < $result->columnCount(); ++$i) {
-                    $col = $result->getColumnMeta($i);
-                    if ($col['name'] != 'password' and $col['name'] != 'passwordStrong' and $col['name'] != 'passwordStrongSalt' and $col['table'] != 'gibbonStaffContract' and $col['table'] != 'gibbonStaffApplicationForm' and $col['table'] != 'gibbonStaffApplicationFormFile') {
-                        echo "<th style='min-width: 72px'>";
-                        echo $col['name'];
-                        echo '</th>';
-                    }
+            //Security check
+            $illegal = false;
+            $illegals = getIllegals();
+            $illegalList = '';
+            foreach ($illegals as $ill) {
+                if (!(strpos($query, $ill) === false)) {
+                    $illegal = true;
+                    $illegalList .= $ill.', ';
                 }
-                echo '</tr>';
-                while ($row = $result->fetch()) {
+            }
+            if ($illegal) {
+                echo "<div class='error'>";
+                echo __($guid, 'Your query contains the following illegal term(s), and so cannot be run:').' <b>'.substr($illegalList, 0, -2).'</b>.';
+                echo '</div>';
+            } else {
+                try {
+                    $data = array();
+                    $result = $connection2->prepare($query);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    echo "<div class='error'>";
+                    echo __($guid, 'Your request failed due to a database error.');
+                    echo '</div>';
+                }
+
+                if ($result->rowCount() < 1) {
+                    echo "<div class='warning'>Your query has returned 0 rows.</div>";
+                } else {
+                    echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
                     echo '<tr>';
                     for ($i = 0; $i < $result->columnCount(); ++$i) {
                         $col = $result->getColumnMeta($i);
                         if ($col['name'] != 'password' and $col['name'] != 'passwordStrong' and $col['name'] != 'passwordStrongSalt' and $col['table'] != 'gibbonStaffContract' and $col['table'] != 'gibbonStaffApplicationForm' and $col['table'] != 'gibbonStaffApplicationFormFile') {
-                            echo '<td>';
-                            echo $row[$col['name']];
-                            echo '</td>';
+                            echo "<th style='min-width: 72px'>";
+                            echo $col['name'];
+                            echo '</th>';
                         }
                     }
                     echo '</tr>';
+                    while ($row = $result->fetch()) {
+                        echo '<tr>';
+                        for ($i = 0; $i < $result->columnCount(); ++$i) {
+                            $col = $result->getColumnMeta($i);
+                            if ($col['name'] != 'password' and $col['name'] != 'passwordStrong' and $col['name'] != 'passwordStrongSalt' and $col['table'] != 'gibbonStaffContract' and $col['table'] != 'gibbonStaffApplicationForm' and $col['table'] != 'gibbonStaffApplicationFormFile') {
+                                echo '<td>';
+                                echo $row[$col['name']];
+                                echo '</td>';
+                            }
+                        }
+                        echo '</tr>';
+                    }
+                    echo '</table>';
                 }
-                echo '</table>';
+
             }
         }
     }
