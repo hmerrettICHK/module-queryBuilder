@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -79,40 +81,25 @@ if (isModuleAccessible($guid, $connection2) == false) {
     echo '</div>';
     echo '</div>';
 
-    $search = null;
-    if (isset($_GET['search'])) {
-        $search = $_GET['search'];
-    }
+    $search = isset($_GET['search'])? $_GET['search'] : '';
 
     echo '<h3>';
     echo __($guid, 'Search');
     echo '</h3>';
-    ?>
-		<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-			<table class='noIntBorder' cellspacing='0' style="width: 100%">
-				<tr><td style="width: 30%"></td><td></td></tr>
-				<tr>
-					<td>
-						<b><?php echo __($guid, 'Search For') ?></b><br/>
-						<span style="font-size: 90%"><i><?php echo __($guid, 'Query name and category.') ?></i></span>
-					</td>
-					<td class="right">
-						<input name="search" id="search" maxlength=20 value="<?php echo $search; ?>" type="text" style="width: 300px">
-					</td>
-				</tr>
-				<tr>
-					<td colspan=2 class="right">
-						<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/queries.php">
-						<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-						<?php
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/queries.php'>".__($guid, 'Clear Search').'</a>';
-    					?>
-						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-					</td>
-				</tr>
-			</table>
-		</form>
-		<?php
+
+    $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form->setClass('noIntBorder fullWidth');
+
+    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/queries.php');
+
+    $row = $form->addRow();
+        $row->addLabel('search', __('Search For'))->description(__('Query name and category.'));
+        $row->addTextField('search')->setValue($search);
+
+    $row = $form->addRow();
+        $row->addSearchSubmit($gibbon->session, __('Clear Search'));
+
+    echo $form->getOutput();
 
     echo '<h3>';
     echo __($guid, 'Queries');
@@ -192,7 +179,7 @@ if (isModuleAccessible($guid, $connection2) == false) {
             echo '<td>';
             if ($row['type'] == 'Personal' or ($row['type'] == 'School' and $row['gibbonPersonID'] == $_SESSION[$guid]['gibbonPersonID'])) {
                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/queries_edit.php&queryBuilderQueryID='.$row['queryBuilderQueryID']."&sidebar=false&search=$search'><img title='".__($guid, 'Edit Record')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/queries_delete.php&queryBuilderQueryID='.$row['queryBuilderQueryID']."&search=$search'><img title='".__($guid, 'Delete Record')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+                echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/queries_delete.php&queryBuilderQueryID='.$row['queryBuilderQueryID']."&search=$search&width=650&height=135'><img title='".__($guid, 'Delete Record')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
             }
             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/queries_duplicate.php&queryBuilderQueryID='.$row['queryBuilderQueryID']."&search=$search'><img title='Duplicate' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/copy.png'/></a>";
             if ($row['active'] == 'Y') {

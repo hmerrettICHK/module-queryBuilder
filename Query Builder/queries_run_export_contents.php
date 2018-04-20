@@ -21,6 +21,7 @@ include '../../config.php';
 
 include 'moduleFunctions.php';
 
+global $connection2;
 
 $queryBuilderQueryID = $_GET['queryBuilderQueryID'];
 $query = $_POST['query'];

@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_edit.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -32,18 +34,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_edit
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    $search = null;
-    if (isset($_GET['search'])) {
-        $search = $_GET['search'];
-    }
+    $search = isset($_GET['search'])? $_GET['search'] : '';
     if ($search != '') { echo "<div class='linkTop'>";
         echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Query Builder/queries.php&search=$search'>".__($guid, 'Back to Search Results').'</a>';
         echo '</div>';
     }
 
     //Check if school year specified
-    $queryBuilderQueryID = $_GET['queryBuilderQueryID'];
-    if ($queryBuilderQueryID == '') { echo "<div class='error'>";
+    $queryBuilderQueryID = isset($_GET['queryBuilderQueryID'])? $_GET['queryBuilderQueryID'] : '';
+    if (empty($queryBuilderQueryID)) { 
+        echo "<div class='error'>";
         echo __($guid, 'You have not specified one or more required parameters.');
         echo '</div>';
     } else {
@@ -62,123 +62,53 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_edit
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
-            ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/queries_editProcess.php?queryBuilderQueryID=$queryBuilderQueryID&search=$search" ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Type') ?> *</b><br/>
-						</td>
-						<td class="right">
-							<input readonly name="type" id="type" maxlength=255 value="<?php echo htmlPrep($row['type']) ?>" type="text" style="width: 300px">
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Name') ?> *</b><br/>
-						</td>
-						<td class="right">
-							<input name="name" id="name" maxlength=255 value="<?php echo htmlPrep($row['name']) ?>" type="text" style="width: 300px">
-							<script type="text/javascript">
-								var name=new LiveValidation('name');
-								name.add(Validate.Presence);
-							 </script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<?php echo '<b>'.__($guid, 'Category').' *</b><br/>'; ?>
-							<span style="font-size: 90%"><i></i></span>
-						</td>
-						<td class="right">
-							<input name="category" id="category" maxlength=50 value="<?php echo htmlPrep($row['category']) ?>" type="text" style="width: 300px">
-							<script type="text/javascript">
-								var category=new LiveValidation('category');
-								category.add(Validate.Presence);
-							 </script>
-						</td>
-						<script type="text/javascript">
-							$(function() {
-								var availableTags=[
-									<?php
-                                    try {
-                                        $dataAuto = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                                        $sqlAuto = "SELECT DISTINCT category FROM queryBuilderQuery WHERE type='School' OR type='gibbonedu.com' OR (type='Personal' AND gibbonPersonID=:gibbonPersonID) ORDER BY category";
-                                        $resultAuto = $connection2->prepare($sqlAuto);
-                                        $resultAuto->execute($dataAuto);
-                                    } catch (PDOException $e) {
-                                    }
-									while ($rowAuto = $resultAuto->fetch()) {
-										echo '"'.$rowAuto['category'].'", ';
-									}
-									?>
-								];
-								$( "#category" ).autocomplete({source: availableTags});
-							});
-						</script>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Active') ?> *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
-						</td>
-						<td class="right">
-							<select name="active" id="active" style="width: 302px">
-								<option <?php if ($row['active'] == 'Y') { echo 'selected'; } ?> value="Y"><?php echo __($guid, 'Y') ?></option>
-								<option <?php if ($row['active'] == 'N') { echo 'selected'; } ?> value="N"><?php echo __($guid, 'N') ?></option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Description') ?></b><br/>
-						</td>
-						<td class="right">
-							<textarea name="description" id="description" rows=8 style="width: 300px"><?php echo htmlPrep($row['description']) ?></textarea>
-						</td>
-					</tr>
-					<tr>
-						<td colspan=2>
-							<b>Query *</b>
-							<?php
-                            echo "<div class='linkTop' style='margin-top: 0px'>";
-							echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module']."/queries_help_full.php&width=1100&height=550'><img title='Query Help' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/help.png'/></a>";
-							echo '</div>';
-							?>
-							<textarea name="query" id='query' style="display: none;"><?php echo htmlPrep($row['query']) ?></textarea>
+            $values = $result->fetch();
 
-							<div id="editor" style='width: 1058px; height: 400px;'><?php echo htmlPrep($row['query']) ?></div>
+            $form = Form::create('queryBuilder', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/queries_editProcess.php?queryBuilderQueryID='.$queryBuilderQueryID.'&search='.$search);
+                
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-							<script src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/modules/Query Builder/lib/ace/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
-							<script>
-								var editor = ace.edit("editor");
-								editor.getSession().setMode("ace/mode/mysql");
-								editor.getSession().setUseWrapMode(true);
-								editor.getSession().on('change', function(e) {
-									$('#query').val(editor.getSession().getValue());
-								});
-							</script>
-							<script type="text/javascript">
-								var query=new LiveValidation('query');
-								query.add(Validate.Presence);
-							 </script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span style="font-size: 90%"><i>* <?php echo __($guid, 'denotes a required field'); ?></i></span>
-						</td>
-						<td class="right">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
+            $row = $form->addRow();
+                $row->addLabel('type', __('Type'));
+                $row->addTextField('type')->isRequired()->readonly();
 
+            $row = $form->addRow();
+                $row->addLabel('name', __('Name'));
+                $row->addTextField('name')->maxLength(255)->isRequired();
+
+            $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+            $sql = "SELECT DISTINCT category FROM queryBuilderQuery WHERE type='School' OR type='gibbonedu.com' OR (type='Personal' AND gibbonPersonID=:gibbonPersonID) ORDER BY category";
+            $result = $pdo->executeQuery($data, $sql);
+            $categories = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_COLUMN, 0) : array();
+
+            $row = $form->addRow();
+                $row->addLabel('category', __('Category'));
+                $row->addTextField('category')->isRequired()->maxLength(100)->autocomplete($categories);
+
+            $row = $form->addRow();
+                $row->addLabel('active', __('Active'));
+                $row->addYesNo('active')->isRequired();
+
+            $row = $form->addRow();
+                $row->addLabel('description', __('Description'));
+                $row->addTextArea('description')->setRows(8);
+
+            $queryEditor = new Gibbon\QueryBuilder\Forms\QueryEditor('query');
+
+            $col = $form->addRow()->addColumn();
+                $col->addLabel('query', __('Query'));
+                $col->addWebLink('<img title="'.__('Help').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/help.png" style="margin-bottom:5px"/>')
+                    ->setURL($_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/queries_help_full.php&width=1100&height=550')
+                    ->addClass('thickbox floatRight');
+                $col->addElement($queryEditor)->isRequired();
+
+            $row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit();
+
+            $form->loadAllValuesFrom($values);
+
+            echo $form->getOutput();
         }
     }
 }
-?>

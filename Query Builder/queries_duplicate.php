@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_duplicate.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -62,48 +64,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_dupl
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
-            ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/queries_duplicateProcess.php?queryBuilderQueryID=$queryBuilderQueryID&search=$search" ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'New Name') ?> *</b><br/>
-						</td>
-						<td class="right">
-							<input name="name" id="name" maxlength=255 value="<?php echo htmlPrep($row['name']) ?>" type="text" style="width: 300px">
-							<script type="text/javascript">
-								var name=new LiveValidation('name');
-								name.add(Validate.Presence);
-							 </script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Type') ?> *</b><br/>
-							<span style="font-size: 90%"><i></i></span>
-						</td>
-						<td class="right">
-							<select name="type" id="type" style="width: 302px">
-								<option value="Personal"><?php echo __($guid, 'Personal') ?></option>
-								<option value="School"><?php echo __($guid, 'School') ?></option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span style="font-size: 90%"><i>* <?php echo __($guid, 'denotes a required field'); ?></i></span>
-						</td>
-						<td class="right">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
+            $values = $result->fetch();
 
+            $form = Form::create('queryBuilder', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/queries_duplicateProcess.php?queryBuilderQueryID='.$queryBuilderQueryID.'&search='.$search);
+
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+            $row = $form->addRow();
+                $row->addLabel('name', __('New Name'));
+                $row->addTextField('name')->maxLength(255)->isRequired()->loadFrom($values);
+
+            $types = array(
+                'Personal' => __('Personal'),
+                'School' => __('School'),
+            );
+            $row = $form->addRow();
+                $row->addLabel('type', __('Type'));
+                $row->addSelect('type')->fromArray($types)->isRequired();
+
+            $row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit();
+
+            echo $form->getOutput();
         }
     }
 }
-?>
