@@ -95,6 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
                 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
+            include $_SESSION[$guid]['absolutePath'].'/modules/Query Builder/Forms/QueryEditor.php'; // Backwards compatibility for pre v16 
             $queryEditor = new Gibbon\QueryBuilder\Forms\QueryEditor('query');
             $queryText = !empty($query)? $query : $values['query'];
 
