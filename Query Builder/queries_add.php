@@ -78,6 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_add.
         $row->addLabel('description', __('Description'));
         $row->addTextArea('description')->setRows(8);
 
+    include $_SESSION[$guid]['absolutePath'].'/modules/Query Builder/Forms/QueryEditor.php'; // Backwards compatibility for pre v16 
     $queryEditor = new Gibbon\QueryBuilder\Forms\QueryEditor('query');
 
     $col = $form->addRow()->addColumn();
