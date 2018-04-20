@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -31,23 +33,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
     echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".getModuleName($_GET['q'])."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/queries.php'>".__($guid, 'Manage Queries')."</a> > </div><div class='trailEnd'>".__($guid, 'Run Query').'</div>';
     echo '</div>';
 
-    $search = null;
-    if (isset($_GET['search'])) {
-        $search = $_GET['search'];
-    }
+    $search = isset($_GET['search'])? $_GET['search'] : '';
     if ($search != '') { echo "<div class='linkTop'>";
         echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Query Builder/queries.php&search=$search'>".__($guid, 'Back to Search Results').'</a>';
         echo '</div>';
     }
 
     //Check if school year specified
-    $queryBuilderQueryID = $_GET['queryBuilderQueryID'];
-    $save = null;
-    if (isset($_POST['save'])) {
-        $save = $_POST['save'];
-    }
+    $queryBuilderQueryID = isset($_GET['queryBuilderQueryID'])? $_GET['queryBuilderQueryID'] : '';
+    $save = isset($_POST['save'])? $_POST['save'] : '';
+    $query = isset($_POST['query'])? $_POST['query'] : '';
 
-    if ($queryBuilderQueryID == '') { echo "<div class='error'>";
+    if (empty($queryBuilderQueryID)) { 
+        echo "<div class='error'>";
         echo __($guid, 'You have not specified one or more required parameters.');
         echo '</div>';
     } else {
@@ -66,100 +64,59 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
+            $values = $result->fetch();
+
             echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
             echo '<tr>';
             echo "<td style='width: 33%; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>Name</span><br/>";
-            echo '<i>'.$row['name'].'</i>';
+            echo '<i>'.$values['name'].'</i>';
             echo '</td>';
             echo "<td style='width: 33%; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>Category</span><br/>";
-            echo '<i>'.$row['category'].'</i>';
+            echo '<i>'.$values['category'].'</i>';
             echo '</td>';
             echo "<td style='width: 33%; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>Active</span><br/>";
-            echo '<i>'.$row['active'].'</i>';
+            echo '<i>'.$values['active'].'</i>';
             echo '</td>';
             echo '</tr>';
-            if ($row['description'] != '') {
+            if ($values['description'] != '') {
                 echo '<tr>';
                 echo "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=3>";
                 echo "<span style='font-size: 115%; font-weight: bold'>Description</span><br/>";
-                echo $row['description'];
+                echo $values['description'];
                 echo '</td>';
                 echo '</tr>';
             }
             echo '</table>';
-            ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/queries_run.php&queryBuilderQueryID=$queryBuilderQueryID&sidebar=false&search=$search" ?>">
-				<table class='smallIntBorder' cellspacing='0' style="width: 100%">
-					<tr>
-						<td colspan=2>
-							<b>Query *</b>
-							<?php
-                            echo "<div class='linkTop' style='margin-top: 0px'>";
-							echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module']."/queries_help_full.php&width=1100&height=550'><img title='Query Help' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/help.png'/></a>";
-							echo '</div>';
-							?>
-							<textarea name="query" id='query' style="display: none;"><?php if (isset($_POST['query'])) {
-								echo htmlPrep($_POST['query']);
-							} else {
-								echo htmlPrep($row['query']);
-							}
-							?></textarea>
 
-							<div id="editor" style='width: 1058px; height: 400px;'><?php if (isset($_POST['query'])) {
-									echo htmlPrep($_POST['query']);
-								} else {
-									echo htmlPrep($row['query']);
-								}
-							?></div>
+            $form = Form::create('queryBuilder', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/queries_run.php&queryBuilderQueryID='.$queryBuilderQueryID.'&sidebar=false&search='.$search);
+                
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-							<script src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/modules/Query Builder/lib/ace/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
-							<script>
-								var editor = ace.edit("editor");
-								editor.getSession().setMode("ace/mode/mysql");
-								editor.getSession().setUseWrapMode(true);
-								editor.getSession().on('change', function(e) {
-									$('#query').val(editor.getSession().getValue());
-								});
-							</script>
-							<script type="text/javascript">
-								var query=new LiveValidation('query');
-								query.add(Validate.Presence);
-							 </script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span style="font-size: 90%"><i>* <?php echo __($guid, 'denotes a required field'); ?></i></span>
-						</td>
-						<td class="right">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<?php
-                            if ($row['type'] == 'Personal' or ($row['type'] == 'School' and $row['gibbonPersonID'] == $_SESSION[$guid]['gibbonPersonID'])) {
-                                echo 'Save Query? <input ';
-                                if ($save == 'Y') {
-                                    echo 'checked ';
-                                }
-                                echo "type='checkbox' name='save' value='Y'/> ";
-                            }
-            				?>
-							<input type="submit" value="<?php echo __($guid, 'Run Query'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
+            $queryEditor = new Gibbon\QueryBuilder\Forms\QueryEditor('query');
+            $queryText = !empty($query)? $query : $values['query'];
 
+            $col = $form->addRow()->addColumn();
+                $col->addLabel('query', __('Query'));
+                $col->addWebLink('<img title="'.__('Help').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/help.png" style="margin-bottom:5px"/>')
+                    ->setURL($_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/queries_help_full.php&width=1100&height=550')
+                    ->addClass('thickbox floatRight');
+                $col->addElement($queryEditor)->isRequired()->setValue($queryText);
+
+            $row = $form->addRow();
+                $row->addFooter();
+                $col = $row->addColumn()->addClass('inline right');
+                if ($values['type'] == 'Personal' or ($values['type'] == 'School' and $values['gibbonPersonID'] == $_SESSION[$guid]['gibbonPersonID'])) {
+                    $col->addCheckbox('save')->description(__('Save Query?'))->setValue('Y')->checked($save)->wrap('<span class="displayInlineBlock">', '</span>&nbsp;&nbsp;');
+                }
+                $col->addSubmit(__('Run Query'));
+
+            echo $form->getOutput();
 
             //PROCESS QUERY
-            $query = null;
-            if (isset($_POST['query'])) {
-                $query = $_POST['query'];
-            }
-            if (!is_null($query)) {
+            if (!empty($query)) {
                 echo '<h3>';
                 echo 'Query Results';
                 echo '</h3>';
@@ -209,10 +166,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
                         echo "<div class='success'>Your query has returned ".$result->rowCount().' rows, which are displayed below.</div>';
 
                         echo "<div class='linkTop'>";
-                        echo "<form id='queryExport' method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/queries_run_export.php?queryBuilderQueryID=$queryBuilderQueryID'>";
-                        echo "<input name='query' value=\"".htmlPrep($query)."\" type='hidden'>";
-                        echo "<input style='background:url(./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png) no-repeat; cursor:pointer; min-width: 25px!important; max-width: 25px!important; max-height: 25px; border: none;' type='submit' value=''>";
-                        echo '</form>';
+
+                        $form = Form::create('queryExport', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/queries_run_export.php?queryBuilderQueryID='.$queryBuilderQueryID)->setClass('blank fullWidth');
+                        $form->addHiddenValue('query', $query);
+
+                        $row = $form->addRow();
+                            $row->addContent("<input style='background:url(./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png) no-repeat; cursor:pointer; min-width: 25px!important; max-width: 25px!important; max-height: 25px; border: none; float: right' type='submit' value=''>");
+
+                        echo $form->getOutput();
+
                         echo '</div>';
 
                         echo "<div style='overflow-x:auto;'>";
