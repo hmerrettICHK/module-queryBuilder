@@ -38,10 +38,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_dele
     if (isset($_GET['search'])) {
         $search = $_GET['search'];
     }
-    if ($search != '') { echo "<div class='linkTop'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Query Builder/queries.php&search=$search'>".__($guid, 'Back to Search Results').'</a>';
-        echo '</div>';
-    }
 
     //Check if school year specified
     $queryBuilderQueryID = $_GET['queryBuilderQueryID'];

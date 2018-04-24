@@ -25,7 +25,7 @@ $description = 'A module to provide SQL queries for pulling data out of Gibbon a
 $entryURL = 'queries.php';
 $type = 'Additional';
 $category = 'Admin';
-$version = '1.2.17';
+$version = '1.3.00';
 $author = 'Ross Parker';
 $url = 'http://rossparker.org';
 
