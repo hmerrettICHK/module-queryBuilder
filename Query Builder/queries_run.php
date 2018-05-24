@@ -127,10 +127,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
 
                 //Security check
                 $illegal = false;
-                $illegals = getIllegals();
                 $illegalList = '';
-                foreach ($illegals as $ill) {
-                    if (!(strpos($query, $ill) === false)) {
+                foreach (getIllegals() as $ill) {
+                    if (preg_match('/\b('.$ill.')\b/i', $query)) {
                         $illegal = true;
                         $illegalList .= $ill.', ';
                     }
