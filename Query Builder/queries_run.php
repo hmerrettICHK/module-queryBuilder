@@ -39,6 +39,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
         echo '</div>';
     }
 
+    if (isset($_GET['return'])) {
+        $illegals = isset($_GET['illegals'])? urldecode($_GET['illegals']) : '';
+        returnProcess($guid, $_GET['return'], null, array('error3' => __('Your query contains the following illegal term(s), and so cannot be run:', 'Query Builder').' <b>'.substr($illegals, 0, -2).'</b>.'));
+    }
+
     //Check if school year specified
     $queryBuilderQueryID = isset($_GET['queryBuilderQueryID'])? $_GET['queryBuilderQueryID'] : '';
     $save = isset($_POST['save'])? $_POST['save'] : '';
