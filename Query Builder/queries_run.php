@@ -130,7 +130,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
                 $illegals = getIllegals();
                 $illegalList = '';
                 foreach ($illegals as $ill) {
-                    if (!(strpos($query, $ill) === false)) {
+                    if (!(stripos($query, $ill) === false)) {
                         $illegal = true;
                         $illegalList .= $ill.', ';
                     }
