@@ -25,12 +25,15 @@ $description = 'A module to provide SQL queries for pulling data out of Gibbon a
 $entryURL = 'queries.php';
 $type = 'Additional';
 $category = 'Admin';
-$version = '1.4.01';
+$version = '1.5.00';
 $author = 'Ross Parker';
 $url = 'http://rossparker.org';
 
 //Module tables & gibbonSettings entries
 $moduleTables[0] = "CREATE TABLE `queryBuilderQuery` (`queryBuilderQueryID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT, `type` enum('gibbonedu.com','Personal','School') NOT NULL DEFAULT 'gibbonedu.com', `name` varchar(255) NOT NULL,  `category` varchar(50) NOT NULL,  `description` text NOT NULL,  `query` text NOT NULL,  `active` enum('Y','N') NOT NULL DEFAULT 'Y',  `queryID` int(10) unsigned zerofill DEFAULT NULL COMMENT 'If based on a gibbonedu.org query.',  `gibbonPersonID` int(10) unsigned zerofill DEFAULT NULL,  PRIMARY KEY (`queryBuilderQueryID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+
+//gibbonSettings entries
+$gibbonSetting[0] = "INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('Query Builder', 'exportDefaultFileType', 'Default Export File Type', '', 'Excel2007');";
 
 //Action rows
 $actionRows[0]['name'] = 'Manage Queries';
@@ -48,3 +51,20 @@ $actionRows[0]['categoryPermissionStaff'] = 'Y';
 $actionRows[0]['categoryPermissionStudent'] = 'N';
 $actionRows[0]['categoryPermissionParent'] = 'N';
 $actionRows[0]['categoryPermissionOther'] = 'N';
+
+$actionRows[1]['name'] = 'Manage Settings';
+$actionRows[1]['precedence'] = '0';
+$actionRows[1]['category'] = 'Queries';
+$actionRows[1]['description'] = 'Allows a privileged user to manage Query Builder settings.';
+$actionRows[1]['URLList'] = 'settings_manage.php';
+$actionRows[1]['entryURL'] = 'settings_manage.php';
+$actionRows[1]['defaultPermissionAdmin'] = 'Y';
+$actionRows[1]['defaultPermissionTeacher'] = 'N';
+$actionRows[1]['defaultPermissionStudent'] = 'N';
+$actionRows[1]['defaultPermissionParent'] = 'N';
+$actionRows[1]['defaultPermissionSupport'] = 'N';
+$actionRows[1]['categoryPermissionStaff'] = 'Y';
+$actionRows[1]['categoryPermissionStudent'] = 'N';
+$actionRows[1]['categoryPermissionParent'] = 'N';
+$actionRows[1]['categoryPermissionOther'] = 'N';
+

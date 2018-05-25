@@ -17,43 +17,93 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Tables\DataTable;
+use Gibbon\Tables\Renderer\SpreadsheetRenderer;
+
+// System-wide include
 include '../../gibbon.php';
 
+// Module include
+include './moduleFunctions.php';
 
-$queryBuilderQueryID = $_GET['queryBuilderQueryID'];
-$query = $_POST['query'];
+$queryBuilderQueryID = isset($_GET['queryBuilderQueryID'])? $_GET['queryBuilderQueryID'] : '';
+$query = isset($_POST['query'])? $_POST['query'] : '';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php';
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Query Builder/queries_run.php&sidebar=false&queryBuilderQueryID='.$queryBuilderQueryID;
 
 if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.php') == false) {
-    //Fail 0
-    $URL = $URL.'&updateReturn=fail0';
+    $URL = $URL.'&return=error0';
     header("Location: {$URL}");
+    exit;
 } else {
     if ($queryBuilderQueryID == '' or $query == '') {
-        //Fail 1
-        $URL = $URL.'?exportReturn=fail1';
+        $URL = $URL.'&return=error1';
         header("Location: {$URL}");
+        exit;
     } else {
         try {
             $data = array('queryBuilderQueryID' => $queryBuilderQueryID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-            $sql = "SELECT * FROM queryBuilderQuery WHERE queryBuilderQueryID=:queryBuilderQueryID AND (gibbonPersonID=:gibbonPersonID OR NOT type='Personal') AND active='Y'";
+            $sql = "SELECT name FROM queryBuilderQuery WHERE queryBuilderQueryID=:queryBuilderQueryID AND (gibbonPersonID=:gibbonPersonID OR NOT type='Personal') AND active='Y'";
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
-            //Fail 0
-            $URL = $URL.'?exportReturn=fail0';
+            $URL = $URL.'&return=error2';
             header("Location: {$URL}");
+            exit;
         }
 
         if ($result->rowCount() < 1) {
-            //Fail 3
-            $URL = $URL.'?exportReturn=fail3';
+            $URL = $URL.'&return=error1';
             header("Location: {$URL}");
+            exit;
+        }
+
+        //Security check
+        $illegal = false;
+        $illegalList = '';
+        foreach (getIllegals() as $ill) {
+            if (preg_match('/\b('.$ill.')\b/i', $query)) {
+                $illegal = true;
+                $illegalList .= $ill.', ';
+            }
+        }
+        if ($illegal) {
+            $URL = $URL.'&return=error3&illegals='.urlencode($illegalList);
+            header("Location: {$URL}");
+            exit;
         } else {
+            $queryDetails = $result->fetch();
+
+            // Run the query
+            try {
+                $result = $connection2->prepare($query);
+                $result->execute([]);
+            } catch (\PDOException $e) {
+                $URL = $URL.'&return=error2';
+                header("Location: {$URL}");
+                exit;
+            }
+
+            
             //Proceed!
-            $exp = new ExportToExcel();
-            $exp->exportWithPage($guid, './queries_run_export_contents.php', 'queryBuilderExport.xls');
+            $renderer = new SpreadsheetRenderer($_SESSION[$guid]['absolutePath']);
+            $table = DataTable::create('queryBuilderExport', $renderer);
+
+            $filename = substr(preg_replace('/[^a-zA-Z0-9]/', '', $queryDetails['name']), 0, 30);
+
+            $table->addMetaData('filename', 'queryExport_'.$filename);
+            $table->addMetaData('filetype', getSettingByScope($connection2, 'Query Builder', 'exportDefaultFileType'));
+            $table->addMetaData('creator', formatName('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff'));
+            $table->addMetaData('name', $queryDetails['name']);
+
+            for ($i = 0; $i < $result->columnCount(); ++$i) {
+                $col = $result->getColumnMeta($i);
+                $width = stripos($col['native_type'], 'text') !== false ? '25' : 'auto';
+
+                $table->addColumn($col['name'], $col['name'])->width($width);
+            }
+
+            echo $table->render($result->toDataSet());
         }
     }
 }
