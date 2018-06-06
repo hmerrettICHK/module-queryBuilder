@@ -18,6 +18,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
+use Gibbon\QueryBuilder\Domain\QueryGateway;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -37,54 +40,67 @@ if (isModuleAccessible($guid, $connection2) == false) {
         returnProcess($guid, $_GET['return'], NULL, $returns);
     }
 
-    $gibboneduComOrganisationName = getSettingByScope($connection2, 'System', 'gibboneduComOrganisationName');
-    $gibboneduComOrganisationKey = getSettingByScope($connection2, 'System', 'gibboneduComOrganisationKey');
+    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
 
-    echo '<script type="text/javascript">';
-		echo '$(document).ready(function(){';
-			?>
-			$.ajax({
-				crossDomain: true,
-				type:"GET",
-				contentType: "application/json; charset=utf-8",
-				async:false,
-				url: "https://gibbonedu.org/gibboneducom/keyCheck.php?callback=?",
-				data: "gibboneduComOrganisationName=<?php echo $gibboneduComOrganisationName ?>&gibboneduComOrganisationKey=<?php echo $gibboneduComOrganisationKey ?>&service=queryBuilder",
-				dataType: "jsonp",
-				jsonpCallback: 'fnsuccesscallback',
-				jsonpResult: 'jsonpResult',
-				success: function(data) {
-					if (data['access']==='1') {
-						$("#status").attr("class","success");
-						$("#status").html('Success! Your system has a valid license to access value added Query Builder queries from gibbonedu.com. <a href=\'<?php echo $_SESSION[$guid]['absoluteURL'] ?>/index.php?q=/modules/Query Builder/queries_sync.php\'>Click here</a> to get the latest queries for your version of Gibbon.') ;
-					}
-					else {
-						$("#status").attr("class","error");
-						$("#status").html('Checking gibbonedu.com for a license to access value added Query Builder shows that you do not have access. You have either not set up access, or your access has expired or is invalid. Email <a href=\'mailto:support@gibbonedu.org\'>support@gibbonedu.org</a> to register for value added services, and then enter the name and key provided in reply, or to seek support as to why your key is not working. You may still use your own queries without a valid license.') ;
-						$.ajax({
-							url: "<?php echo $_SESSION[$guid]['absoluteURL'] ?>/modules/Query Builder/queries_gibboneducom_remove_ajax.php",
-							data: "gibboneduComOrganisationName=<?php echo $gibboneduComOrganisationName ?>&gibboneduComOrganisationKey=<?php echo $gibboneduComOrganisationKey ?>&service=queryBuilder"
-						});
-					}
-				},
-				error: function (data, textStatus, errorThrown) { }
-			});
-			<?php
-        echo '});';
-    echo '</script>';
+    if ($highestAction == 'Manage Queries_viewEditAll') {
+        $gibboneduComOrganisationName = getSettingByScope($connection2, 'System', 'gibboneduComOrganisationName');
+        $gibboneduComOrganisationKey = getSettingByScope($connection2, 'System', 'gibboneduComOrganisationKey');
 
-    echo "<div id='output'>";
-    echo "<div id='status' class='warning'>";
-    echo "<div style='width: 100%; text-align: center'>";
-    echo "<img style='margin: 10px 0 5px 0' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/loading.gif' alt='Loading'/><br/>";
-    echo 'Checking gibbonedu.com value added license status.';
-    echo '</div>';
-    echo '</div>';
+        echo '<script type="text/javascript">';
+            echo '$(document).ready(function(){';
+                ?>
+                $.ajax({
+                    crossDomain: true,
+                    type:"GET",
+                    contentType: "application/json; charset=utf-8",
+                    async:false,
+                    url: "https://gibbonedu.org/gibboneducom/keyCheck.php?callback=?",
+                    data: "gibboneduComOrganisationName=<?php echo $gibboneduComOrganisationName ?>&gibboneduComOrganisationKey=<?php echo $gibboneduComOrganisationKey ?>&service=queryBuilder",
+                    dataType: "jsonp",
+                    jsonpCallback: 'fnsuccesscallback',
+                    jsonpResult: 'jsonpResult',
+                    success: function(data) {
+                        if (data['access']==='1') {
+                            $("#status").attr("class","success");
+                            $("#status").html('Success! Your system has a valid license to access value added Query Builder queries from gibbonedu.com. <a href=\'<?php echo $_SESSION[$guid]['absoluteURL'] ?>/index.php?q=/modules/Query Builder/queries_sync.php\'>Click here</a> to get the latest queries for your version of Gibbon.') ;
+                        }
+                        else {
+                            $("#status").attr("class","error");
+                            $("#status").html('Checking gibbonedu.com for a license to access value added Query Builder shows that you do not have access. You have either not set up access, or your access has expired or is invalid. Email <a href=\'mailto:support@gibbonedu.org\'>support@gibbonedu.org</a> to register for value added services, and then enter the name and key provided in reply, or to seek support as to why your key is not working. You may still use your own queries without a valid license.') ;
+                            $.ajax({
+                                url: "<?php echo $_SESSION[$guid]['absoluteURL'] ?>/modules/Query Builder/queries_gibboneducom_remove_ajax.php",
+                                data: "gibboneduComOrganisationName=<?php echo $gibboneduComOrganisationName ?>&gibboneduComOrganisationKey=<?php echo $gibboneduComOrganisationKey ?>&service=queryBuilder"
+                            });
+                        }
+                    },
+                    error: function (data, textStatus, errorThrown) { }
+                });
+                <?php
+            echo '});';
+        echo '</script>';  
+
+        echo "<div id='output'>";
+        echo "<div id='status' class='warning'>";
+        echo "<div style='width: 100%; text-align: center'>";
+        echo "<img style='margin: 10px 0 5px 0' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/loading.gif' alt='Loading'/><br/>";
+        echo 'Checking gibbonedu.com value added license status.';
+        echo '</div>';
+        echo '</div>';
+        echo '</div>';
+    }
 
     $search = isset($_GET['search'])? $_GET['search'] : '';
 
+    // CRITERIA
+    $queryGateway = $container->get(QueryGateway::class);
+    $criteria = $queryGateway->newQueryCriteria()
+        ->searchBy($queryGateway->getSearchableColumns(), $search)
+        ->sortBy(['category', 'gibbonPersonID', 'name'])
+        ->pageSize(100)
+        ->fromArray($_POST);
+
     echo '<h3>';
-    echo __($guid, 'Search');
+    echo __('Search');
     echo '</h3>';
 
     $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
@@ -94,7 +110,7 @@ if (isModuleAccessible($guid, $connection2) == false) {
 
     $row = $form->addRow();
         $row->addLabel('search', __('Search For'))->description(__('Query name and category.'));
-        $row->addTextField('search')->setValue($search);
+        $row->addTextField('search')->setValue($criteria->getSearchText());
 
     $row = $form->addRow();
         $row->addSearchSubmit($gibbon->session, __('Clear Search'));
@@ -102,96 +118,63 @@ if (isModuleAccessible($guid, $connection2) == false) {
     echo $form->getOutput();
 
     echo '<h3>';
-    echo __($guid, 'Queries');
+    echo __('Queries');
     echo '</h3>';
 
-    try {
-        $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-        $sql = "SELECT * FROM queryBuilderQuery WHERE ((type='Personal' AND gibbonPersonID=:gibbonPersonID) OR type='School' OR type='gibbonedu.com') ORDER BY category, gibbonPersonID, name";
-        if ($search != '') {
-            $data['search'] = "%$search%";
-            $data['search2'] = "%$search%";
-            $sql = "SELECT * FROM queryBuilderQuery WHERE ((type='Personal' AND gibbonPersonID=:gibbonPersonID) OR type='School' OR type='gibbonedu.com') AND (name LIKE :search OR category LIKE :search2) ORDER BY category, gibbonPersonID, name";
-        }
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) { echo "<div class='error'>".$e->getMessage().'</div>';
+    // QUERY
+    $queries = $queryGateway->queryQueries($criteria, $_SESSION[$guid]['gibbonPersonID']);
+
+    $table = DataTable::createPaginated('queriesManage', $criteria);
+
+    if ($highestAction == 'Manage Queries_viewEditAll') {
+        $table->addHeaderAction('add', __('Add'))
+            ->setURL('/modules/Query Builder/queries_add.php')
+            ->addParam('search', $criteria->getSearchText(true))
+            ->addParam('sidebar', 'false')
+            ->displayLabel();
     }
 
-    echo "<div class='linkTop'>";
-    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/queries_add.php&sidebar=false&search=$search'><img title='".__($guid, 'Add New Record')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-    echo '</div>';
+    $table->modifyRows(function($query, $row) {
+        if ($query['active'] != 'Y') $row->addClass('error');
+        return $row;
+    });
 
-    if ($result->rowCount() < 1) { echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
-        echo '</div>';
-    } else {
-        echo "<table cellspacing='0' style='width: 100%'>";
-        echo "<tr class='head'>";
-        echo '<th>';
-        echo __($guid, 'Type');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Category');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Name');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Active');
-        echo '</th>';
-        echo '<th style=\'width: 130px\'>';
-        echo __($guid, 'Actions');
-        echo '</th>';
-        echo '</tr>';
+    // COLUMNS
+    $table->addColumn('type', __('Type'))
+        ->format(function($query) {
+            return !is_null($query['queryID'])? 'gibbonedu.com' : $query['type'];
+        });
+    $table->addColumn('category', __('Category'));
+    $table->addColumn('name', __('Name'));
+    $table->addColumn('active', __('Active'))
+          ->format(Format::using('yesNo', 'active'));
 
-        $count = 0;
-        $rowNum = 'odd';
-        while ($row = $result->fetch()) {
-            if ($count % 2 == 0) {
-                $rowNum = 'even';
-            } else {
-                $rowNum = 'odd';
+    // ACTIONS
+    $table->addActionColumn()
+        ->addParam('queryBuilderQueryID')
+        ->addParam('search', $criteria->getSearchText(true))
+        ->format(function ($query, $actions) use ($highestAction, $guid) {
+
+            if ($highestAction == 'Manage Queries_viewEditAll') {
+                if ($query['type'] == 'Personal' or ($query['type'] == 'School' and $query['gibbonPersonID'] == $_SESSION[$guid]['gibbonPersonID'])) {
+                    $actions->addAction('edit', __('Edit Record'))
+                        ->setURL('/modules/Query Builder/queries_edit.php')
+                        ->addParam('sidebar', 'false');
+
+                    $actions->addAction('delete', __('Delete Record'))
+                        ->setURL('/modules/Query Builder/queries_delete.php');
+                }
+
+                $actions->addAction('duplicate', __('Duplicate'))
+                    ->setURL('/modules/Query Builder/queries_duplicate.php')
+                    ->setIcon('copy');
             }
 
-            if ($row['active'] == 'N') {
-                $rowNum = 'error';
-            }
+            $actions->addAction('run', __('Run Query'))
+                ->setURL('/modules/Query Builder/queries_run.php')
+                ->addParam('sidebar', 'false')
+                ->setIcon('run');
+        });
 
-			//COLOR ROW BY STATUS!
-			echo "<tr class=$rowNum>";
-            echo '<td>';
-            if (is_null($row['queryID']) == false) {
-                echo 'gibbonedu.com';
-            } else {
-                echo $row['type'];
-            }
-            echo '</td>';
-            echo '<td>';
-            echo $row['category'];
-            echo '</td>';
-            echo '<td>';
-            echo $row['name'];
-            echo '</td>';
-            echo '<td>';
-            echo $row['active'];
-            echo '</td>';
-            echo '<td>';
-            if ($row['type'] == 'Personal' or ($row['type'] == 'School' and $row['gibbonPersonID'] == $_SESSION[$guid]['gibbonPersonID'])) {
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/queries_edit.php&queryBuilderQueryID='.$row['queryBuilderQueryID']."&sidebar=false&search=$search'><img title='".__($guid, 'Edit Record')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/queries_delete.php&queryBuilderQueryID='.$row['queryBuilderQueryID']."&search=$search&width=650&height=135'><img title='".__($guid, 'Delete Record')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
-            }
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/queries_duplicate.php&queryBuilderQueryID='.$row['queryBuilderQueryID']."&search=$search'><img title='Duplicate' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/copy.png'/></a>";
-            if ($row['active'] == 'Y') {
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/queries_run.php&queryBuilderQueryID='.$row['queryBuilderQueryID']."&sidebar=false&search=$search'><img style='margin-left: 6px' title='Run Query' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/run.png'/></a>";
-            }
-            echo '</td>';
-            echo '</tr>';
-
-            ++$count;
-        }
-        echo '</table>';
-    }
-    echo '</div>';
+    echo $table->render($queries);
 }
-?>

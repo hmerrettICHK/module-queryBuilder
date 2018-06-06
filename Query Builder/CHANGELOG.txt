@@ -1,5 +1,9 @@
 CHANGELOG
 =========
+v1.5.01
+-------
+Add a permission level for users to run queries but not add or edit them
+
 v1.5.00
 -------
 Add settings to select default export file type
