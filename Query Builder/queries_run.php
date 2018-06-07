@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Tables\DataTable;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -44,6 +45,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
         returnProcess($guid, $_GET['return'], null, array('error3' => __('Your query contains the following illegal term(s), and so cannot be run:', 'Query Builder').' <b>'.substr($illegals, 0, -2).'</b>.'));
     }
 
+    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+
     //Check if school year specified
     $queryBuilderQueryID = isset($_GET['queryBuilderQueryID'])? $_GET['queryBuilderQueryID'] : '';
     $save = isset($_POST['save'])? $_POST['save'] : '';
@@ -54,14 +57,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
         echo __($guid, 'You have not specified one or more required parameters.');
         echo '</div>';
     } else {
-        try {
-            $data = array('queryBuilderQueryID' => $queryBuilderQueryID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-            $sql = "SELECT * FROM queryBuilderQuery WHERE queryBuilderQueryID=:queryBuilderQueryID AND ((gibbonPersonID=:gibbonPersonID AND type='Personal') OR type='School' OR type='gibbonedu.com') AND active='Y'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
+        $data = array('queryBuilderQueryID' => $queryBuilderQueryID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+        $sql = "SELECT * FROM queryBuilderQuery WHERE queryBuilderQueryID=:queryBuilderQueryID AND ((gibbonPersonID=:gibbonPersonID AND type='Personal') OR type='School' OR type='gibbonedu.com') AND active='Y'";
+        $result = $pdo->select($sql, $data);
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
@@ -96,35 +94,39 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
             }
             echo '</table>';
 
-            $form = Form::create('queryBuilder', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/queries_run.php&queryBuilderQueryID='.$queryBuilderQueryID.'&sidebar=false&search='.$search);
-                
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            if ($highestAction == 'Manage Queries_viewEditAll') {
+                $form = Form::create('queryBuilder', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/queries_run.php&queryBuilderQueryID='.$queryBuilderQueryID.'&sidebar=false&search='.$search);
+                    
+                $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-            include $_SESSION[$guid]['absolutePath'].'/modules/Query Builder/Forms/QueryEditor.php'; // Backwards compatibility for pre v16 
-            $queryEditor = new Gibbon\QueryBuilder\Forms\QueryEditor('query');
-            $queryText = !empty($query)? $query : $values['query'];
+                include $_SESSION[$guid]['absolutePath'].'/modules/Query Builder/Forms/QueryEditor.php'; // Backwards compatibility for pre v16 
+                $queryEditor = new Gibbon\QueryBuilder\Forms\QueryEditor('query');
+                $queryText = !empty($query)? $query : $values['query'];
 
-            $col = $form->addRow()->addColumn();
-                $col->addLabel('query', __('Query'));
-                $col->addWebLink('<img title="'.__('Help').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/help.png" style="margin-bottom:5px"/>')
-                    ->setURL($_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/queries_help_full.php&width=1100&height=550')
-                    ->addClass('thickbox floatRight');
-                $col->addElement($queryEditor)->isRequired()->setValue($queryText);
+                $col = $form->addRow()->addColumn();
+                    $col->addLabel('query', __('Query'));
+                    $col->addWebLink('<img title="'.__('Help').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/help.png" style="margin-bottom:5px"/>')
+                        ->setURL($_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/queries_help_full.php&width=1100&height=550')
+                        ->addClass('thickbox floatRight');
+                    $col->addElement($queryEditor)->isRequired()->setValue($queryText);
 
-            $row = $form->addRow();
-                $row->addFooter();
-                $col = $row->addColumn()->addClass('inline right');
-                if ($values['type'] == 'Personal' or ($values['type'] == 'School' and $values['gibbonPersonID'] == $_SESSION[$guid]['gibbonPersonID'])) {
-                    $col->addCheckbox('save')->description(__('Save Query?'))->setValue('Y')->checked($save)->wrap('<span class="displayInlineBlock">', '</span>&nbsp;&nbsp;');
-                }
-                $col->addSubmit(__('Run Query'));
+                $row = $form->addRow();
+                    $row->addFooter();
+                    $col = $row->addColumn()->addClass('inline right');
+                    if ($values['type'] == 'Personal' or ($values['type'] == 'School' and $values['gibbonPersonID'] == $_SESSION[$guid]['gibbonPersonID'])) {
+                        $col->addCheckbox('save')->description(__('Save Query?'))->setValue('Y')->checked($save)->wrap('<span class="displayInlineBlock">', '</span>&nbsp;&nbsp;');
+                    }
+                    $col->addSubmit(__('Run Query'));
 
-            echo $form->getOutput();
+                echo $form->getOutput();
+            } else {
+                $query = $values['query'];
+            }
 
             //PROCESS QUERY
             if (!empty($query)) {
                 echo '<h3>';
-                echo 'Query Results';
+                echo __('Query Results');
                 echo '</h3>';
 
                 //Strip multiple whitespaces from string
@@ -141,29 +143,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
                 }
                 if ($illegal) {
                     echo "<div class='error'>";
-                    echo __($guid, 'Your query contains the following illegal term(s), and so cannot be run:').' <b>'.substr($illegalList, 0, -2).'</b>.';
+                    echo __('Your query contains the following illegal term(s), and so cannot be run:').' <b>'.substr($illegalList, 0, -2).'</b>.';
                     echo '</div>';
                 } else {
                     //Save the query
-                    if ($save == 'Y') {
-                        try {
-                            $data = array('queryBuilderQueryID' => $queryBuilderQueryID, 'query' => $query);
-                            $sql = 'UPDATE queryBuilderQuery SET query=:query WHERE queryBuilderQueryID=:queryBuilderQueryID';
-                            $result = $connection2->prepare($sql);
-                            $result->execute($data);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
+                    if ($highestAction == 'Manage Queries_viewEditAll' && $save == 'Y') {
+                        $data = array('queryBuilderQueryID' => $queryBuilderQueryID, 'query' => $query);
+                        $sql = "UPDATE queryBuilderQuery SET query=:query WHERE queryBuilderQueryID=:queryBuilderQueryID";
+                        $pdo->update($sql, $data);
                     }
 
                     //Run the query
-                    try {
-                        $data = array();
-                        $result = $connection2->prepare($query);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
+                    $result = $pdo->select($query);
+
 
                     if ($result->rowCount() < 1) {
                         echo "<div class='warning'>Your query has returned 0 rows.</div>";
@@ -182,35 +174,32 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
 
                         echo '</div>';
 
-                        echo "<div style='overflow-x:auto;'>";
-                        echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-                        echo '<tr>';
+                        $invalidColumns = ['password', 'passwordStrong', 'passwordStrongSalt', 'gibbonStaffContract', 'gibbonStaffApplicationForm', 'gibbonStaffApplicationFormFile'];
+
+                        $table = DataTable::create('queryResults');
+                        $table->getRenderer()->addClass('smallIntBorder');
+
+                        $count = 1;
+                        $table->addColumn('count', '')->width('35px')->format(function($row) use (&$count) {
+                            return '<span class="subdued">'.$count++.'</span>';
+                        });
+
                         for ($i = 0; $i < $result->columnCount(); ++$i) {
                             $col = $result->getColumnMeta($i);
-                            if ($col['name'] != 'password' and $col['name'] != 'passwordStrong' and $col['name'] != 'passwordStrongSalt' and $col['table'] != 'gibbonStaffContract' and $col['table'] != 'gibbonStaffApplicationForm' and $col['table'] != 'gibbonStaffApplicationFormFile') {
-                                echo "<th style='min-width: 72px'>";
-                                echo $col['name'];
-                                echo '</th>';
-                            }
-                        }
-                        echo '</tr>';
-                        while ($row = $result->fetch()) {
-                            echo '<tr>';
-                            for ($i = 0; $i < $result->columnCount(); ++$i) {
-                                $col = $result->getColumnMeta($i);
-                                if ($col['name'] != 'password' and $col['name'] != 'passwordStrong' and $col['name'] != 'passwordStrongSalt' and $col['table'] != 'gibbonStaffContract' and $col['table'] != 'gibbonStaffApplicationForm' and $col['table'] != 'gibbonStaffApplicationFormFile') {
-                                    echo '<td>';
-                                    if (strlen($row[$col['name']]) > 50 AND $col['name']!='image' AND $col['name']!='image_240') {
-                                        echo substr($row[$col['name']], 0, 50).'...';
+                            $colName = $col['name'];
+                            if (!in_array($colName, $invalidColumns)) {
+                                $table->addColumn($colName, $colName)->format(function($row) use ($colName) {
+                                    if (strlen($row[$colName]) > 50 && $colName !='image' && $colName!='image_240') {
+                                        return substr($row[$colName], 0, 50).'...';
                                     } else {
-                                        echo $row[$col['name']];
+                                        return $row[$colName];
                                     }
-                                    echo '</td>';
-                                }
+                                });
                             }
-                            echo '</tr>';
                         }
-                        echo '</table>';
+
+                        echo "<div style='overflow-x:auto;'>";
+                        echo $table->render($result->toDataSet());
                         echo '</div>';
                     }
                 }
@@ -218,4 +207,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
         }
     }
 }
-?>

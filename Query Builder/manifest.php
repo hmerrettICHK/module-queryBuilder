@@ -25,7 +25,7 @@ $description = 'A module to provide SQL queries for pulling data out of Gibbon a
 $entryURL = 'queries.php';
 $type = 'Additional';
 $category = 'Admin';
-$version = '1.5.00';
+$version = '1.5.01';
 $author = 'Ross Parker';
 $url = 'http://rossparker.org';
 
@@ -36,8 +36,8 @@ $moduleTables[0] = "CREATE TABLE `queryBuilderQuery` (`queryBuilderQueryID` int(
 $gibbonSetting[0] = "INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('Query Builder', 'exportDefaultFileType', 'Default Export File Type', '', 'Excel2007');";
 
 //Action rows
-$actionRows[0]['name'] = 'Manage Queries';
-$actionRows[0]['precedence'] = '0';
+$actionRows[0]['name'] = 'Manage Queries_viewEditAll';
+$actionRows[0]['precedence'] = '1';
 $actionRows[0]['category'] = 'Queries';
 $actionRows[0]['description'] = 'Allows a user to register with gibbonedu.org to gain access to managed queries.';
 $actionRows[0]['URLList'] = 'queries.php, queries_add.php, queries_edit.php, queries_duplicate.php, queries_delete.php, queries_run.php, queries_sync.php, queries_help_full.php';
@@ -68,3 +68,18 @@ $actionRows[1]['categoryPermissionStudent'] = 'N';
 $actionRows[1]['categoryPermissionParent'] = 'N';
 $actionRows[1]['categoryPermissionOther'] = 'N';
 
+$actionRows[2]['name'] = 'Manage Queries_run';
+$actionRows[2]['precedence'] = '0';
+$actionRows[2]['category'] = 'Queries';
+$actionRows[2]['description'] = 'Allows a user to run queries but not add or edit them.';
+$actionRows[2]['URLList'] = 'queries.php, queries_run.php';
+$actionRows[2]['entryURL'] = 'queries.php';
+$actionRows[2]['defaultPermissionAdmin'] = 'N';
+$actionRows[2]['defaultPermissionTeacher'] = 'N';
+$actionRows[2]['defaultPermissionStudent'] = 'N';
+$actionRows[2]['defaultPermissionParent'] = 'N';
+$actionRows[2]['defaultPermissionSupport'] = 'N';
+$actionRows[2]['categoryPermissionStaff'] = 'Y';
+$actionRows[2]['categoryPermissionStudent'] = 'N';
+$actionRows[2]['categoryPermissionParent'] = 'N';
+$actionRows[2]['categoryPermissionOther'] = 'N';
