@@ -47,9 +47,11 @@ class QueryGateway extends QueryableGateway
             ->cols([
                 'queryBuilderQueryID', 'name', 'type', 'category', 'active', 'gibbonPersonID', 'queryID'
             ])
-            ->where("type='Personal' AND gibbonPersonID=:gibbonPersonID")
-            ->orWhere("type='School'")
-            ->orWhere("type='gibbonedu.com'")
+            ->where(function($query) {
+                $query->where("(type='Personal' AND gibbonPersonID=:gibbonPersonID)")
+                    ->orWhere("type='School'")
+                    ->orWhere("type='gibbonedu.com'");
+            })
             ->bindValue('gibbonPersonID', $gibbonPersonID);
 
         return $this->runQuery($query, $criteria);
