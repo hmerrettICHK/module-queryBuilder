@@ -179,3 +179,9 @@ $sql[$count][1] = "
 UPDATE gibbonAction SET name='Manage Queries_viewEditAll', precedence=1 WHERE name='Manage Queries' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Query Builder');end
 INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Query Builder'), 'Manage Queries_run', '0', 'Queries', 'Allows a user to run queries but not add or edit them.', 'queries.php, queries_run.php', 'queries.php', 'N', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
 ";
+
+//v1.5.02
+++$count;
+$sql[$count][0] = '1.5.02';
+$sql[$count][1] = "
+";
