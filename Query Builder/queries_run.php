@@ -156,11 +156,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
                     //Run the query
                     $result = $pdo->select($query);
 
-
-                    if ($result->rowCount() < 1) {
-                        echo "<div class='warning'>Your query has returned 0 rows.</div>";
+                    if (!$pdo->getQuerySuccess()) {
+                        echo '<div class="error">'.__('Your request failed due to a syntax error in the SQL query.').'</div>';
+                    } else if ($result->rowCount() < 1) {
+                        echo '<div class="warning">'.__('Your query has returned 0 rows.').'</div>';
                     } else {
-                        echo "<div class='success'>Your query has returned ".$result->rowCount().' rows, which are displayed below.</div>';
+                        echo '<div class="success">'.sprintf(__('Your query has returned %1$s rows, which are displayed below.'), $result->rowCount()).'</div>';
 
                         echo "<div class='linkTop'>";
 

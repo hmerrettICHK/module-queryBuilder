@@ -1,5 +1,9 @@
 CHANGELOG
 =========
+v1.5.03
+-------
+Add an error message for incorrect SQL syntax
+
 v1.5.02
 -------
 Fix query search issue
