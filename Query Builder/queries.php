@@ -23,7 +23,9 @@ use Gibbon\Services\Format;
 use Gibbon\QueryBuilder\Domain\QueryGateway;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+include __DIR__.'/moduleFunctions.php';
+
+$page->breadcrumbs->add(__('Queries'));
 
 if (isModuleAccessible($guid, $connection2) == false) {
     //Acess denied
@@ -31,10 +33,6 @@ if (isModuleAccessible($guid, $connection2) == false) {
     echo 'You do not have access to this action.';
     echo '</div>';
 } else {
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".getModuleName($_GET['q'])."</a> > </div><div class='trailEnd'>".__($guid, 'Queries').'</div>';
-    echo '</div>';
-
     $returns = array();
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], NULL, $returns);
