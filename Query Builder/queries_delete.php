@@ -19,10 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Prefab\DeleteForm;
 
-$page->breadcrumbs
-  ->add(__('Manage Queries'), 'queries.php')
-  ->add(__('Delete Query'));
-
 if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_delete.php') == false) {
     //Acess denied
     echo "<div class='error'>";
