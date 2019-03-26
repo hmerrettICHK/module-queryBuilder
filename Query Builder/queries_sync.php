@@ -17,6 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+$page->breadcrumbs
+  ->add(__('Manage Queries'), 'queries.php')
+  ->add(__('Sync Queries'));
+
 if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_sync.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -24,10 +28,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_sync
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".getModuleName($_GET['q'])."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/queries.php'>".__($guid, 'Manage Queries')."</a> > </div><div class='trailEnd'>".__($guid, 'Sync Queries').'</div>';
-    echo '</div>';
-
     echo '<p>';
     echo 'This page will automatically attempt to sync queries from the gibbonedu.com Query Builder valued added service. The results of the sync will be given below.';
     echo '<p>';
@@ -97,4 +97,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_sync
     echo '</div>';
     echo '</div>';
 }
-?>

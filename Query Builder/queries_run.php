@@ -21,7 +21,11 @@ use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+include __DIR__.'/moduleFunctions.php';
+
+$page->breadcrumbs
+  ->add(__('Manage Queries'), 'queries.php')
+  ->add(__('Run Query'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.php') == false) {
     //Acess denied
@@ -30,10 +34,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".getModuleName($_GET['q'])."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/queries.php'>".__($guid, 'Manage Queries')."</a> > </div><div class='trailEnd'>".__($guid, 'Run Query').'</div>';
-    echo '</div>';
-
     $search = isset($_GET['search'])? $_GET['search'] : '';
     if ($search != '') { echo "<div class='linkTop'>";
         echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Query Builder/queries.php&search=$search'>".__($guid, 'Back to Search Results').'</a>';
