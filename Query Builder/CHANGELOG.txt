@@ -1,5 +1,10 @@
 CHANGELOG
 =========
+v1.6.00
+-------
+Refactor breadcrumbs and update class namespaces
+Requires Gibbon v17.0.00+
+
 v1.5.03
 -------
 Add an error message for incorrect SQL syntax

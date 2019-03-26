@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
+use Gibbon\Module\QueryBuilder\Forms\QueryEditor;
 
 //Module includes
 include __DIR__.'/moduleFunctions.php';
@@ -99,8 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
                     
                 $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-                include $_SESSION[$guid]['absolutePath'].'/modules/Query Builder/Forms/QueryEditor.php'; // Backwards compatibility for pre v16 
-                $queryEditor = new Gibbon\QueryBuilder\Forms\QueryEditor('query');
+                $queryEditor = new QueryEditor('query');
                 $queryText = !empty($query)? $query : $values['query'];
 
                 $col = $form->addRow()->addColumn();
