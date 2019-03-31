@@ -64,7 +64,7 @@ if (isModuleAccessible($guid, $connection2) == false) {
                         }
                         else {
                             $("#status").attr("class","error");
-                            $("#status").html('Checking gibbonedu.com for a license to access value added Query Builder shows that you do not have access. You have either not set up access, or your access has expired or is invalid. Email <a href=\'mailto:support@gibbonedu.org\'>support@gibbonedu.org</a> to register for value added services, and then enter the name and key provided in reply, or to seek support as to why your key is not working. You may still use your own queries without a valid license.') ;
+                            $("#status").html('Checking gibbonedu.com for a license to access value added Query Builder shows that you do not have access. You have either not set up access, or your access has expired or is invalid. Visit <a target=\'_blank\' href=\'http://gibbonedu.com\'>http://gibbonedu.com</a> to register for value added services, and then enter the name and key provided, or email <a href=\'mailto:support@gibbonedu.com\'>support@gibbonedu.com</a> to seek support as to why your key is not working. You may still use your own queries without a valid license.') ;
                             $.ajax({
                                 url: "<?php echo $_SESSION[$guid]['absoluteURL'] ?>/modules/Query Builder/queries_gibboneducom_remove_ajax.php",
                                 data: "gibboneduComOrganisationName=<?php echo $gibboneduComOrganisationName ?>&gibboneduComOrganisationKey=<?php echo $gibboneduComOrganisationKey ?>&service=queryBuilder"
@@ -75,7 +75,7 @@ if (isModuleAccessible($guid, $connection2) == false) {
                 });
                 <?php
             echo '});';
-        echo '</script>';  
+        echo '</script>';
 
         echo "<div id='output'>";
         echo "<div id='status' class='warning'>";
