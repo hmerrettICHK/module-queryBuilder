@@ -1,8 +1,12 @@
 CHANGELOG
 =========
-v1.6.01
+v1.6.02
 -------
 Switch from support@gibbonedu.org to http://gibbonedu.com
+
+v1.6.01
+-------
+Minor fixes to breadcrumbs
 
 v1.6.00
 -------

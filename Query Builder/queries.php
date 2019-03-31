@@ -25,12 +25,12 @@ use Gibbon\Module\QueryBuilder\Domain\QueryGateway;
 //Module includes
 include __DIR__.'/moduleFunctions.php';
 
-$page->breadcrumbs->add(__('Queries'));
+$page->breadcrumbs->add(__('Manage Queries'));
 
 if (isModuleAccessible($guid, $connection2) == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo 'You do not have access to this action.';
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     $returns = array();
