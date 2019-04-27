@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
     $save = isset($_POST['save'])? $_POST['save'] : '';
     $query = isset($_POST['query'])? $_POST['query'] : '';
 
-    if (empty($queryBuilderQueryID)) { 
+    if (empty($queryBuilderQueryID)) {
         echo "<div class='error'>";
         echo __($guid, 'You have not specified one or more required parameters.');
         echo '</div>';
@@ -97,7 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
 
             if ($highestAction == 'Manage Queries_viewEditAll') {
                 $form = Form::create('queryBuilder', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/queries_run.php&queryBuilderQueryID='.$queryBuilderQueryID.'&sidebar=false&search='.$search);
-                    
+
                 $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
                 $queryEditor = new QueryEditor('query');
@@ -178,7 +178,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
                         $invalidColumns = ['password', 'passwordStrong', 'passwordStrongSalt', 'gibbonStaffContract', 'gibbonStaffApplicationForm', 'gibbonStaffApplicationFormFile'];
 
                         $table = DataTable::create('queryResults');
-                        $table->getRenderer()->addClass('smallIntBorder');
+                        $table->getRenderer();
 
                         $count = 1;
                         $table->addColumn('count', '')->width('35px')->format(function($row) use (&$count) {
