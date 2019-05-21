@@ -26,6 +26,9 @@ include '../../gibbon.php';
 // Module include
 include './moduleFunctions.php';
 
+//Increase memory limit
+ini_set('memory_limit','256M');
+
 $queryBuilderQueryID = isset($_GET['queryBuilderQueryID'])? $_GET['queryBuilderQueryID'] : '';
 $query = isset($_POST['query'])? $_POST['query'] : '';
 
@@ -84,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
                 exit;
             }
 
-            
+
             //Proceed!
             $renderer = new SpreadsheetRenderer($_SESSION[$guid]['absolutePath']);
             $table = DataTable::create('queryBuilderExport', $renderer);

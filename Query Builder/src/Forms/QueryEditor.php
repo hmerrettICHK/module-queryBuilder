@@ -42,7 +42,7 @@ class QueryEditor extends Input
         $output .= htmlentities($text, ENT_QUOTES, 'UTF-8');
         $output .= '</textarea>';
 
-        $output .= '<div id="editor" style="width: 1038px; height: 400px;">';
+        $output .= '<div id="editor" style="width: 100%; height: 400px;">';
         $output .= htmlentities($text, ENT_QUOTES, 'UTF-8');
         $output .= '</div>';
 

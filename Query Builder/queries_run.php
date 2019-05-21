@@ -24,6 +24,9 @@ use Gibbon\Module\QueryBuilder\Forms\QueryEditor;
 //Module includes
 include __DIR__.'/moduleFunctions.php';
 
+//Increase memory limit
+ini_set('memory_limit','256M');
+
 $page->breadcrumbs
   ->add(__('Manage Queries'), 'queries.php')
   ->add(__('Run Query'));
@@ -103,11 +106,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
                 $queryEditor = new QueryEditor('query');
                 $queryText = !empty($query)? $query : $values['query'];
 
+                $row = $form->addRow();
+                $row->addWebLink('<img title="'.__('Help').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/help.png" style="margin-bottom:5px"/>')
+                    ->setURL($_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/queries_help_full.php&width=1100&height=550')
+                    ->addClass('thickbox floatRight');
+
                 $col = $form->addRow()->addColumn();
                     $col->addLabel('query', __('Query'));
-                    $col->addWebLink('<img title="'.__('Help').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/help.png" style="margin-bottom:5px"/>')
-                        ->setURL($_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/queries_help_full.php&width=1100&height=550')
-                        ->addClass('thickbox floatRight');
                     $col->addElement($queryEditor)->isRequired()->setValue($queryText);
 
                 $row = $form->addRow();
@@ -115,6 +120,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
                     $col = $row->addColumn()->addClass('inline right');
                     if ($values['type'] == 'Personal' or ($values['type'] == 'School' and $values['gibbonPersonID'] == $_SESSION[$guid]['gibbonPersonID'])) {
                         $col->addCheckbox('save')->description(__('Save Query?'))->setValue('Y')->checked($save)->wrap('<span class="displayInlineBlock">', '</span>&nbsp;&nbsp;');
+                    }
+                    else {
+                        $col->addContent('');
                     }
                     $col->addSubmit(__('Run Query'));
 

@@ -1,8 +1,13 @@
 CHANGELOG
 =========
+v1.6.04
+-------
+Memory limit increase
+Visual tweaks
+
 v1.6.03
 -------
-v18 Compatibility 
+v18 Compatibility
 
 v1.6.02
 -------
