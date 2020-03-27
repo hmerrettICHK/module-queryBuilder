@@ -103,6 +103,42 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_edit
                     ->addClass('thickbox floatRight');
                 $col->addElement($queryEditor)->isRequired();
 
+            
+            // BIND VALUES
+            $types = [
+                'number' => __('Number'),
+                'varchar' => __('Text'),
+                'date' => __('Date'),
+            ];
+            
+            // Custom Block Template
+            $addBlockButton = $form->getFactory()->createButton(__('Add Variable'))->addClass('addBlock');
+
+            $blockTemplate = $form->getFactory()->createTable()->setClass('blank');
+            $row = $blockTemplate->addRow();
+                $row->addTextField('name')
+                    ->setClass('w-2/3 pr-10 title')
+                    ->required()
+                    ->placeholder(__('Name'))
+                    ->addValidation('Validate.Format', 'pattern: /^[A-Za-z0-9]+$/, failureMessage: "'.__m('Alphanumeric values only.').'"');
+            $row = $blockTemplate->addRow();
+                $row->addSelect('type')->fromArray($types)->setClass('w-2/3 float-none mt-1')->required()->placeholder();
+
+            // Custom Blocks
+            $col = $form->addRow()->addColumn();
+                $col->addLabel('bindValues', __m('Variables'))->description(__m('Variables allow...'));
+                $customBlocks = $col->addCustomBlocks('bindValues', $gibbon->session)
+                    ->fromTemplate($blockTemplate)
+                    ->settings(array('inputNameStrategy' => 'object', 'addOnEvent' => 'click', 'sortable' => true))
+                    ->placeholder(__m('Variables will be listed here...'))
+                    ->addToolInput($addBlockButton);
+
+            // Add existing bindValues
+            $bindValues = json_decode($values['bindValues'], true);
+            foreach ($bindValues ?? [] as $index => $bindValue) {
+                $customBlocks->addBlock($index, $bindValue);
+            }
+
             $row = $form->addRow();
                 $row->addFooter();
                 $row->addSubmit();
