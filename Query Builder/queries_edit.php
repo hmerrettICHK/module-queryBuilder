@@ -103,6 +103,65 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_edit
                     ->addClass('thickbox floatRight');
                 $col->addElement($queryEditor)->isRequired();
 
+            
+            // BIND VALUES
+            $bindValues = json_decode($values['bindValues'] ?? '', true);
+            $types = [
+                __('Basic') => [
+                    'varchar'        => __('Text'),
+                    'number'         => __('Number'),
+                    'yesno'          => __('Yes/No'),
+                    'date'           => __('Date'),
+                ],
+                __('System') => [
+                    'reportingCycle' => __('Reporting Cycle'),
+                    'schoolYear'     => __('School Year'),
+                    'term'           => __('Term'),
+                ],
+            ];
+
+            $missingValues = array_filter($bindValues ?? [], function ($bindValue) use ($values) {
+                return strpos($values['query'], ':'.$bindValue['variable']) === false;
+            });
+
+            // Custom Block Template
+            $addBlockButton = $form->getFactory()->createButton(__('Add Value'))->addClass('addBlock');
+
+            $blockTemplate = $form->getFactory()->createTable()->setClass('blank');
+            $row = $blockTemplate->addRow();
+                $row->addTextField('name')
+                    ->setClass('w-full m-0 title')
+                    ->required()
+                    ->placeholder(__m('Label Name'));
+    
+            $col = $blockTemplate->addRow()->addColumn()->addClass('flex mt-1');
+                $col->addTextField('variable')
+                    ->setClass('w-64')
+                    ->required()
+                    ->placeholder(__m('Variable Name'))
+                    ->addValidation('Validate.Format', 'pattern: /^[A-Za-z0-9]+$/, failureMessage: "'.__m('Must be alphanumeric.').'"');
+                $col->addSelect('type')->fromArray($types)->setClass('w-full float-none ml-1')->required()->placeholder();
+
+            // Custom Blocks
+            $col = $form->addRow()->addColumn();
+                $col->addLabel('bindValues', __m('Variables'));
+                $col->addContent(__m('You can optionally define named variables that a user can enter when running this query. Each variable name must be alphanumeric with no spaces or special symbols, and must be present in the query as :variableName'))->wrap('<span class="small emphasis">', '</span>');
+
+                if (!empty($missingValues)) {
+                    $col->addAlert(__m('SQL Error! The following variable names were not found in your query: {variables}', ['variables' => implode(', ', array_column($missingValues, 'variable'))]), 'error');
+                }
+
+                $customBlocks = $col->addCustomBlocks('bindValues', $gibbon->session)
+                    ->fromTemplate($blockTemplate)
+                    ->settings(array('inputNameStrategy' => 'object', 'addOnEvent' => 'click', 'sortable' => true))
+                    ->placeholder(__m('Variables will be listed here...'))
+                    ->addToolInput($addBlockButton);
+
+            // Add existing bindValues
+            foreach ($bindValues ?? [] as $index => $bindValue) {
+                $customBlocks->addBlock($index, $bindValue);
+            }
+
             $row = $form->addRow();
                 $row->addFooter();
                 $row->addSubmit();

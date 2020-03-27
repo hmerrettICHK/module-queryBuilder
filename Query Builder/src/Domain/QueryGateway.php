@@ -32,6 +32,7 @@ class QueryGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'queryBuilderQuery';
+    private static $primaryKey = 'queryBuilderQueryID';
 
     private static $searchableColumns = ['name', 'category'];
     
