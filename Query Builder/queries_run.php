@@ -40,11 +40,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
     echo '</div>';
 } else {
     //Proceed!
+    $queryBuilderQueryID = isset($_GET['queryBuilderQueryID'])? $_GET['queryBuilderQueryID'] : '';
     $search = isset($_GET['search'])? $_GET['search'] : '';
-    if ($search != '') { echo "<div class='linkTop'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Query Builder/queries.php&search=$search'>".__($guid, 'Back to Search Results').'</a>';
-        echo '</div>';
-    }
+
+    echo "<div class='linkTop'>";
+        if ($search != '') {
+            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Query Builder/queries.php&search=$search'>".__($guid, 'Back to Search Results').'</a> | ';
+        }
+        echo "<a href='".$gibbon->session->get('absoluteURL')."/index.php?q=/modules/Query Builder/queries_edit.php&search=$search&queryBuilderQueryID=$queryBuilderQueryID&sidebar=false'>".__m('Edit Query')."</a>" ;
+    echo '</div>';
 
     if (isset($_GET['return'])) {
         $illegals = isset($_GET['illegals'])? urldecode($_GET['illegals']) : '';
@@ -54,7 +58,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
 
     //Check if school year specified
-    $queryBuilderQueryID = isset($_GET['queryBuilderQueryID'])? $_GET['queryBuilderQueryID'] : '';
     $save = isset($_POST['save'])? $_POST['save'] : '';
     $query = isset($_POST['query'])? $_POST['query'] : '';
 
@@ -100,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
             }
             echo '</table>';
 
-            
+
             $form = Form::create('queryBuilder', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/queries_run.php&queryBuilderQueryID='.$queryBuilderQueryID.'&sidebar=false&search='.$search);
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
@@ -208,7 +211,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
                     $result = $pdo->select($query, $data);
 
                     if (!$pdo->getQuerySuccess()) {
-                        echo '<div class="error">'.__('Your request failed due to a syntax error in the SQL query.').'</div>';
+                        echo '<div class="error">'.__('Your request failed with the following error: ').$pdo->getErrorMessage().'</div>';
                     } else if ($result->rowCount() < 1) {
                         echo '<div class="warning">'.__('Your query has returned 0 rows.').'</div>';
                     } else {

@@ -1,5 +1,10 @@
 CHANGELOG
 =========
+v1.7.01
+-------
+Links from Edit to Run, and Run to Edit.
+More useful error messages.
+
 v1.7.00
 -------
 Add the ability to use variables in queries
