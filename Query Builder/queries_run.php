@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Module\QueryBuilder\Forms\QueryEditor;
+use Gibbon\Services\Format;
 
 //Module includes
 include __DIR__.'/moduleFunctions.php';
@@ -115,6 +116,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
                     $col->addLabel('query', __('Query'));
                     $col->addElement($queryEditor)->isRequired()->setValue($queryText);
 
+                $bindValues = json_decode($values['bindValues'] ?? '', true);
+                if (!empty($bindValues) && is_array($bindValues)) {
+                    foreach ($bindValues as $bindValue) {
+                        $bindValue['required'] = 'Y';
+                        $fieldValue = $_POST[$bindValue['name']] ?? '';
+                        $fieldName = __(ucwords(preg_replace('/(?<=[a-z])(?=[A-Z])/', ' $0', $bindValue['name'])));
+
+                        if ($bindValue['type'] == 'date') {
+                            $fieldValue = Format::dateConvert($fieldValue);
+                        }
+
+                        $row = $form->addRow();
+                            $row->addLabel($bindValue['name'], $fieldName)->description(':'.$bindValue['name']);
+                            $row->addCustomField($bindValue['name'], $bindValue)->setValue($fieldValue);
+                    }
+                }
+
                 $row = $form->addRow();
                     $row->addFooter();
                     $col = $row->addColumn()->addClass('inline right');
@@ -161,8 +179,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
                         $pdo->update($sql, $data);
                     }
 
-                    //Run the query
-                    $result = $pdo->select($query);
+                    // Get bind values, if they exist
+                    $data = [];
+                    $bindValues = json_decode($values['bindValues'] ?? '', true);
+                    if (!empty($bindValues) && is_array($bindValues)) {
+                        foreach ($bindValues as $bindValue) {
+                            $fieldValue = $_POST[$bindValue['name']] ?? '';
+                            if ($bindValue['type'] == 'date') {
+                                $fieldValue = Format::dateConvert($fieldValue);
+                            }
+                            $data[$bindValue['name']] = $fieldValue;
+                        }
+                    }
+
+                    // Run the query
+                    $result = $pdo->select($query, $data);
 
                     if (!$pdo->getQuerySuccess()) {
                         echo '<div class="error">'.__('Your request failed due to a syntax error in the SQL query.').'</div>';
