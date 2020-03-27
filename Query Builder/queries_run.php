@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Module\QueryBuilder\Forms\QueryEditor;
@@ -99,11 +100,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
             }
             echo '</table>';
 
+            
+            $form = Form::create('queryBuilder', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/queries_run.php&queryBuilderQueryID='.$queryBuilderQueryID.'&sidebar=false&search='.$search);
+            $form->setFactory(DatabaseFormFactory::create($pdo));
+
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
             if ($highestAction == 'Manage Queries_viewEditAll') {
-                $form = Form::create('queryBuilder', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/queries_run.php&queryBuilderQueryID='.$queryBuilderQueryID.'&sidebar=false&search='.$search);
-
-                $form->addHiddenValue('address', $_SESSION[$guid]['address']);
-
                 $queryEditor = new QueryEditor('query');
                 $queryText = !empty($query)? $query : $values['query'];
 
@@ -115,39 +118,48 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
                 $col = $form->addRow()->addColumn();
                     $col->addLabel('query', __('Query'));
                     $col->addElement($queryEditor)->isRequired()->setValue($queryText);
+            } else {
+                $form->addHiddenValue('query', $values['query']);
+            }
 
-                $bindValues = json_decode($values['bindValues'] ?? '', true);
-                if (!empty($bindValues) && is_array($bindValues)) {
-                    foreach ($bindValues as $bindValue) {
-                        $bindValue['required'] = 'Y';
-                        $fieldValue = $_POST[$bindValue['name']] ?? '';
-                        $fieldName = __(ucwords(preg_replace('/(?<=[a-z])(?=[A-Z])/', ' $0', $bindValue['name'])));
+            // Add custom bind values to the form
+            $bindValues = json_decode($values['bindValues'] ?? '', true);
+            if (!empty($bindValues) && is_array($bindValues)) {
+                foreach ($bindValues as $bindValue) {
+                    $bindValue['required'] = 'Y';
+                    $fieldValue = $_POST[$bindValue['variable']] ?? null;
 
-                        if ($bindValue['type'] == 'date') {
-                            $fieldValue = Format::dateConvert($fieldValue);
-                        }
+                    if ($bindValue['type'] == 'date' && !empty($fieldValue)) {
+                        $fieldValue = Format::dateConvert($fieldValue);
+                    }
 
-                        $row = $form->addRow();
-                            $row->addLabel($bindValue['name'], $fieldName)->description(':'.$bindValue['name']);
-                            $row->addCustomField($bindValue['name'], $bindValue)->setValue($fieldValue);
+                    $row = $form->addRow();
+                    $row->addLabel($bindValue['variable'], $bindValue['name'])->description($bindValue['variable']);
+
+                    if ($bindValue['type'] == 'schoolYear') {
+                        $row->addSelectSchoolYear($bindValue['variable'])->selected($fieldValue ?? $gibbon->session->get('gibbonSchoolYearID'))->required();
+                    } elseif ($bindValue['type'] == 'schoolYear') {
+                        $row->addSelectSchoolYearTerm($bindValue['variable'], $gibbon->session->get('gibbonSchoolYearID'))->selected($fieldValue)->required();
+                    } elseif ($bindValue['type'] == 'reportingCycle') {
+                        $row->addSelectReportingCycle($bindValue['variable'])->required();
+                    } else {
+                        $row->addCustomField($bindValue['variable'], $bindValue)->setValue($fieldValue);
                     }
                 }
-
-                $row = $form->addRow();
-                    $row->addFooter();
-                    $col = $row->addColumn()->addClass('inline right');
-                    if ($values['type'] == 'Personal' or ($values['type'] == 'School' and $values['gibbonPersonID'] == $_SESSION[$guid]['gibbonPersonID'])) {
-                        $col->addCheckbox('save')->description(__('Save Query?'))->setValue('Y')->checked($save)->wrap('<span class="displayInlineBlock">', '</span>&nbsp;&nbsp;');
-                    }
-                    else {
-                        $col->addContent('');
-                    }
-                    $col->addSubmit(__('Run Query'));
-
-                echo $form->getOutput();
-            } else {
-                $query = $values['query'];
             }
+
+            $row = $form->addRow();
+                $row->addFooter();
+                $col = $row->addColumn()->addClass('inline right');
+                if ($highestAction == 'Manage Queries_viewEditAll' && ($values['type'] == 'Personal' or ($values['type'] == 'School' and $values['gibbonPersonID'] == $_SESSION[$guid]['gibbonPersonID']))) {
+                    $col->addCheckbox('save')->description(__('Save Query?'))->setValue('Y')->checked($save)->wrap('<span class="displayInlineBlock">', '</span>&nbsp;&nbsp;');
+                }
+                else {
+                    $col->addContent('');
+                }
+                $col->addSubmit(__('Run Query'));
+
+            echo $form->getOutput();
 
             //PROCESS QUERY
             if (!empty($query)) {
@@ -184,11 +196,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
                     $bindValues = json_decode($values['bindValues'] ?? '', true);
                     if (!empty($bindValues) && is_array($bindValues)) {
                         foreach ($bindValues as $bindValue) {
-                            $fieldValue = $_POST[$bindValue['name']] ?? '';
-                            if ($bindValue['type'] == 'date') {
+                            $fieldValue = $_POST[$bindValue['variable']] ?? '';
+                            if ($bindValue['type'] == 'date' && !empty($fieldValue)) {
                                 $fieldValue = Format::dateConvert($fieldValue);
                             }
-                            $data[$bindValue['name']] = $fieldValue;
+                            $data[$bindValue['variable']] = $fieldValue;
                         }
                     }
 
