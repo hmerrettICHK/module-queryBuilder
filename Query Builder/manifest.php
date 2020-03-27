@@ -30,7 +30,7 @@ $author = 'Ross Parker';
 $url = 'http://rossparker.org';
 
 //Module tables & gibbonSettings entries
-$moduleTables[0] = "CREATE TABLE `queryBuilderQuery` (`queryBuilderQueryID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT, `type` enum('gibbonedu.com','Personal','School') NOT NULL DEFAULT 'gibbonedu.com', `name` varchar(255) NOT NULL,  `category` varchar(50) NOT NULL,  `description` text NOT NULL,  `query` text NOT NULL,  `active` enum('Y','N') NOT NULL DEFAULT 'Y',  `queryID` int(10) unsigned zerofill DEFAULT NULL COMMENT 'If based on a gibbonedu.org query.',  `gibbonPersonID` int(10) unsigned zerofill DEFAULT NULL,  PRIMARY KEY (`queryBuilderQueryID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+$moduleTables[0] = "CREATE TABLE `queryBuilderQuery` (`queryBuilderQueryID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT, `type` enum('gibbonedu.com','Personal','School') NOT NULL DEFAULT 'gibbonedu.com', `name` varchar(255) NOT NULL,  `category` varchar(50) NOT NULL,  `description` text NOT NULL,  `query` text NOT NULL, `bindValues` TEXT NULL DEFAULT NULL, `active` enum('Y','N') NOT NULL DEFAULT 'Y',  `queryID` int(10) unsigned zerofill DEFAULT NULL COMMENT 'If based on a gibbonedu.org query.',  `gibbonPersonID` int(10) unsigned zerofill DEFAULT NULL,  PRIMARY KEY (`queryBuilderQueryID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 
 //gibbonSettings entries
 $gibbonSetting[0] = "INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('Query Builder', 'exportDefaultFileType', 'Default Export File Type', '', 'Excel2007');";
