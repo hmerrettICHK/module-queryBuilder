@@ -35,18 +35,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_edit
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    $queryBuilderQueryID = isset($_GET['queryBuilderQueryID'])? $_GET['queryBuilderQueryID'] : '';
     $search = isset($_GET['search'])? $_GET['search'] : '';
-
-    echo "<div class='linkTop'>";
-        if ($search != '') {
-            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Query Builder/queries.php&search=$search'>".__($guid, 'Back to Search Results').'</a> | ';
-        }
-        echo "<a href='".$gibbon->session->get('absoluteURL')."/index.php?q=/modules/Query Builder/queries_run.php&search=$search&queryBuilderQueryID=$queryBuilderQueryID&sidebar=false'>".__m('Run Query')."</a>" ;
-    echo '</div>';
+    if ($search != '') { echo "<div class='linkTop'>";
+        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Query Builder/queries.php&search=$search'>".__($guid, 'Back to Search Results').'</a>';
+        echo '</div>';
+    }
 
     //Check if school year specified
-    if (empty($queryBuilderQueryID)) {
+    $queryBuilderQueryID = isset($_GET['queryBuilderQueryID'])? $_GET['queryBuilderQueryID'] : '';
+    if (empty($queryBuilderQueryID)) { 
         echo "<div class='error'>";
         echo __($guid, 'You have not specified one or more required parameters.');
         echo '</div>';
@@ -69,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_edit
             $values = $result->fetch();
 
             $form = Form::create('queryBuilder', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/queries_editProcess.php?queryBuilderQueryID='.$queryBuilderQueryID.'&search='.$search);
-
+                
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
             $row = $form->addRow();
@@ -106,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_edit
                     ->addClass('thickbox floatRight');
                 $col->addElement($queryEditor)->isRequired();
 
-
+            
             // BIND VALUES
             $bindValues = json_decode($values['bindValues'] ?? '', true);
             $types = [
@@ -136,7 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_edit
                     ->setClass('w-full m-0 title')
                     ->required()
                     ->placeholder(__m('Label Name'));
-
+    
             $col = $blockTemplate->addRow()->addColumn()->addClass('flex mt-1');
                 $col->addTextField('variable')
                     ->setClass('w-64')
