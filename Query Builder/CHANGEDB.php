@@ -228,3 +228,8 @@ $sql[$count][0] = '1.7.00';
 $sql[$count][1] = "
 ALTER TABLE `queryBuilderQuery` ADD `bindValues` TEXT NULL DEFAULT NULL AFTER `query`;end
 ";
+
+//v1.7.01
+++$count;
+$sql[$count][0] = '1.7.01';
+$sql[$count][1] = "";
