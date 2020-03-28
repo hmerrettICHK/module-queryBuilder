@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Module\QueryBuilder\Forms\QueryEditor;
+use Gibbon\Module\QueryBuilder\Forms\BindValues;
 
 $page->breadcrumbs
   ->add(__('Manage Queries'), 'queries.php')
@@ -87,6 +88,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_add.
             ->setURL($_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/queries_help_full.php&width=1100&height=550')
             ->addClass('thickbox floatRight');
         $col->addElement($queryEditor)->isRequired();
+
+    $bindValues = new BindValues($form->getFactory(), 'bindValues', [], $gibbon->session);
+    $form->addRow()->addElement($bindValues);
 
     $row = $form->addRow();
         $row->addFooter();

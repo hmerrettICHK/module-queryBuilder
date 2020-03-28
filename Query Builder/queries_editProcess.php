@@ -35,12 +35,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_edit
     $queryGateway = $container->get(QueryGateway::class);
 
     $data = [
-        'name'        => $_POST['name'],
-        'category'    => $_POST['category'],
-        'active'      => $_POST['active'],
-        'description' => $_POST['description'],
-        'query'       => $_POST['query'],
-        'bindValues'  => $_POST['bindValues'],
+        'name'        => $_POST['name'] ?? '',
+        'category'    => $_POST['category'] ?? '',
+        'active'      => $_POST['active'] ?? 'Y',
+        'description' => $_POST['description'] ?? '',
+        'query'       => $_POST['query'] ?? '',
+        'bindValues'  => $_POST['bindValues'] ?? [],
     ];
 
     // Sort and jsonify bindValues
