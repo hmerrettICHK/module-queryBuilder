@@ -39,13 +39,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_edit
     $queryBuilderQueryID = isset($_GET['queryBuilderQueryID'])? $_GET['queryBuilderQueryID'] : '';
     $search = isset($_GET['search'])? $_GET['search'] : '';
 
-    echo "<div class='linkTop'>";
-        if ($search != '') {
-            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Query Builder/queries.php&search=$search'>".__($guid, 'Back to Search Results').'</a> | ';
-        }
-        echo "<a href='".$gibbon->session->get('absoluteURL')."/index.php?q=/modules/Query Builder/queries_run.php&search=$search&queryBuilderQueryID=$queryBuilderQueryID&sidebar=false'>".__m('Run Query')."</a>" ;
-    echo '</div>';
-
     //Check if school year specified
     if (empty($queryBuilderQueryID)) {
         echo "<div class='error'>";
@@ -68,6 +61,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_edit
         } else {
             //Let's go!
             $values = $result->fetch();
+
+            echo "<div class='linkTop'>";
+            if ($search != '') {
+                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Query Builder/queries.php&search=$search'>".__($guid, 'Back to Search Results').'</a> | ';
+            }
+            if ($values['active'] == 'Y') {
+                echo "<a href='".$gibbon->session->get('absoluteURL')."/index.php?q=/modules/Query Builder/queries_run.php&search=$search&queryBuilderQueryID=$queryBuilderQueryID&sidebar=false'>".__m('Run Query')."</a>" ;
+            }
+            echo '</div>';
 
             $form = Form::create('queryBuilder', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/queries_editProcess.php?queryBuilderQueryID='.$queryBuilderQueryID.'&search='.$search);
 

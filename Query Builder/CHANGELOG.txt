@@ -4,6 +4,7 @@ v1.7.02
 -------
 Add variables to the Add Query page.
 Add variables to gibbonedu.com sync.
+Disable Edit link for gibbonedu.com queries.
 
 v1.7.01
 -------

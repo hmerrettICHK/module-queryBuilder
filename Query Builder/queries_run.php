@@ -43,13 +43,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
     $queryBuilderQueryID = isset($_GET['queryBuilderQueryID'])? $_GET['queryBuilderQueryID'] : '';
     $search = isset($_GET['search'])? $_GET['search'] : '';
 
-    echo "<div class='linkTop'>";
-        if ($search != '') {
-            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Query Builder/queries.php&search=$search'>".__($guid, 'Back to Search Results').'</a> | ';
-        }
-        echo "<a href='".$gibbon->session->get('absoluteURL')."/index.php?q=/modules/Query Builder/queries_edit.php&search=$search&queryBuilderQueryID=$queryBuilderQueryID&sidebar=false'>".__m('Edit Query')."</a>" ;
-    echo '</div>';
-
     if (isset($_GET['return'])) {
         $illegals = isset($_GET['illegals'])? urldecode($_GET['illegals']) : '';
         returnProcess($guid, $_GET['return'], null, array('error3' => __('Your query contains the following illegal term(s), and so cannot be run:', 'Query Builder').' <b>'.substr($illegals, 0, -2).'</b>.'));
@@ -77,6 +70,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
         } else {
             //Let's go!
             $values = $result->fetch();
+
+            echo "<div class='linkTop'>";
+            if ($search != '') {
+                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Query Builder/queries.php&search=$search'>".__($guid, 'Back to Search Results').'</a> | ';
+            }
+            if ($values['type'] != 'gibbonedu.com') {
+                echo "<a href='".$gibbon->session->get('absoluteURL')."/index.php?q=/modules/Query Builder/queries_edit.php&search=$search&queryBuilderQueryID=$queryBuilderQueryID&sidebar=false'>".__m('Edit Query')."</a>" ;
+            }
+            echo '</div>';
 
             echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
             echo '<tr>';
