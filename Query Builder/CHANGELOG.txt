@@ -1,5 +1,10 @@
 CHANGELOG
 =========
+v1.7.02
+-------
+Add variables to the Add Query page.
+Add variables to gibbonedu.com sync.
+
 v1.7.01
 -------
 Links from Edit to Run, and Run to Edit.

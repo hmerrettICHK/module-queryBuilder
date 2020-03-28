@@ -44,8 +44,8 @@ if (count($queries) < 1) { //We have a problem, report it.
     //Now let's get them in
     for ($i = 0; $i < count($queries); ++$i) {
         try {
-            $data = array('queryID' => $queries[$i]['queryID'], 'name' => $queries[$i]['name'], 'category' => $queries[$i]['category'], 'description' => $queries[$i]['description'], 'query' => $queries[$i]['query']);
-            $sql = "INSERT INTO queryBuilderQuery SET type='gibbonedu.com', queryID=:queryID, name=:name, category=:category, description=:description, query=:query";
+            $data = array('queryID' => $queries[$i]['queryID'], 'name' => $queries[$i]['name'], 'category' => $queries[$i]['category'], 'description' => $queries[$i]['description'], 'query' => $queries[$i]['query'], 'bindValues' => $queries[$i]['bindValues'] ?? '');
+            $sql = "INSERT INTO queryBuilderQuery SET type='gibbonedu.com', queryID=:queryID, name=:name, category=:category, description=:description, query=:query, bindValues=:bindValues";
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
