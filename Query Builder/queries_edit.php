@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Module\QueryBuilder\Forms\QueryEditor;
+use Gibbon\Module\QueryBuilder\Forms\BindValues;
 
 $page->breadcrumbs
   ->add(__('Manage Queries'), 'queries.php')
@@ -37,13 +38,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_edit
 
     $queryBuilderQueryID = isset($_GET['queryBuilderQueryID'])? $_GET['queryBuilderQueryID'] : '';
     $search = isset($_GET['search'])? $_GET['search'] : '';
-
-    echo "<div class='linkTop'>";
-        if ($search != '') {
-            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Query Builder/queries.php&search=$search'>".__($guid, 'Back to Search Results').'</a> | ';
-        }
-        echo "<a href='".$gibbon->session->get('absoluteURL')."/index.php?q=/modules/Query Builder/queries_run.php&search=$search&queryBuilderQueryID=$queryBuilderQueryID&sidebar=false'>".__m('Run Query')."</a>" ;
-    echo '</div>';
 
     //Check if school year specified
     if (empty($queryBuilderQueryID)) {
@@ -67,6 +61,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_edit
         } else {
             //Let's go!
             $values = $result->fetch();
+
+            echo "<div class='linkTop'>";
+            if ($search != '') {
+                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Query Builder/queries.php&search=$search'>".__($guid, 'Back to Search Results').'</a> | ';
+            }
+            if ($values['active'] == 'Y') {
+                echo "<a href='".$gibbon->session->get('absoluteURL')."/index.php?q=/modules/Query Builder/queries_run.php&search=$search&queryBuilderQueryID=$queryBuilderQueryID&sidebar=false'>".__m('Run Query')."</a>" ;
+            }
+            echo '</div>';
 
             $form = Form::create('queryBuilder', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/queries_editProcess.php?queryBuilderQueryID='.$queryBuilderQueryID.'&search='.$search);
 
@@ -106,64 +109,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_edit
                     ->addClass('thickbox floatRight');
                 $col->addElement($queryEditor)->isRequired();
 
-
-            // BIND VALUES
-            $bindValues = json_decode($values['bindValues'] ?? '', true);
-            $types = [
-                __('Basic') => [
-                    'varchar'        => __('Text'),
-                    'number'         => __('Number'),
-                    'yesno'          => __('Yes/No'),
-                    'date'           => __('Date'),
-                ],
-                __('System') => [
-                    'reportingCycle' => __('Reporting Cycle'),
-                    'schoolYear'     => __('School Year'),
-                    'term'           => __('Term'),
-                ],
-            ];
-
-            $missingValues = array_filter($bindValues ?? [], function ($bindValue) use ($values) {
-                return strpos($values['query'], ':'.$bindValue['variable']) === false;
-            });
-
-            // Custom Block Template
-            $addBlockButton = $form->getFactory()->createButton(__('Add Value'))->addClass('addBlock');
-
-            $blockTemplate = $form->getFactory()->createTable()->setClass('blank');
-            $row = $blockTemplate->addRow();
-                $row->addTextField('name')
-                    ->setClass('w-full m-0 title')
-                    ->required()
-                    ->placeholder(__m('Label Name'));
-
-            $col = $blockTemplate->addRow()->addColumn()->addClass('flex mt-1');
-                $col->addTextField('variable')
-                    ->setClass('w-64')
-                    ->required()
-                    ->placeholder(__m('Variable Name'))
-                    ->addValidation('Validate.Format', 'pattern: /^[A-Za-z0-9]+$/, failureMessage: "'.__m('Must be alphanumeric.').'"');
-                $col->addSelect('type')->fromArray($types)->setClass('w-full float-none ml-1')->required()->placeholder();
-
-            // Custom Blocks
-            $col = $form->addRow()->addColumn();
-                $col->addLabel('bindValues', __m('Variables'));
-                $col->addContent(__m('You can optionally define named variables that a user can enter when running this query. Each variable name must be alphanumeric with no spaces or special symbols, and must be present in the query as :variableName'))->wrap('<span class="small emphasis">', '</span>');
-
-                if (!empty($missingValues)) {
-                    $col->addAlert(__m('SQL Error! The following variable names were not found in your query: {variables}', ['variables' => implode(', ', array_column($missingValues, 'variable'))]), 'error');
-                }
-
-                $customBlocks = $col->addCustomBlocks('bindValues', $gibbon->session)
-                    ->fromTemplate($blockTemplate)
-                    ->settings(array('inputNameStrategy' => 'object', 'addOnEvent' => 'click', 'sortable' => true))
-                    ->placeholder(__m('Variables will be listed here...'))
-                    ->addToolInput($addBlockButton);
-
-            // Add existing bindValues
-            foreach ($bindValues ?? [] as $index => $bindValue) {
-                $customBlocks->addBlock($index, $bindValue);
-            }
+            $bindValues = new BindValues($form->getFactory(), 'bindValues', $values, $gibbon->session);
+            $form->addRow()->addElement($bindValues);
 
             $row = $form->addRow();
                 $row->addFooter();

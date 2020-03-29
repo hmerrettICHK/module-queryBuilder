@@ -233,3 +233,8 @@ ALTER TABLE `queryBuilderQuery` ADD `bindValues` TEXT NULL DEFAULT NULL AFTER `q
 ++$count;
 $sql[$count][0] = '1.7.01';
 $sql[$count][1] = "";
+
+//v1.7.02
+++$count;
+$sql[$count][0] = '1.7.02';
+$sql[$count][1] = "";

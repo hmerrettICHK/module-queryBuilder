@@ -17,52 +17,53 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Module\QueryBuilder\Domain\QueryGateway;
+
 include '../../gibbon.php';
 
+$search = $_GET['search'] ?? '';
 
-$search = null;
-if (isset($_GET['search'])) {
-    $search = $_GET['search'];
-}
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/queries_add.php&sidebar=false&search=$search";
 
 if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_add.php') == false) {
     //Fail 0
     $URL = $URL.'&return=error0';
     header("Location: {$URL}");
+    exit;
 } else {
     //Proceed!
-    //Validate Inputs
-    $type = $_POST['type'];
-    $name = $_POST['name'];
-    $category = $_POST['category'];
-    $active = $_POST['active'];
-    $description = $_POST['description'];
-    $query = $_POST['query'];
-    $gibbonPersonID = $_SESSION[$guid]['gibbonPersonID'];
+    $queryGateway = $container->get(QueryGateway::class);
 
-    if ($type == '' or $name == '' or $category == '' or $active == '' or $query == '') {
-        //Fail 3
-        $URL = $URL.'&return=error3';
+    $data = [
+        'type'        => $_POST['type'] ?? '',
+        'name'        => $_POST['name'] ?? '',
+        'category'    => $_POST['category'] ?? '',
+        'active'      => $_POST['active'] ?? 'Y',
+        'description' => $_POST['description'] ?? '',
+        'query'       => $_POST['query'] ?? '',
+        'bindValues'  => $_POST['bindValues'] ?? [],
+        'gibbonPersonID'  => $gibbon->session->get('gibbonPersonID'),
+    ];
+
+    // Sort and jsonify bindValues
+    $data['bindValues'] = array_combine(array_keys($_POST['order']), array_values($data['bindValues']));
+    ksort($data['bindValues']);
+    $data['bindValues'] = json_encode($data['bindValues']);
+
+    // Validate the required values are present
+    if (empty($data['type']) || empty($data['name']) || empty($data['category']) || empty($data['active']) || empty($data['query'])) {
+        $URL .= '&return=error1';
         header("Location: {$URL}");
-    } else {
-        //Write to database
-        try {
-            $data = array('type' => $type, 'name' => $name, 'category' => $category, 'active' => $active, 'description' => $description, 'query' => $query, 'gibbonPersonID' => $gibbonPersonID);
-            $sql = 'INSERT INTO queryBuilderQuery SET type=:type, name=:name, category=:category, active=:active, description=:description, query=:query, gibbonPersonID=:gibbonPersonID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            //Fail 2
-            $URL = $URL.'&return=error2';
-            header("Location: {$URL}");
-            exit();
-        }
-
-        $AI = str_pad($connection2->lastInsertID(), 10, '0', STR_PAD_LEFT);
-
-        //Success 0
-        $URL = $URL.'&return=success0&editID='.$AI;
-        header("Location: {$URL}");
+        exit;
     }
+
+    // Update the record
+    $inserted = $queryGateway->insert($data);
+    $AI = str_pad($inserted, 10, '0', STR_PAD_LEFT);
+
+    $URL .= !$inserted
+        ? "&return=error2"
+        : "&return=success0";
+
+    header("Location: {$URL}&editID={$AI}");
 }
