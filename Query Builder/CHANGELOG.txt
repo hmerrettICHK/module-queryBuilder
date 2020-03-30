@@ -1,5 +1,9 @@
 CHANGELOG
 =========
+v1.7.03
+-------
+Fix variables missing during export
+
 v1.7.02
 -------
 Add variables to the Add Query page.

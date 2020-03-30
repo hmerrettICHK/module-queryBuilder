@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
     } else {
         try {
             $data = array('queryBuilderQueryID' => $queryBuilderQueryID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-            $sql = "SELECT name FROM queryBuilderQuery WHERE queryBuilderQueryID=:queryBuilderQueryID AND (gibbonPersonID=:gibbonPersonID OR NOT type='Personal') AND active='Y'";
+            $sql = "SELECT name, bindValues FROM queryBuilderQuery WHERE queryBuilderQueryID=:queryBuilderQueryID AND (gibbonPersonID=:gibbonPersonID OR NOT type='Personal') AND active='Y'";
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -77,16 +77,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
         } else {
             $queryDetails = $result->fetch();
 
+            // Get bind values, if they exist
+            $data = [];
+            $bindValues = json_decode($queryDetails['bindValues'] ?? '', true);
+            if (!empty($bindValues) && is_array($bindValues)) {
+                foreach ($bindValues as $bindValue) {
+                    $fieldValue = $_GET[$bindValue['variable']] ?? '';
+                    if ($bindValue['type'] == 'date' && !empty($fieldValue)) {
+                        $fieldValue = Format::dateConvert($fieldValue);
+                    }
+                    $data[$bindValue['variable']] = $fieldValue;
+                }
+            }
+            
             // Run the query
-            try {
-                $result = $connection2->prepare($query);
-                $result->execute([]);
-            } catch (\PDOException $e) {
+            $result = $pdo->select($query, $data);
+
+            if (!$pdo->getQuerySuccess()) {
                 $URL = $URL.'&return=error2';
                 header("Location: {$URL}");
                 exit;
             }
-
 
             //Proceed!
             $renderer = new SpreadsheetRenderer($_SESSION[$guid]['absolutePath']);

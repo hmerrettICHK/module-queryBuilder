@@ -146,7 +146,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
                     } elseif ($bindValue['type'] == 'schoolYear') {
                         $row->addSelectSchoolYearTerm($bindValue['variable'], $gibbon->session->get('gibbonSchoolYearID'))->selected($fieldValue)->required();
                     } elseif ($bindValue['type'] == 'reportingCycle') {
-                        $row->addSelectReportingCycle($bindValue['variable'])->required();
+                        $row->addSelectReportingCycle($bindValue['variable'])->selected($fieldValue)->required();
                     } else {
                         $row->addCustomField($bindValue['variable'], $bindValue)->setValue($fieldValue);
                     }
@@ -221,7 +221,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
 
                         echo "<div class='linkTop'>";
 
-                        $form = Form::create('queryExport', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/queries_run_export.php?queryBuilderQueryID='.$queryBuilderQueryID)->setClass('blank fullWidth');
+                        $form = Form::create('queryExport', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/queries_run_export.php?queryBuilderQueryID='.$queryBuilderQueryID.'&'.http_build_query($data))->setClass('blank fullWidth');
                         $form->addHiddenValue('query', $query);
 
                         $row = $form->addRow();
