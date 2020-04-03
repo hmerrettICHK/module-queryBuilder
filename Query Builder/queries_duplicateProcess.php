@@ -65,6 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_dupl
             $active = $row['active'];
             $description = $row['description'];
             $query = $row['query'];
+            $bindValues = $row['bindValues'];
             $gibbonPersonID = $_SESSION[$guid]['gibbonPersonID'];
 
             if ($name == '' or $category == '' or $active == '' or $query == '') {
@@ -74,8 +75,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_dupl
             } else {
                 //Write to database
                 try {
-                    $data = array('type' => $type, 'name' => $name, 'category' => $category, 'active' => $active, 'description' => $description, 'query' => $query, 'gibbonPersonID' => $gibbonPersonID);
-                    $sql = 'INSERT INTO queryBuilderQuery SET type=:type, name=:name, category=:category, active=:active, description=:description, query=:query, gibbonPersonID=:gibbonPersonID';
+                    $data = array('type' => $type, 'name' => $name, 'category' => $category, 'active' => $active, 'description' => $description, 'query' => $query, 'bindValues' => $bindValues, 'gibbonPersonID' => $gibbonPersonID);
+                    $sql = 'INSERT INTO queryBuilderQuery SET type=:type, name=:name, category=:category, active=:active, description=:description, query=:query, bindValues=:bindValues, gibbonPersonID=:gibbonPersonID';
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {

@@ -1,5 +1,10 @@
 CHANGELOG
 =========
+v1.7.04
+-------
+Add a year group checkbox variable type
+Fix variables missing after duplicating a query
+
 v1.7.03
 -------
 Fix variables missing during export
