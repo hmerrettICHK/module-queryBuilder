@@ -147,6 +147,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
                         $row->addSelectSchoolYearTerm($bindValue['variable'], $gibbon->session->get('gibbonSchoolYearID'))->selected($fieldValue)->required();
                     } elseif ($bindValue['type'] == 'reportingCycle') {
                         $row->addSelectReportingCycle($bindValue['variable'])->selected($fieldValue)->required();
+                    } elseif ($bindValue['type'] == 'yearGroups') {
+                        $row->addCheckboxYearGroup($bindValue['variable'])->checked($fieldValue)->required();
                     } else {
                         $row->addCustomField($bindValue['variable'], $bindValue)->setValue($fieldValue);
                     }
@@ -204,6 +206,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
                             $fieldValue = $_POST[$bindValue['variable']] ?? '';
                             if ($bindValue['type'] == 'date' && !empty($fieldValue)) {
                                 $fieldValue = Format::dateConvert($fieldValue);
+                            } elseif (is_array($fieldValue)) {
+                                $fieldValue = implode(',', $fieldValue);
                             }
                             $data[$bindValue['variable']] = $fieldValue;
                         }

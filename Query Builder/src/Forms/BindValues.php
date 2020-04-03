@@ -60,6 +60,7 @@ class BindValues extends Column
                 'reportingCycle' => __('Reporting Cycle'),
                 'schoolYear'     => __('School Year'),
                 'term'           => __('Term'),
+                'yearGroups'     => __('Year Groups'),
             ],
         ];
 

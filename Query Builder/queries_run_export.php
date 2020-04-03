@@ -85,6 +85,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
                     $fieldValue = $_GET[$bindValue['variable']] ?? '';
                     if ($bindValue['type'] == 'date' && !empty($fieldValue)) {
                         $fieldValue = Format::dateConvert($fieldValue);
+                    } elseif (is_array($fieldValue)) {
+                        $fieldValue = implode(',', $fieldValue);
                     }
                     $data[$bindValue['variable']] = $fieldValue;
                 }
