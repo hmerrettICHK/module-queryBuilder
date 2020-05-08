@@ -1,5 +1,9 @@
 CHANGELOG
 =========
+v1.7.05
+-------
+Removed errant pipe
+
 v1.7.04
 -------
 Add a year group checkbox variable type

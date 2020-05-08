@@ -248,3 +248,8 @@ $sql[$count][1] = "";
 ++$count;
 $sql[$count][0] = '1.7.04';
 $sql[$count][1] = "";
+
+//v1.7.05
+++$count;
+$sql[$count][0] = '1.7.05';
+$sql[$count][1] = "";

@@ -63,10 +63,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_edit
             $values = $result->fetch();
 
             echo "<div class='linkTop'>";
+            $pipe = false ;
             if ($search != '') {
-                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Query Builder/queries.php&search=$search'>".__($guid, 'Back to Search Results').'</a> | ';
+                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Query Builder/queries.php&search=$search'>".__($guid, 'Back to Search Results').'</a>';
+                $pipe = true;
             }
             if ($values['active'] == 'Y') {
+                echo ($pipe) ? " | " : '' ;
                 echo "<a href='".$gibbon->session->get('absoluteURL')."/index.php?q=/modules/Query Builder/queries_run.php&search=$search&queryBuilderQueryID=$queryBuilderQueryID&sidebar=false'>".__m('Run Query')."</a>" ;
             }
             echo '</div>';
