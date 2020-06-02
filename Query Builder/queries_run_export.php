@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
     } else {
         try {
             $data = array('queryBuilderQueryID' => $queryBuilderQueryID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-            $sql = "SELECT name, bindValues FROM queryBuilderQuery WHERE queryBuilderQueryID=:queryBuilderQueryID AND (gibbonPersonID=:gibbonPersonID OR NOT type='Personal') AND active='Y'";
+            $sql = "SELECT name, bindValues FROM queryBuilderQuery WHERE queryBuilderQueryID=:queryBuilderQueryID AND ((gibbonPersonID=:gibbonPersonID AND type='Personal') OR type='School' OR type='gibbonedu.com') AND active='Y'";
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {

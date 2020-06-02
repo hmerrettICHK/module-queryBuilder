@@ -97,11 +97,8 @@ if (isModuleAccessible($guid, $connection2) == false) {
         ->pageSize(100)
         ->fromArray($_POST);
 
-    echo '<h3>';
-    echo __('Search');
-    echo '</h3>';
-
     $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form->setTitle(__('Search'));
     $form->setClass('noIntBorder fullWidth');
 
     $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/queries.php');
@@ -115,14 +112,11 @@ if (isModuleAccessible($guid, $connection2) == false) {
 
     echo $form->getOutput();
 
-    echo '<h3>';
-    echo __('Queries');
-    echo '</h3>';
-
     // QUERY
     $queries = $queryGateway->queryQueries($criteria, $_SESSION[$guid]['gibbonPersonID']);
 
     $table = DataTable::createPaginated('queriesManage', $criteria);
+    $table->setTitle(__('Queries'));
 
     if ($highestAction == 'Manage Queries_viewEditAll') {
         $table->addHeaderAction('add', __('Add'))
@@ -132,14 +126,14 @@ if (isModuleAccessible($guid, $connection2) == false) {
             ->displayLabel();
     }
 
-    $table->modifyRows(function($query, $row) {
+    $table->modifyRows(function ($query, $row) {
         if ($query['active'] != 'Y') $row->addClass('error');
         return $row;
     });
 
     // COLUMNS
     $table->addColumn('type', __('Type'))
-        ->format(function($query) {
+        ->format(function ($query) {
             return !is_null($query['queryID'])? 'gibbonedu.com' : $query['type'];
         });
     $table->addColumn('category', __('Category'));
@@ -154,7 +148,7 @@ if (isModuleAccessible($guid, $connection2) == false) {
         ->format(function ($query, $actions) use ($highestAction, $guid) {
 
             if ($highestAction == 'Manage Queries_viewEditAll') {
-                if ($query['type'] == 'Personal' or ($query['type'] == 'School' and $query['gibbonPersonID'] == $_SESSION[$guid]['gibbonPersonID'])) {
+                if (($query['type'] == 'Personal' && $query['gibbonPersonID'] == $_SESSION[$guid]['gibbonPersonID']) || $query['type'] == 'School') {
                     $actions->addAction('edit', __('Edit Record'))
                         ->setURL('/modules/Query Builder/queries_edit.php')
                         ->addParam('sidebar', 'false');
