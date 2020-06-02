@@ -91,7 +91,7 @@ if (isModuleAccessible($guid, $connection2) == false) {
 
     // CRITERIA
     $queryGateway = $container->get(QueryGateway::class);
-    $criteria = $queryGateway->newQueryCriteria()
+    $criteria = $queryGateway->newQueryCriteria(true)
         ->searchBy($queryGateway->getSearchableColumns(), $search)
         ->sortBy(['category', 'gibbonPersonID', 'name'])
         ->pageSize(100)

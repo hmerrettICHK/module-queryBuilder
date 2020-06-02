@@ -196,7 +196,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
                 } else {
                     //Save the query
                     if ($highestAction == 'Manage Queries_viewEditAll' && $save == 'Y') {
-                        $data = array('queryBuilderQueryID' => $queryBuilderQueryID, 'query' => $query);
+                        $rawQuery = $_POST['query'] ?? '';
+                        $data = array('queryBuilderQueryID' => $queryBuilderQueryID, 'query' => $rawQuery);
                         $sql = "UPDATE queryBuilderQuery SET query=:query WHERE queryBuilderQueryID=:queryBuilderQueryID";
                         $pdo->update($sql, $data);
                     }
