@@ -18,7 +18,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-use Gibbon\Module\QueryBuilder\Forms\QueryEditor;
 use Gibbon\Module\QueryBuilder\Forms\BindValues;
 
 $page->breadcrumbs
@@ -103,14 +102,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_edit
                 $row->addLabel('description', __('Description'));
                 $row->addTextArea('description')->setRows(8);
 
-            $queryEditor = new QueryEditor('query');
-
             $col = $form->addRow()->addColumn();
                 $col->addLabel('query', __('Query'));
                 $col->addWebLink('<img title="'.__('Help').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/help.png" style="margin-bottom:5px"/>')
                     ->setURL($_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/queries_help_full.php&width=1100&height=550')
                     ->addClass('thickbox floatRight');
-                $col->addElement($queryEditor)->isRequired();
+                $col->addCodeEditor('query')->setMode('mysql')->isRequired();
 
             $bindValues = new BindValues($form->getFactory(), 'bindValues', $values, $gibbon->session);
             $form->addRow()->addElement($bindValues);

@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
-use Gibbon\Module\QueryBuilder\Forms\QueryEditor;
 use Gibbon\Services\Format;
 
 //Module includes
@@ -115,7 +114,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
             if ($highestAction == 'Manage Queries_viewEditAll') {
-                $queryEditor = new QueryEditor('query');
                 $queryText = !empty($query)? $query : $values['query'];
 
                 $row = $form->addRow();
@@ -125,7 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
 
                 $col = $form->addRow()->addColumn();
                     $col->addLabel('query', __('Query'));
-                    $col->addElement($queryEditor)->isRequired()->setValue($queryText);
+                    $col->addCodeEditor('query')->setMode('mysql')->isRequired()->setValue($queryText);
             } else {
                 $form->addHiddenValue('query', $values['query']);
             }
