@@ -1,6 +1,6 @@
 CHANGELOG
 =========
-v1.7.06
+v1.8.00
 -------
 Allow users with Manage Queries_viewEditAll to edit School queries
 Implement CodeEditor field, remove QueryEditor and lib folder
