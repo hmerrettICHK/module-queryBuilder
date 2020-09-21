@@ -1,5 +1,11 @@
 CHANGELOG
 =========
+v1.9.01
+-------
+Fixed scope saving issue
+Fixed broken Help button in Query Add and Edit
+Improved typography on help page
+
 v1.9.00
 -------
 Added additional module queries

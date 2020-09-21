@@ -45,7 +45,7 @@ if (count($queries) < 1) { //We have a problem, report it.
 
     //Prep additional module array
     $moduleGateway = $container->get(ModuleGateway::class);
-    
+
     $criteria = $moduleGateway->newQueryCriteria(true)
         ->sortBy('name')
         ->filterBy('type', 'Additional')
@@ -68,8 +68,8 @@ if (count($queries) < 1) { //We have a problem, report it.
 
         if ($insert) {
             try {
-                $data = array('queryID' => $query['queryID'], 'name' => $query['name'], 'category' => $query['category'], 'description' => $query['description'], 'query' => $query['query'], 'bindValues' => $query['bindValues'] ?? '');
-                $sql = "INSERT INTO queryBuilderQuery SET type='gibbonedu.com', queryID=:queryID, name=:name, category=:category, description=:description, query=:query, bindValues=:bindValues";
+                $data = array('queryID' => $query['queryID'], 'scope' => $query['scope'], 'name' => $query['name'], 'category' => $query['category'], 'description' => $query['description'], 'query' => $query['query'], 'bindValues' => $query['bindValues'] ?? '');
+                $sql = "INSERT INTO queryBuilderQuery SET type='gibbonedu.com', queryID=:queryID, scope=:scope, name=:name, category=:category, description=:description, query=:query, bindValues=:bindValues";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {

@@ -26,6 +26,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_help
     echo '</div>';
 } else {
     //Proceed!
+    echo '<h1>';
+    echo __m('Help');
+    echo '</h1>';
     echo '<p>';
     echo "This help page gives a listing of all database tables contained within your Gibbon database ($databaseName). For each table there is a listing of all of the columns available. Where the same column name is found two tables, it generally infers a relationship, which can be queried with an SQL JOIN statement.";
     echo '</p>';
@@ -43,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_help
         echo '</div>';
     } else {
         while ($row = $result->fetch()) {
-            echo '<h2>';
+            echo '<h2 style="text-transform: none;">';
             echo $row['Tables_in_'.$databaseName];
             echo '</h2>';
 

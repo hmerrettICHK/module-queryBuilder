@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_add.
     }
 
     $form = Form::create('queryBuilder', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/queries_addProcess.php?search='.$search);
-                
+
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
     $types = array(
@@ -79,11 +79,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_add.
         $row->addLabel('description', __('Description'));
         $row->addTextArea('description')->setRows(8);
 
+    $row = $form->addRow();
+    $row->addWebLink('<img title="'.__('Help').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/help.png" style="margin-bottom:5px"/>')
+        ->setURL($_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/queries_help_full.php&width=1100&height=550')
+        ->addClass('thickbox floatRight');
+
     $col = $form->addRow()->addColumn();
         $col->addLabel('query', __('Query'));
-        $col->addWebLink('<img title="'.__('Help').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/help.png" style="margin-bottom:5px"/>')
-            ->setURL($_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/queries_help_full.php&width=1100&height=550')
-            ->addClass('thickbox floatRight');
         $col->addCodeEditor('query')->setMode('mysql')->isRequired();
 
     $bindValues = new BindValues($form->getFactory(), 'bindValues', [], $gibbon->session);
