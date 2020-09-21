@@ -17,11 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\System\ModuleGateway;
+
 //Gibbon system-wide includes
 include '../../gibbon.php';
 
 //Module includes
-include $_SESSION[$guid]['absolutePath'].'/modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+include $_SESSION[$guid]['absolutePath'].'/modules/Query Builder/moduleFunctions.php';
 
 //Setup variables
 $gibboneduComOrganisationName = $_POST['gibboneduComOrganisationName'];
@@ -41,15 +43,38 @@ if (count($queries) < 1) { //We have a problem, report it.
     } catch (PDOException $e) {
     }
 
+    //Prep additional module array
+    $moduleGateway = $container->get(ModuleGateway::class);
+    
+    $criteria = $moduleGateway->newQueryCriteria(true)
+        ->sortBy('name')
+        ->filterBy('type', 'Additional')
+        ->fromPOST();
+    $modules = $moduleGateway->queryModules($criteria)->toArray();
+
+    $modulesArray = array() ;
+    foreach ($modules AS $module) {
+        $modulesArray[$module['name']] = $module['version'];
+    }
+
     //Now let's get them in
-    for ($i = 0; $i < count($queries); ++$i) {
-        try {
-            $data = array('queryID' => $queries[$i]['queryID'], 'name' => $queries[$i]['name'], 'category' => $queries[$i]['category'], 'description' => $queries[$i]['description'], 'query' => $queries[$i]['query'], 'bindValues' => $queries[$i]['bindValues'] ?? '');
-            $sql = "INSERT INTO queryBuilderQuery SET type='gibbonedu.com', queryID=:queryID, name=:name, category=:category, description=:description, query=:query, bindValues=:bindValues";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            echo 'here'.$e->getMessage();
+    foreach ($queries as $query) {
+        $insert = ($query['scope'] == 'Core') ? true : false;
+        if ($query['scope'] != 'Core') {
+            if (version_compare($query["versionFirst"],$modulesArray[$query['scope']], "<=") AND ((version_compare($query["versionLast"],$modulesArray[$query['scope']], ">=") OR empty($query["versionLast"])))) {
+                $insert = true;
+            }
+        }
+
+        if ($insert) {
+            try {
+                $data = array('queryID' => $query['queryID'], 'name' => $query['name'], 'category' => $query['category'], 'description' => $query['description'], 'query' => $query['query'], 'bindValues' => $query['bindValues'] ?? '');
+                $sql = "INSERT INTO queryBuilderQuery SET type='gibbonedu.com', queryID=:queryID, name=:name, category=:category, description=:description, query=:query, bindValues=:bindValues";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                echo $e->getMessage();
+            }
         }
     }
 }

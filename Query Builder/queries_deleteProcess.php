@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_dele
     } else {
         try {
             $data = array('queryBuilderQueryID' => $queryBuilderQueryID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-            $sql = "SELECT * FROM queryBuilderQuery WHERE queryBuilderQueryID=:queryBuilderQueryID AND NOT type='gibbonedu.com' AND gibbonPersonID=:gibbonPersonID";
+            $sql = "SELECT * FROM queryBuilderQuery WHERE queryBuilderQueryID=:queryBuilderQueryID AND NOT type='gibbonedu.com' AND (type='School' OR (type='Personal' AND gibbonPersonID=:gibbonPersonID) )";
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {

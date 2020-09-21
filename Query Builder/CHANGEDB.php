@@ -258,3 +258,10 @@ $sql[$count][1] = "";
 ++$count;
 $sql[$count][0] = '1.8.00';
 $sql[$count][1] = "";
+
+//v1.9.00
+++$count;
+$sql[$count][0] = '1.9.00';
+$sql[$count][1] = "
+ALTER TABLE `queryBuilderQuery` ADD `scope` varchar(30) NOT NULL DEFAULT 'Core' AFTER `type`;end
+";

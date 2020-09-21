@@ -1,5 +1,10 @@
 CHANGELOG
 =========
+v1.9.00
+-------
+Added additional module queries
+Fixed Manage Queries Delete logic
+
 v1.8.00
 -------
 Allow users with Manage Queries_viewEditAll to edit School queries
