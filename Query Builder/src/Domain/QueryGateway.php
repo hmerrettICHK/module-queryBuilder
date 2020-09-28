@@ -35,7 +35,7 @@ class QueryGateway extends QueryableGateway
     private static $primaryKey = 'queryBuilderQueryID';
 
     private static $searchableColumns = ['name', 'category'];
-    
+
     /**
      * @param QueryCriteria $criteria
      * @return DataSet
@@ -56,5 +56,17 @@ class QueryGateway extends QueryableGateway
             ->bindValue('gibbonPersonID', $gibbonPersonID);
 
         return $this->runQuery($query, $criteria);
+    }
+
+    public function syncRemoveQueries($queries)
+    {
+        $queryIDs = array_map(function($query) use ($queries) {
+                        return intval($query["queryID"]);
+                    }, $queries);
+
+        $queryIDList = implode(",", $queryIDs);
+
+        $sql = "DELETE FROM queryBuilderQuery WHERE type='gibbonedu.com' AND queryID NOT IN ($queryIDList)";
+        return $this->db()->delete($sql);
     }
 }
