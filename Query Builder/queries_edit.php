@@ -67,15 +67,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_edit
                 echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Query Builder/queries.php&search=$search'>".__($guid, 'Back to Search Results').'</a>';
                 $pipe = true;
             }
-            if ($values['active'] == 'Y') {
-                echo ($pipe) ? " | " : '' ;
-                echo "<a href='".$gibbon->session->get('absoluteURL')."/index.php?q=/modules/Query Builder/queries_run.php&search=$search&queryBuilderQueryID=$queryBuilderQueryID&sidebar=false'>".__m('Run Query')."</a>" ;
-            }
             echo '</div>';
 
             $form = Form::create('queryBuilder', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/queries_editProcess.php?queryBuilderQueryID='.$queryBuilderQueryID.'&search='.$search);
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+            $form->addHeaderAction('help', __('Help'))
+                ->setURL('/modules/Query Builder/queries_help_full.php')
+                ->setIcon('help')
+                ->addClass('underline')
+                ->displayLabel()
+                ->modalWindow();
+
+            if ($values['active'] == 'Y') {
+                $form->addHeaderAction('run', __('Run Query'))
+                    ->setURL('/modules/Query Builder/queries_run.php')
+                    ->addParam('search', $search)
+                    ->addParam('queryBuilderQueryID', $queryBuilderQueryID)
+                    ->addParam('sidebar', 'false')
+                    ->setIcon('run')
+                    ->displayLabel()
+                    ->prepend(" | ");
+            }
 
             $row = $form->addRow();
                 $row->addLabel('type', __('Type'));
@@ -101,11 +115,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_edit
             $row = $form->addRow();
                 $row->addLabel('description', __('Description'));
                 $row->addTextArea('description')->setRows(8);
-
-            $row = $form->addRow();
-            $row->addWebLink('<img title="'.__('Help').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/help.png" style="margin-bottom:5px"/>')
-                ->setURL($_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/queries_help_full.php&width=1100&height=550')
-                ->addClass('thickbox floatRight');
 
             $col = $form->addRow()->addColumn();
                 $col->addLabel('query', __('Query'));

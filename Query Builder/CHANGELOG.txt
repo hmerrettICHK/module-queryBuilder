@@ -1,9 +1,12 @@
 CHANGELOG
 =========
+v1.10.01
+--------
+Improved table actions
+
 v1.10.00
 --------
 Improved query syncing
-Fixed PHP notices
 
 v1.9.01
 -------

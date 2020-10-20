@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_edit
     ];
 
     // Sort and jsonify bindValues
-    $data['bindValues'] = array_combine(array_keys($_POST['order'] ?? []), array_values($data['bindValues']));
+    $data['bindValues'] = array_combine(array_keys($_POST['order']), array_values($data['bindValues']));
     ksort($data['bindValues']);
     $data['bindValues'] = json_encode($data['bindValues']);
 
@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_edit
     }
 
     // Validate this user has access to this query
-    if ($values['type'] == 'gibbonedu.com' || ($values['type'] == 'Personal' && $values['gibbonPersonID'] != $gibbon->session->get('gibbonPersonID'))) {
+    if ($values['type'] == 'gibbonedu.com' || ($values['Personal'] && $values['gibbonPersonID'] != $gibbon->session->get('gibbonPersonID'))) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
         exit;

@@ -50,6 +50,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_add.
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
+    $form->addHeaderAction('help', __('Help'))
+        ->setURL('/modules/Query Builder/queries_help_full.php')
+        ->setIcon('help')
+        ->addClass('underline')
+        ->displayLabel()
+        ->modalWindow();
+
     $types = array(
         'Personal' => __('Personal'),
         'School' => __('School'),
@@ -78,11 +85,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_add.
     $row = $form->addRow();
         $row->addLabel('description', __('Description'));
         $row->addTextArea('description')->setRows(8);
-
-    $row = $form->addRow();
-    $row->addWebLink('<img title="'.__('Help').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/help.png" style="margin-bottom:5px"/>')
-        ->setURL($_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/queries_help_full.php&width=1100&height=550')
-        ->addClass('thickbox floatRight');
 
     $col = $form->addRow()->addColumn();
         $col->addLabel('query', __('Query'));

@@ -76,37 +76,36 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
                 echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Query Builder/queries.php&search=$search'>".__($guid, 'Back to Search Results').'</a>';
                 $pipe = true;
             }
-            if ($values['type'] != 'gibbonedu.com') {
-                echo ($pipe) ? " | " : '' ;
-                echo "<a href='".$gibbon->session->get('absoluteURL')."/index.php?q=/modules/Query Builder/queries_edit.php&search=$search&queryBuilderQueryID=$queryBuilderQueryID&sidebar=false'>".__m('Edit Query')."</a>" ;
-            }
             echo '</div>';
 
-            echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
-            echo '<tr>';
-            echo "<td style='width: 33%; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>Name</span><br/>";
-            echo '<i>'.$values['name'].'</i>';
-            echo '</td>';
-            echo "<td style='width: 33%; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>Category</span><br/>";
-            echo '<i>'.$values['category'].'</i>';
-            echo '</td>';
-            echo "<td style='width: 33%; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>Active</span><br/>";
-            echo '<i>'.$values['active'].'</i>';
-            echo '</td>';
-            echo '</tr>';
-            if ($values['description'] != '') {
-                echo '<tr>';
-                echo "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=3>";
-                echo "<span style='font-size: 115%; font-weight: bold'>Description</span><br/>";
-                echo $values['description'];
-                echo '</td>';
-                echo '</tr>';
-            }
-            echo '</table>';
+            $table = DataTable::createDetails('query');
 
+            if ($highestAction == 'Manage Queries_viewEditAll') {
+                $table->addHeaderAction('help', __('Help'))
+                    ->setURL('/modules/Query Builder/queries_help_full.php')
+                    ->setIcon('help')
+                    ->addClass('underline')
+                    ->displayLabel()
+                    ->modalWindow();
+
+                if ($values['type'] != 'gibbonedu.com') {
+                    $table->addHeaderAction('edit', __('Edit Query'))
+                        ->setURL('/modules/Query Builder/queries_edit.php')
+                        ->addParam('search', $search)
+                        ->addParam('queryBuilderQueryID', $queryBuilderQueryID)
+                        ->addParam('sidebar', 'false')
+                        ->setIcon('config')
+                        ->displayLabel()
+                        ->prepend(" | ");
+                }
+            }
+
+            $table->addColumn('name', __('Name'));
+            $table->addColumn('category', __('Category'));
+            $table->addColumn('active', __('Active'));
+            $table->addColumn('description', __('Description'))->width(100);
+
+            echo $table->render([$values]);
 
             $form = Form::create('queryBuilder', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/queries_run.php&queryBuilderQueryID='.$queryBuilderQueryID.'&sidebar=false&search='.$search);
             $form->setFactory(DatabaseFormFactory::create($pdo));
@@ -115,11 +114,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
 
             if ($highestAction == 'Manage Queries_viewEditAll') {
                 $queryText = !empty($query)? $query : $values['query'];
-
-                $row = $form->addRow();
-                $row->addWebLink('<img title="'.__('Help').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/help.png" style="margin-bottom:5px"/>')
-                    ->setURL($_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/queries_help_full.php&width=1100&height=550')
-                    ->addClass('thickbox floatRight');
 
                 $col = $form->addRow()->addColumn();
                     $col->addLabel('query', __('Query'));
