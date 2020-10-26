@@ -32,7 +32,7 @@ ini_set('memory_limit','256M');
 $queryBuilderQueryID = $_GET['queryBuilderQueryID'] ?? '';
 $hash = $_GET['hash'] ?? '';
 $query = $gibbon->session->get($hash)['query'] ?? '';
-$bindValues = $gibbon->session->get($hash)['bindValues'] ?? [];
+$queryData = $gibbon->session->get($hash)['queryData'] ?? [];
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Query Builder/queries_run.php&sidebar=false&queryBuilderQueryID='.$queryBuilderQueryID;
 
@@ -46,16 +46,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
         header("Location: {$URL}");
         exit;
     } else {
-        try {
-            $data = array('queryBuilderQueryID' => $queryBuilderQueryID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-            $sql = "SELECT name, bindValues FROM queryBuilderQuery WHERE queryBuilderQueryID=:queryBuilderQueryID AND ((gibbonPersonID=:gibbonPersonID AND type='Personal') OR type='School' OR type='gibbonedu.com') AND active='Y'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $URL = $URL.'&return=error2';
-            header("Location: {$URL}");
-            exit;
-        }
+        $data = array('queryBuilderQueryID' => $queryBuilderQueryID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+        $sql = "SELECT name, bindValues FROM queryBuilderQuery WHERE queryBuilderQueryID=:queryBuilderQueryID AND ((gibbonPersonID=:gibbonPersonID AND type='Personal') OR type='School' OR type='gibbonedu.com') AND active='Y'";
+        $result = $pdo->select($sql, $data);
 
         if ($result->rowCount() < 1) {
             $URL = $URL.'&return=error1';
@@ -80,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
             $queryDetails = $result->fetch();
 
             // Run the query
-            $result = $pdo->select($query, $bindValues);
+            $result = $pdo->select($query, $queryData);
 
             if (!$pdo->getQuerySuccess()) {
                 $URL = $URL.'&return=error2';

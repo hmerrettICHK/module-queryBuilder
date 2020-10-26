@@ -155,8 +155,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
                 $col = $row->addColumn()->addClass('inline right');
                 if ($highestAction == 'Manage Queries_viewEditAll' && ($values['type'] == 'Personal' or ($values['type'] == 'School' and $values['gibbonPersonID'] == $_SESSION[$guid]['gibbonPersonID']))) {
                     $col->addCheckbox('save')->description(__('Save Query?'))->setValue('Y')->checked($save)->wrap('<span class="displayInlineBlock">', '</span>&nbsp;&nbsp;');
-                }
-                else {
+                } else {
                     $col->addContent('');
                 }
                 $col->addSubmit(__('Run Query'));
@@ -228,11 +227,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
                         $hash = md5($query);
                         $gibbon->session->set($hash, [
                             'query' => $query,
-                            'bindValues' => $data,
+                            'queryData' => $data,
                         ]);
                         $table->addHeaderAction('export', __('Export'))
-                            ->setExternalURL($gibbon->session->get('absoluteURL')."/modules/Query Builder/queries_run_export.php?queryBuilderQueryID=$queryBuilderQueryID&hash=$hash")
                             ->setIcon('download')
+                            ->setURL('/modules/Query Builder/queries_run_export.php')
+                            ->addParam('queryBuilderQueryID', $queryBuilderQueryID)
+                            ->addParam('hash', $hash)
+                            ->directLink()
                             ->displayLabel();
 
                         $count = 1;
