@@ -1,5 +1,9 @@
 CHANGELOG
 =========
+v1.10.02
+--------
+Improved Export action
+
 v1.10.01
 --------
 Improved table actions

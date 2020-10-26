@@ -29,8 +29,10 @@ include './moduleFunctions.php';
 //Increase memory limit
 ini_set('memory_limit','256M');
 
-$queryBuilderQueryID = isset($_GET['queryBuilderQueryID'])? $_GET['queryBuilderQueryID'] : '';
-$query = isset($_POST['query'])? $_POST['query'] : '';
+$queryBuilderQueryID = $_GET['queryBuilderQueryID'] ?? '';
+$hash = $_GET['hash'] ?? '';
+$query = $gibbon->session->get($hash)['query'] ?? '';
+$bindValues = $gibbon->session->get($hash)['bindValues'] ?? [];
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Query Builder/queries_run.php&sidebar=false&queryBuilderQueryID='.$queryBuilderQueryID;
 
@@ -39,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
     header("Location: {$URL}");
     exit;
 } else {
-    if ($queryBuilderQueryID == '' or $query == '') {
+    if ($queryBuilderQueryID == '' or $hash == '' or $query == '') {
         $URL = $URL.'&return=error1';
         header("Location: {$URL}");
         exit;
@@ -77,23 +79,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
         } else {
             $queryDetails = $result->fetch();
 
-            // Get bind values, if they exist
-            $data = [];
-            $bindValues = json_decode($queryDetails['bindValues'] ?? '', true);
-            if (!empty($bindValues) && is_array($bindValues)) {
-                foreach ($bindValues as $bindValue) {
-                    $fieldValue = $_GET[$bindValue['variable']] ?? '';
-                    if ($bindValue['type'] == 'date' && !empty($fieldValue)) {
-                        $fieldValue = Format::dateConvert($fieldValue);
-                    } elseif (is_array($fieldValue)) {
-                        $fieldValue = implode(',', $fieldValue);
-                    }
-                    $data[$bindValue['variable']] = $fieldValue;
-                }
-            }
-            
             // Run the query
-            $result = $pdo->select($query, $data);
+            $result = $pdo->select($query, $bindValues);
 
             if (!$pdo->getQuerySuccess()) {
                 $URL = $URL.'&return=error2';
@@ -121,5 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
 
             echo $table->render($result->toDataSet());
         }
+
+        $gibbon->session->remove($hash);
     }
 }

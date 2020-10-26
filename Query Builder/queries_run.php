@@ -219,22 +219,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
                     } else {
                         echo '<div class="success">'.sprintf(__('Your query has returned %1$s rows, which are displayed below.'), $result->rowCount()).'</div>';
 
-                        echo "<div class='linkTop'>";
-
-                        $form = Form::create('queryExport', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/queries_run_export.php?queryBuilderQueryID='.$queryBuilderQueryID.'&'.http_build_query($data))->setClass('blank fullWidth');
-                        $form->addHiddenValue('query', $query);
-
-                        $row = $form->addRow();
-                            $row->addContent("<input style='background:url(./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png) no-repeat; cursor:pointer; min-width: 25px!important; max-width: 25px!important; max-height: 25px; border: none; float: right' type='submit' value=''>");
-
-                        echo $form->getOutput();
-
-                        echo '</div>';
-
                         $invalidColumns = ['password', 'passwordStrong', 'passwordStrongSalt', 'gibbonStaffContract', 'gibbonStaffApplicationForm', 'gibbonStaffApplicationFormFile'];
 
                         $table = DataTable::create('queryResults');
                         $table->getRenderer();
+
+                        //Set up export header action
+                        $hash = md5($query);
+                        $gibbon->session->set($hash, [
+                            'query' => $query,
+                            'bindValues' => $data,
+                        ]);
+                        $table->addHeaderAction('export', __('Export'))
+                            ->setExternalURL($gibbon->session->get('absoluteURL')."/modules/Query Builder/queries_run_export.php?queryBuilderQueryID=$queryBuilderQueryID&hash=$hash")
+                            ->setIcon('download')
+                            ->displayLabel();
 
                         $count = 1;
                         $table->addColumn('count', '')->width('35px')->format(function($row) use (&$count) {
