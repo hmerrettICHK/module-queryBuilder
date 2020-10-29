@@ -1,5 +1,9 @@
 CHANGELOG
 =========
+v1.11.00
+--------
+Added table filtering in Help modal
+
 v1.10.02
 --------
 Improved Export action

@@ -45,31 +45,52 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_help
         echo __($guid, 'There are no tables to show.');
         echo '</div>';
     } else {
+        ?>
+        <script type="text/javascript">
+            $( document ).ready(function() {
+                $('#my-textbox').keyup(function() {
+                    var value = $(this).val();
+                    var exp = new RegExp(value, 'i');
+
+                    $('.table').each(function() {
+                        var isMatch = exp.test($('.tableName', this).text());
+                        $(this).toggle(isMatch);
+                    });
+                });
+            });
+        </script>
+
+        <?php
+
+        echo "<input type=\"text\" class=\"w-full\" id=\"my-textbox\" placeholder=\"".__m("Filter by table name")."\"/>";
+
         while ($row = $result->fetch()) {
-            echo '<h2 style="text-transform: none;">';
-            echo $row['Tables_in_'.$databaseName];
-            echo '</h2>';
+            echo "<div class='table' id='".$row['Tables_in_'.$databaseName]."'>";
+                echo '<h2 class="tableName" style="text-transform: none;">';
+                echo $row['Tables_in_'.$databaseName];
+                echo '</h2>';
 
-            try {
-                $dataTable = array();
-                $sqlTable = 'SHOW COLUMNS FROM '.$row['Tables_in_'.$databaseName];
-                $resultTable = $connection2->prepare($sqlTable);
-                $resultTable->execute($dataTable);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-
-            if ($resultTable->rowCount() < 1) {
-                echo "<div class='error'>";
-                echo __($guid, 'There are no columns to show.');
-                echo '</div>';
-            } else {
-                echo '<ol>';
-                while ($rowTable = $resultTable->fetch()) {
-                    echo '<li><b>'.$rowTable['Field'].'</b> - '.$rowTable['Type'].'</li>';
+                try {
+                    $dataTable = array();
+                    $sqlTable = 'SHOW COLUMNS FROM '.$row['Tables_in_'.$databaseName];
+                    $resultTable = $connection2->prepare($sqlTable);
+                    $resultTable->execute($dataTable);
+                } catch (PDOException $e) {
+                    echo "<div class='error'>".$e->getMessage().'</div>';
                 }
-                echo '</ol>';
-            }
+
+                if ($resultTable->rowCount() < 1) {
+                    echo "<div class='error'>";
+                    echo __($guid, 'There are no columns to show.');
+                    echo '</div>';
+                } else {
+                    echo '<ol>';
+                    while ($rowTable = $resultTable->fetch()) {
+                        echo '<li><b>'.$rowTable['Field'].'</b> - '.$rowTable['Type'].'</li>';
+                    }
+                    echo '</ol>';
+                }
+            echo "</div>";
         }
     }
 }
