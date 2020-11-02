@@ -22,7 +22,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 
-//Module includes
+// Module includes
 include __DIR__.'/moduleFunctions.php';
 
 //Increase memory limit
@@ -117,7 +117,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
 
                 $col = $form->addRow()->addColumn();
                     $col->addLabel('query', __('Query'));
-                    $col->addCodeEditor('query')->setMode('mysql')->isRequired()->setValue($queryText);
+                    $col->addCodeEditor('query')
+                        ->setMode('mysql')
+                        ->autocomplete(getAutocompletions($pdo))
+                        ->isRequired()
+                        ->setValue($queryText);
             } else {
                 $form->addHiddenValue('query', $values['query']);
             }

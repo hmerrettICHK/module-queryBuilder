@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_help
     echo __m('Help');
     echo '</h1>';
     echo '<p>';
-    echo "This help page gives a listing of all database tables contained within your Gibbon database ($databaseName). For each table there is a listing of all of the columns available. Where the same column name is found two tables, it generally infers a relationship, which can be queried with an SQL JOIN statement.";
+    echo __m("This help page gives a listing of all database tables contained within your Gibbon database ($databaseName). For each table there is a listing of all of the columns available. Where the same column name is found two tables, it generally infers a relationship, which can be queried with an SQL JOIN statement.");
     echo '</p>';
 
     //Get class variable

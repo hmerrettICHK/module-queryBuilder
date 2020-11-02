@@ -48,3 +48,23 @@ function getIllegals()
 
     return $illegals;
 }
+
+function getAutocompletions($pdo)
+{
+    $databaseName = $pdo->selectOne('select database()');
+    
+    $fields = [];
+    $tables = $pdo->select("SHOW TABLES")->fetchAll();
+
+    foreach ($tables as $table) {
+        $tableName = $table['Tables_in_'.$databaseName];
+        $tableFields = $pdo->select("SHOW COLUMNS FROM ".$table['Tables_in_'.$databaseName])->fetchAll();
+        $fields[] = $tableName;
+        
+        foreach ($tableFields as $field) {
+            $fields[] = $tableName.'.'.$field['Field'];
+        }
+    }
+
+    return $fields;
+}

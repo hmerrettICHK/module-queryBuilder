@@ -20,6 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Module\QueryBuilder\Forms\BindValues;
 
+// Module includes
+include __DIR__.'/moduleFunctions.php';
+
 $page->breadcrumbs
   ->add(__('Manage Queries'), 'queries.php')
   ->add(__('Edit Query'));
@@ -118,7 +121,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_edit
 
             $col = $form->addRow()->addColumn();
                 $col->addLabel('query', __('Query'));
-                $col->addCodeEditor('query')->setMode('mysql')->isRequired();
+                $col->addCodeEditor('query')
+                    ->setMode('mysql')
+                    ->autocomplete(getAutocompletions($pdo))
+                    ->isRequired();
 
             $bindValues = new BindValues($form->getFactory(), 'bindValues', $values, $gibbon->session);
             $form->addRow()->addElement($bindValues);

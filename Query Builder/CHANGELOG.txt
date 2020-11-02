@@ -1,5 +1,9 @@
 CHANGELOG
 =========
+v1.12.00
+--------
+Added SQL autocompletion to the editor
+
 v1.11.00
 --------
 Added table filtering in Help modal
