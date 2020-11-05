@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Module\QueryBuilder\Forms\BindValues;
+use Gibbon\Module\QueryBuilder\Domain\QueryGateway;
 
 // Module includes
 include __DIR__.'/moduleFunctions.php';
@@ -47,6 +48,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_edit
         echo __($guid, 'You have not specified one or more required parameters.');
         echo '</div>';
     } else {
+        $queryGateway = $container->get(QueryGateway::class);
+
         try {
             $data = array('queryBuilderQueryID' => $queryBuilderQueryID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
             $sql = "SELECT * FROM queryBuilderQuery WHERE queryBuilderQueryID=:queryBuilderQueryID AND NOT type='gibbonedu.com' AND (type='School' OR (type='Personal' AND gibbonPersonID=:gibbonPersonID) )";
@@ -63,6 +66,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_edit
         } else {
             //Let's go!
             $values = $result->fetch();
+
+            // Check for specific access to this query
+            if (!empty($values['actionName']) || !empty($values['moduleName'])) {
+                if (empty($queryGateway->getIsQueryAccessible($queryBuilderQueryID, $gibbon->session->get('gibbonPersonID')))) {
+                    $page->addError(__('You do not have access to this action.'));
+                    return;
+                }
+            }
 
             echo "<div class='linkTop'>";
             $pipe = false ;
@@ -102,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_edit
                 $row->addLabel('name', __('Name'));
                 $row->addTextField('name')->maxLength(255)->isRequired();
 
-            $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+            $data = array('gibbonPersonID' => $gibbon->session->get('gibbonPersonID'));
             $sql = "SELECT DISTINCT category FROM queryBuilderQuery WHERE type='School' OR type='gibbonedu.com' OR (type='Personal' AND gibbonPersonID=:gibbonPersonID) ORDER BY category";
             $result = $pdo->executeQuery($data, $sql);
             $categories = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_COLUMN, 0) : array();
@@ -114,6 +125,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_edit
             $row = $form->addRow();
                 $row->addLabel('active', __('Active'));
                 $row->addYesNo('active')->isRequired();
+
+            $actions = $queryGateway->selectActionListByPerson($gibbon->session->get('gibbonPersonID'));
+
+            $row = $form->addRow();
+                $row->addLabel('moduleActionName', __('Limit Access'))->description(__('Only people with the selected permission can run this query.'));
+                $row->addSelect('moduleActionName')->fromResults($actions, 'groupBy')->placeholder()->selected($values['moduleName'].':'.$values['actionName']);
 
             $row = $form->addRow();
                 $row->addLabel('description', __('Description'));

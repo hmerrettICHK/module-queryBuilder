@@ -17,10 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Forms\Form;
-use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Module\QueryBuilder\Domain\QueryGateway;
 
 // Module includes
 include __DIR__.'/moduleFunctions.php';
@@ -58,6 +59,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
         echo __($guid, 'You have not specified one or more required parameters.');
         echo '</div>';
     } else {
+        $queryGateway = $container->get(QueryGateway::class);
+        
         $data = array('queryBuilderQueryID' => $queryBuilderQueryID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
         $sql = "SELECT * FROM queryBuilderQuery WHERE queryBuilderQueryID=:queryBuilderQueryID AND ((gibbonPersonID=:gibbonPersonID AND type='Personal') OR type='School' OR type='gibbonedu.com') AND active='Y'";
         $result = $pdo->select($sql, $data);
@@ -69,6 +72,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
         } else {
             //Let's go!
             $values = $result->fetch();
+
+            // Check for specific access to this query
+            if (!empty($values['actionName']) || !empty($values['moduleName'])) {
+                if (empty($queryGateway->getIsQueryAccessible($queryBuilderQueryID, $gibbon->session->get('gibbonPersonID')))) {
+                    $page->addError(__('You do not have access to this action.'));
+                    return;
+                }
+            }
 
             echo "<div class='linkTop'>";
             $pipe = false ;
@@ -103,7 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
             $table->addColumn('name', __('Name'));
             $table->addColumn('category', __('Category'));
             $table->addColumn('active', __('Active'));
-            $table->addColumn('description', __('Description'))->width(100);
+            $table->addColumn('description', __('Description'))->addClass('col-span-3');
 
             echo $table->render([$values]);
 

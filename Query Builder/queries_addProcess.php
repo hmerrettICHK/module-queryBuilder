@@ -34,10 +34,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_add.
     //Proceed!
     $queryGateway = $container->get(QueryGateway::class);
 
+    list($moduleName, $actionName) = !empty($_POST['moduleActionName']) ? explode(':', $_POST['moduleActionName']) : [null, null];
+
     $data = [
         'type'        => $_POST['type'] ?? '',
         'name'        => $_POST['name'] ?? '',
         'category'    => $_POST['category'] ?? '',
+        'moduleName'  => $moduleName ?? null,
+        'actionName'  => $actionName ?? null,
         'active'      => $_POST['active'] ?? 'Y',
         'description' => $_POST['description'] ?? '',
         'query'       => $_POST['query'] ?? '',
