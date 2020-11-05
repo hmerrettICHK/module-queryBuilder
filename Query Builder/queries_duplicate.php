@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Module\QueryBuilder\Domain\QueryGateway;
 
 $page->breadcrumbs
   ->add(__('Manage Queries'), 'queries.php')
@@ -49,6 +50,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_dupl
         echo __($guid, 'You have not specified one or more required parameters.');
         echo '</div>';
     } else {
+        $queryGateway = $container->get(QueryGateway::class);
+        
         try {
             $data = array('queryBuilderQueryID' => $queryBuilderQueryID);
             $sql = 'SELECT * FROM queryBuilderQuery WHERE queryBuilderQueryID=:queryBuilderQueryID';
@@ -65,6 +68,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_dupl
         } else {
             //Let's go!
             $values = $result->fetch();
+
+            // Check for specific access to this query
+            if (!empty($values['actionName']) || !empty($values['moduleName'])) {
+                if (empty($queryGateway->getIsQueryAccessible($queryBuilderQueryID, $gibbon->session->get('gibbonPersonID')))) {
+                    $page->addError(__('You do not have access to this action.'));
+                    return;
+                }
+            }
 
             $form = Form::create('queryBuilder', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/queries_duplicateProcess.php?queryBuilderQueryID='.$queryBuilderQueryID.'&search='.$search);
 

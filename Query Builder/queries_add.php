@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Module\QueryBuilder\Forms\BindValues;
+use Gibbon\Module\QueryBuilder\Domain\QueryGateway;
 
 // Module includes
 include __DIR__.'/moduleFunctions.php';
@@ -34,6 +35,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_add.
     echo '</div>';
 } else {
     //Proceed!
+    $queryGateway = $container->get(QueryGateway::class);
+    
     $returns = array();
     $editLink = '';
     if (isset($_GET['editID'])) {
@@ -85,6 +88,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_add.
         $row->addLabel('active', __('Active'));
         $row->addYesNo('active')->isRequired();
 
+    $values['moduleActionName'] = $values['moduleName'].':'.$values['actionName'];
+    $actions = $queryGateway->selectActionListByPerson($gibbon->session->get('gibbonPersonID'));
+    $row = $form->addRow();
+        $row->addLabel('moduleActionName', __('Limit Access'))->description(__('Only people with the selected permission can run this query.'));
+        $row->addSelect('moduleActionName')->fromResults($actions, 'groupBy')->placeholder();
+            
     $row = $form->addRow();
         $row->addLabel('description', __('Description'));
         $row->addTextArea('description')->setRows(8);

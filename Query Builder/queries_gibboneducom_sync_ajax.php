@@ -66,7 +66,7 @@ if (count($queries) < 1) { // We have a problem, report it.
         }
 
         if ($insert) {
-            $data = array('queryID' => $query['queryID'], 'scope' => $query['scope'], 'name' => $query['name'], 'category' => $query['category'], 'description' => $query['description'], 'query' => $query['query'], 'bindValues' => $query['bindValues'] ?? '');
+            $data = array('queryID' => $query['queryID'], 'scope' => $query['scope'], 'name' => $query['name'], 'category' => $query['category'], 'description' => $query['description'], 'query' => $query['query'], 'bindValues' => $query['bindValues'] ?? '', 'moduleName' => $query['moduleName'] ?? null, 'actionName' => $query['actionName'] ?? null);
 
             $values = $queryGateway->selectBy(['queryID' => $query['queryID'], 'type' => 'gibbonedu.com'])->fetch();
             if (empty($values)) {

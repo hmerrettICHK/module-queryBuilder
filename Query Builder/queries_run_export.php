@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Tables\DataTable;
 use Gibbon\Tables\Renderer\SpreadsheetRenderer;
+use Gibbon\Module\QueryBuilder\Domain\QueryGateway;
+
+$_POST['address'] = '/modules/Query Builder/queries_run.php';
 
 // System-wide include
 include '../../gibbon.php';
@@ -46,8 +49,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
         header("Location: {$URL}");
         exit;
     } else {
+        $queryGateway = $container->get(QueryGateway::class);
+        
         $data = array('queryBuilderQueryID' => $queryBuilderQueryID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-        $sql = "SELECT name, bindValues FROM queryBuilderQuery WHERE queryBuilderQueryID=:queryBuilderQueryID AND ((gibbonPersonID=:gibbonPersonID AND type='Personal') OR type='School' OR type='gibbonedu.com') AND active='Y'";
+        $sql = "SELECT name, bindValues, actionName, moduleName FROM queryBuilderQuery WHERE queryBuilderQueryID=:queryBuilderQueryID AND ((gibbonPersonID=:gibbonPersonID AND type='Personal') OR type='School' OR type='gibbonedu.com') AND active='Y'";
         $result = $pdo->select($sql, $data);
 
         if ($result->rowCount() < 1) {
@@ -71,6 +76,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
             exit;
         } else {
             $queryDetails = $result->fetch();
+
+            // Check for specific access to this query
+            if (!empty($values['actionName']) || !empty($values['moduleName'])) {
+                if (empty($queryGateway->getIsQueryAccessible($queryBuilderQueryID, $gibbon->session->get('gibbonPersonID')))) {
+                    $URL = $URL.'&return=error0';
+                    header("Location: {$URL}");
+                    exit;
+                }
+            }
 
             // Run the query
             $result = $pdo->select($query, $queryData);

@@ -1,5 +1,9 @@
 CHANGELOG
 =========
+v1.13.00
+--------
+Enabled limiting access to queries based on use permissions
+
 v1.12.00
 --------
 Added SQL autocompletion to the editor

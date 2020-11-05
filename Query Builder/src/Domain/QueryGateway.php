@@ -42,18 +42,34 @@ class QueryGateway extends QueryableGateway
      */
     public function queryQueries(QueryCriteria $criteria, $gibbonPersonID)
     {
+        $data = ['gibbonPersonID' => $gibbonPersonID];
+        $gibbonRoleIDAll = $this->db()->selectOne('SELECT gibbonRoleIDAll FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID', $data);
+
         $query = $this
             ->newQuery()
-            ->from($this->getTableName())
             ->cols([
-                'queryBuilderQueryID', 'name', 'type', 'category', 'active', 'gibbonPersonID', 'queryID'
+                'queryBuilderQueryID', 'name', 'type', 'category', 'active', 'gibbonPersonID', 'queryID', 'queryBuilderQuery.actionName', 'queryBuilderQuery.moduleName', 'permission.permissionID'
             ])
+            ->from($this->getTableName())
+            ->joinSubSelect(                     
+                'LEFT',                     
+                'SELECT gibbonPermission.permissionID, gibbonRole.gibbonRoleID, gibbonAction.name as actionName, gibbonModule.name as moduleName
+                FROM gibbonModule
+                JOIN gibbonAction ON (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) 
+                JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID)
+                JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPermission.gibbonRoleID)',                  
+                'permission',                   
+                "(permission.actionName=queryBuilderQuery.actionName OR permission.actionName LIKE CONCAT(queryBuilderQuery.actionName, '_%')) AND permission.moduleName=queryBuilderQuery.moduleName AND FIND_IN_SET(permission.gibbonRoleID, :gibbonRoleIDAll)"
+            )
             ->where(function($query) {
                 $query->where("(type='Personal' AND gibbonPersonID=:gibbonPersonID)")
                     ->orWhere("type='School'")
                     ->orWhere("type='gibbonedu.com'");
             })
-            ->bindValue('gibbonPersonID', $gibbonPersonID);
+            ->bindValue('gibbonPersonID', $gibbonPersonID)
+            ->bindValue('gibbonRoleIDAll', $gibbonRoleIDAll)
+            ->having("((actionName IS NULL OR actionName = '') OR (actionName IS NOT NULL AND permissionID IS NOT NULL))")
+            ->groupBy(['queryBuilderQuery.queryBuilderQueryID']);
 
         return $this->runQuery($query, $criteria);
     }
@@ -68,5 +84,46 @@ class QueryGateway extends QueryableGateway
 
         $sql = "DELETE FROM queryBuilderQuery WHERE type='gibbonedu.com' AND queryID NOT IN ($queryIDList)";
         return $this->db()->delete($sql);
+    }
+
+    public function selectActionListByPerson($gibbonPersonID)
+    {
+        $data = ['gibbonPersonID' => $gibbonPersonID];
+        $sql = "(
+            SELECT gibbonModule.name as groupBy, CONCAT(gibbonModule.name, ':', SUBSTRING_INDEX(gibbonAction.name, '_', 1)) as value, CONCAT(SUBSTRING_INDEX(gibbonAction.name, '_', 1), ' (grouped)') as name 
+                FROM gibbonPerson
+                JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID OR FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll))
+                JOIN gibbonPermission ON (gibbonRole.gibbonRoleID=gibbonPermission.gibbonRoleID)
+                JOIN gibbonAction ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID)
+                JOIN gibbonModule ON (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) 
+                WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID
+                AND gibbonAction.name LIKE '%\_%'
+            ) UNION ALL (
+                SELECT gibbonModule.name as groupBy, CONCAT(gibbonModule.name, ':', gibbonAction.name) as value, gibbonAction.name as name 
+                FROM gibbonPerson
+                JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID OR FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll))
+                JOIN gibbonPermission ON (gibbonRole.gibbonRoleID=gibbonPermission.gibbonRoleID)
+                JOIN gibbonAction ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID)
+                JOIN gibbonModule ON (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID) 
+                WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID
+                
+            ) ORDER BY groupBy, name" ;
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function getIsQueryAccessible($queryBuilderQueryID, $gibbonPersonID)
+    {
+        $data = ['queryBuilderQueryID' => $queryBuilderQueryID, 'gibbonPersonID' => $gibbonPersonID];
+        $sql = "SELECT gibbonModule.name as groupBy, CONCAT(gibbonModule.name, ':', gibbonAction.name) as value, gibbonAction.name as name 
+                FROM queryBuilderQuery
+                JOIN gibbonModule ON (gibbonModule.name=queryBuilderQuery.moduleName) 
+                JOIN gibbonAction ON ((gibbonAction.name=queryBuilderQuery.actionName OR gibbonAction.name LIKE CONCAT(queryBuilderQuery.actionName, '_%')) AND gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) 
+                JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID)
+                JOIN gibbonPerson ON (FIND_IN_SET(gibbonPermission.gibbonRoleID, gibbonPerson.gibbonRoleIDAll))
+                WHERE queryBuilderQuery.queryBuilderQueryID=:queryBuilderQueryID
+                AND gibbonPerson.gibbonPersonID=:gibbonPersonID" ;
+
+        return $this->db()->selectOne($sql, $data);
     }
 }
