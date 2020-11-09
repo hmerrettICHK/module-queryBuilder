@@ -302,3 +302,9 @@ $sql[$count][0] = '1.13.00';
 $sql[$count][1] = "
 ALTER TABLE `queryBuilderQuery` ADD `moduleName` VARCHAR(30) NULL DEFAULT NULL AFTER `category`, ADD `actionName` VARCHAR(50) NULL DEFAULT NULL AFTER `moduleName`;end
 ";
+
+//v1.13.01
+++$count;
+$sql[$count][0] = '1.13.01';
+$sql[$count][1] = "
+";

@@ -116,6 +116,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
             $table->addColumn('active', __('Active'));
             $table->addColumn('description', __('Description'))->addClass('col-span-3');
 
+            if (!empty($values['actionName'])) {
+                $table->addColumn('permission', __('Access'))
+                    ->addClass('col-span-3')
+                    ->format(function($query) {
+                        return !empty($query['actionName'])
+                            ? __m('Users require the {actionName} permission in the {moduleName} module to run or edit this query.', ['moduleName' => '<u>'.$query['moduleName'].'</u>', 'actionName' => '<u>'.$query['actionName'].'</u>'])
+                            : '';
+                    });
+                }
+
             echo $table->render([$values]);
 
             $form = Form::create('queryBuilder', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/queries_run.php&queryBuilderQueryID='.$queryBuilderQueryID.'&sidebar=false&search='.$search);
