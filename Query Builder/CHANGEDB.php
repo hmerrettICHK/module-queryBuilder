@@ -308,3 +308,9 @@ ALTER TABLE `queryBuilderQuery` ADD `moduleName` VARCHAR(30) NULL DEFAULT NULL A
 $sql[$count][0] = '1.13.01';
 $sql[$count][1] = "
 ";
+
+//v1.13.02
+++$count;
+$sql[$count][0] = '1.13.02';
+$sql[$count][1] = "
+";

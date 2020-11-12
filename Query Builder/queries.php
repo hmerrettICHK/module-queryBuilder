@@ -62,13 +62,17 @@ if (isModuleAccessible($guid, $connection2) == false) {
                             $("#status").attr("class","success");
                             $("#status").html('Success! Your system has a valid license to access value added Query Builder queries from gibbonedu.com. <a href=\'<?php echo $_SESSION[$guid]['absoluteURL'] ?>/index.php?q=/modules/Query Builder/queries_sync.php\'>Click here</a> to get the latest queries for your version of Gibbon.') ;
                         }
-                        else {
-                            $("#status").attr("class","error");
+                        else if (data['access']==='0') {
+                            $("#status").attr("class","warning");
                             $("#status").html('Checking gibbonedu.com for a license to access value added Query Builder shows that you do not have access. You have either not set up access, or your access has expired or is invalid. Visit <a target=\'_blank\' href=\'http://gibbonedu.com\'>http://gibbonedu.com</a> to register for value added services, and then enter the name and key provided, or email <a href=\'mailto:support@gibbonedu.com\'>support@gibbonedu.com</a> to seek support as to why your key is not working. You may still use your own queries without a valid license.') ;
                             $.ajax({
                                 url: "<?php echo $_SESSION[$guid]['absoluteURL'] ?>/modules/Query Builder/queries_gibboneducom_remove_ajax.php",
                                 data: "gibboneduComOrganisationName=<?php echo $gibboneduComOrganisationName ?>&gibboneduComOrganisationKey=<?php echo $gibboneduComOrganisationKey ?>&service=queryBuilder"
                             });
+                        }
+                        else {
+                            $("#status").attr("class","error");
+                            $("#status").html('An error has occured whilst checking gibbonedu.com for a license.') ;
                         }
                     },
                     error: function (data, textStatus, errorThrown) { }

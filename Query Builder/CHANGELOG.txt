@@ -1,5 +1,9 @@
 CHANGELOG
 =========
+v1.13.02
+--------
+Less aggressive license checking
+
 v1.13.01
 --------
 Display access requirements on the Run Query page
