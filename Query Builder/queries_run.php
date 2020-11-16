@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
+use Gibbon\Domain\User\RoleGateway;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Module\QueryBuilder\Domain\QueryGateway;
 
@@ -60,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
         echo '</div>';
     } else {
         $queryGateway = $container->get(QueryGateway::class);
-        
+
         $data = array('queryBuilderQueryID' => $queryBuilderQueryID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
         $sql = "SELECT * FROM queryBuilderQuery WHERE queryBuilderQueryID=:queryBuilderQueryID AND ((gibbonPersonID=:gibbonPersonID AND type='Personal') OR type='School' OR type='gibbonedu.com') AND active='Y'";
         $result = $pdo->select($sql, $data);
@@ -119,10 +120,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
             if (!empty($values['actionName'])) {
                 $table->addColumn('permission', __('Access'))
                     ->addClass('col-span-3')
-                    ->format(function($query) {
-                        return !empty($query['actionName'])
+                    ->format(function($query) use ($container) {
+                        $output = !empty($query['actionName'])
                             ? __m('Users require the {actionName} permission in the {moduleName} module to run or edit this query.', ['moduleName' => '<u>'.$query['moduleName'].'</u>', 'actionName' => '<u>'.$query['actionName'].'</u>'])
                             : '';
+
+                        $roleGateway = $container->get(RoleGateway::class);
+                        $users = $roleGateway->selectUsersByAction($query['actionName']);
+
+                        $output .= "<details class='mt-2'>" ;
+                            $output .= "<summary>See Users With Access</summary>" ;
+                            $output .= "<div>";
+                                $output .= "<ul>";
+                                    while ($user = $users->fetch()) {
+                                        $output .= "<li>";
+                                            $output .= Format::name('', $user['preferredName'], $user['surname'], 'Student', true, true);
+                                        $output .= "</li>";
+                                    }
+                                $output .= "</ul>";
+                            $output .= "</div>" ;
+                        $output .= "</details>" ;
+
+                        return $output;
                     });
                 }
 

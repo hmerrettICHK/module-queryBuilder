@@ -1,5 +1,9 @@
 CHANGELOG
 =========
+v1.13.03
+--------
+Added expandable list of users to access section of Run Query page
+
 v1.13.02
 --------
 Less aggressive license checking
