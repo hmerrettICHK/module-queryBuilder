@@ -187,7 +187,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
                     } elseif ($bindValue['type'] == 'reportingCycle') {
                         $row->addSelectReportingCycle($bindValue['variable'])->selected($fieldValue)->required();
                     } elseif ($bindValue['type'] == 'yearGroups') {
-                        $row->addCheckboxYearGroup($bindValue['variable'])->checked($fieldValue)->required();
+                        $row->addCheckboxYearGroup($bindValue['variable'])->checked($fieldValue)->required()->addCheckAllNone();
                     } else {
                         $row->addCustomField($bindValue['variable'], $bindValue)->setValue($fieldValue);
                     }
@@ -197,7 +197,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
             $row = $form->addRow();
                 $row->addFooter();
                 $col = $row->addColumn()->addClass('inline right');
-                if ($highestAction == 'Manage Queries_viewEditAll' && ($values['type'] == 'Personal' or ($values['type'] == 'School' and $values['gibbonPersonID'] == $_SESSION[$guid]['gibbonPersonID']))) {
+                if ($highestAction == 'Manage Queries_viewEditAll' && (($values['type'] == 'Personal' and $values['gibbonPersonID'] == $_SESSION[$guid]['gibbonPersonID']) or $values['type'] == 'School')) {
                     $col->addCheckbox('save')->description(__('Save Query?'))->setValue('Y')->checked($save)->wrap('<span class="displayInlineBlock">', '</span>&nbsp;&nbsp;');
                 } else {
                     $col->addContent('');

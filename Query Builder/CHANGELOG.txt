@@ -1,5 +1,10 @@
 CHANGELOG
 =========
+v1.13.04
+--------
+Fix access to the Save Query checkbox for users with edit permission
+Add a check all/none option for year group checkboxes
+
 v1.13.03
 --------
 Added expandable list of users to access section of Run Query page
