@@ -1,5 +1,9 @@
 CHANGELOG
 =========
+v1.13.05
+--------
+Fixed queries sync not working with special characters in the organisation name
+
 v1.13.04
 --------
 Fix access to the Save Query checkbox for users with edit permission

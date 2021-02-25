@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_sync
 				contentType: "application/json; charset=utf-8",
 				async:false,
 				url: "https://gibbonedu.org/gibboneducom/queryBuilder.php?callback=?",
-				data: "gibboneduComOrganisationName=<?php echo $gibboneduComOrganisationName ?>&gibboneduComOrganisationKey=<?php echo $gibboneduComOrganisationKey ?>&service=queryBuilder&version=<?php echo $version ?>",
+				data: "gibboneduComOrganisationName=<?php echo urlencode($gibboneduComOrganisationName) ?>&gibboneduComOrganisationKey=<?php echo $gibboneduComOrganisationKey ?>&service=queryBuilder&version=<?php echo $version ?>",
 				dataType: "jsonp",
 				jsonpCallback: 'fnsuccesscallback',
 				jsonpResult: 'jsonpResult',
@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_sync
 						$.ajax({
 							type: "POST",
             				url: "<?php echo $_SESSION[$guid]['absoluteURL'] ?>/modules/Query Builder/queries_gibboneducom_sync_ajax.php",
-							data: { gibboneduComOrganisationName: "<?php echo $gibboneduComOrganisationName ?>", gibboneduComOrganisationKey: "<?php echo $gibboneduComOrganisationKey ?>", service: "queryBuilder", queries: JSON.stringify(data) },
+							data: { gibboneduComOrganisationName: "<?php echo urlencode($gibboneduComOrganisationName) ?>", gibboneduComOrganisationKey: "<?php echo $gibboneduComOrganisationKey ?>", service: "queryBuilder", queries: JSON.stringify(data) },
 							success: function(data) {
 								if (data==="fail") {
 									$("#status").attr("class","error");
@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_sync
 					$("#status").html('Checking gibbonedu.com license for access to value added Query Builder queries has failed. You may still use your own queries.') ;
 					$.ajax({
 						url: "<?php echo $_SESSION[$guid]['absoluteURL'] ?>/modules/Query Builder/queries_gibboneducom_remove_ajax.php",
-						data: "gibboneduComOrganisationName=<?php echo $gibboneduComOrganisationName ?>&gibboneduComOrganisationKey=<?php echo $gibboneduComOrganisationKey ?>&service=queryBuilder"
+						data: "gibboneduComOrganisationName=<?php echo urlencode($gibboneduComOrganisationName) ?>&gibboneduComOrganisationKey=<?php echo $gibboneduComOrganisationKey ?>&service=queryBuilder"
 					});
 				}
 			});

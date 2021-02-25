@@ -53,7 +53,7 @@ if (isModuleAccessible($guid, $connection2) == false) {
                     contentType: "application/json; charset=utf-8",
                     async:false,
                     url: "https://gibbonedu.org/gibboneducom/keyCheck.php?callback=?",
-                    data: "gibboneduComOrganisationName=<?php echo $gibboneduComOrganisationName ?>&gibboneduComOrganisationKey=<?php echo $gibboneduComOrganisationKey ?>&service=queryBuilder",
+                    data: "gibboneduComOrganisationName=<?php echo urlencode($gibboneduComOrganisationName) ?>&gibboneduComOrganisationKey=<?php echo $gibboneduComOrganisationKey ?>&service=queryBuilder",
                     dataType: "jsonp",
                     jsonpCallback: 'fnsuccesscallback',
                     jsonpResult: 'jsonpResult',
@@ -67,7 +67,7 @@ if (isModuleAccessible($guid, $connection2) == false) {
                             $("#status").html('Checking gibbonedu.com for a license to access value added Query Builder shows that you do not have access. You have either not set up access, or your access has expired or is invalid. Visit <a target=\'_blank\' href=\'http://gibbonedu.com\'>http://gibbonedu.com</a> to register for value added services, and then enter the name and key provided, or email <a href=\'mailto:support@gibbonedu.com\'>support@gibbonedu.com</a> to seek support as to why your key is not working. You may still use your own queries without a valid license.') ;
                             $.ajax({
                                 url: "<?php echo $_SESSION[$guid]['absoluteURL'] ?>/modules/Query Builder/queries_gibboneducom_remove_ajax.php",
-                                data: "gibboneduComOrganisationName=<?php echo $gibboneduComOrganisationName ?>&gibboneduComOrganisationKey=<?php echo $gibboneduComOrganisationKey ?>&service=queryBuilder"
+                                data: "gibboneduComOrganisationName=<?php echo urlencode($gibboneduComOrganisationName) ?>&gibboneduComOrganisationKey=<?php echo $gibboneduComOrganisationKey ?>&service=queryBuilder"
                             });
                         }
                         else {
