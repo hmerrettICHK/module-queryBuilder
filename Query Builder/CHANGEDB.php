@@ -332,3 +332,9 @@ $sql[$count][1] = "
 $sql[$count][0] = '1.13.05';
 $sql[$count][1] = "
 ";
+
+//v1.13.06
+++$count;
+$sql[$count][0] = '1.13.06';
+$sql[$count][1] = "
+";

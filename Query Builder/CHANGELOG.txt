@@ -1,5 +1,9 @@
 CHANGELOG
 =========
+v1.13.06
+--------
+Fixed post-v1.13.00 clean install issue
+
 v1.13.05
 --------
 Fixed queries sync not working with special characters in the organisation name
