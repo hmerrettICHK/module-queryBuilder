@@ -1,5 +1,9 @@
 CHANGELOG
 =========
+v1.13.07
+--------
+Fixed PHP error when adding new queries
+
 v1.13.06
 --------
 Fixed post-v1.13.00 clean install issue

@@ -48,9 +48,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_edit
     ];
 
     // Sort and jsonify bindValues
-    $data['bindValues'] = array_combine(array_keys($_POST['order']), array_values($data['bindValues']));
-    ksort($data['bindValues']);
-    $data['bindValues'] = json_encode($data['bindValues']);
+    if (!empty($data['bindValues']) && is_array($data['bindValues'])) {
+        $data['bindValues'] = array_combine(array_keys($_POST['order']), array_values($data['bindValues']));
+        ksort($data['bindValues']);
+        $data['bindValues'] = json_encode($data['bindValues']);
+    }
 
     // Validate the required values are present
     if (empty($queryBuilderQueryID) || empty($data['name']) || empty($data['category']) || empty($data['active']) || empty($data['query'])) {
