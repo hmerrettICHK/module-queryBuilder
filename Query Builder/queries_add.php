@@ -88,7 +88,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_add.
         $row->addLabel('active', __('Active'));
         $row->addYesNo('active')->isRequired();
 
-    $values['moduleActionName'] = $values['moduleName'].':'.$values['actionName'];
     $actions = $queryGateway->selectActionListByPerson($gibbon->session->get('gibbonPersonID'));
     $row = $form->addRow();
         $row->addLabel('moduleActionName', __('Limit Access'))->description(__('Only people with the selected permission can run this query.'));
