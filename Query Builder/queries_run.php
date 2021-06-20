@@ -28,7 +28,7 @@ use Gibbon\Module\QueryBuilder\Domain\QueryGateway;
 include __DIR__.'/moduleFunctions.php';
 
 //Increase memory limit
-ini_set('memory_limit','256M');
+ini_set('memory_limit','512M');
 
 $page->breadcrumbs
   ->add(__('Manage Queries'), 'queries.php')

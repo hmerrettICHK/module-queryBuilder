@@ -76,5 +76,8 @@ if (count($queries) < 1) { // We have a problem, report it.
                 $queryGateway->update($values['queryBuilderQueryID'], $data);
             }
         }
+        else {
+            $queryGateway->deleteWhere(['queryID' => $query['queryID']]);
+        }
     }
 }

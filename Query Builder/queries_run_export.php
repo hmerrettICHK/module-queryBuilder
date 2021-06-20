@@ -30,7 +30,7 @@ include '../../gibbon.php';
 include './moduleFunctions.php';
 
 //Increase memory limit
-ini_set('memory_limit','256M');
+ini_set('memory_limit','512M');
 
 $queryBuilderQueryID = $_GET['queryBuilderQueryID'] ?? '';
 $hash = $_GET['hash'] ?? '';
@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
         exit;
     } else {
         $queryGateway = $container->get(QueryGateway::class);
-        
+
         $data = array('queryBuilderQueryID' => $queryBuilderQueryID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
         $sql = "SELECT name, bindValues, actionName, moduleName FROM queryBuilderQuery WHERE queryBuilderQueryID=:queryBuilderQueryID AND ((gibbonPersonID=:gibbonPersonID AND type='Personal') OR type='School' OR type='gibbonedu.com') AND active='Y'";
         $result = $pdo->select($sql, $data);
