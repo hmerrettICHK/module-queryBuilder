@@ -20,12 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../gibbon.php';
 
 
-$search = null;
-if (isset($_GET['search'])) {
-    $search = $_GET['search'];
-}
-$queryBuilderQueryID = $_GET['queryBuilderQueryID'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/queries_duplicate.php&queryBuilderQueryID='.$queryBuilderQueryID."&search=$search";
+$search = $_GET['search'] ?? null;
+$queryBuilderQueryID = $_GET['queryBuilderQueryID'] ?? '';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/queries_duplicate.php&queryBuilderQueryID='.$queryBuilderQueryID."&search=$search";
 
 if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_duplicate.php') == false) {
     //Fail 0
@@ -59,8 +56,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_dupl
             $row = $result->fetch();
 
             //Validate Inputs
-            $name = $_POST['name'];
-            $type = $_POST['type'];
+            $name = $_POST['name'] ?? '';
+            $type = $_POST['type'] ?? '';
             $category = $row['category'];
             $moduleName = $row['moduleName'];
             $actionName = $row['actionName'];
@@ -68,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_dupl
             $description = $row['description'];
             $query = $row['query'];
             $bindValues = $row['bindValues'];
-            $gibbonPersonID = $_SESSION[$guid]['gibbonPersonID'];
+            $gibbonPersonID = $session->get('gibbonPersonID');
 
             if ($name == '' or $category == '' or $active == '' or $query == '') {
                 //Fail 3

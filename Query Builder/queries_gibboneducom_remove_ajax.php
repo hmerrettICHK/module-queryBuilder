@@ -21,7 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../gibbon.php';
 
 //Module includes
-include $_SESSION[$guid]['absolutePath'].'/modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+include $session->get('absolutePath').'/modules/'.$session->get('module').'/moduleFunctions.php';
 
 //Setup variables
 $gibboneduComOrganisationName = $_GET['gibboneduComOrganisationName'];

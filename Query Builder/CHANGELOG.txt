@@ -1,5 +1,9 @@
 CHANGELOG
 =========
+v1.13.09
+--------
+Refactored session variables and null coalesce
+
 v1.13.08
 --------
 Improved additional module sync

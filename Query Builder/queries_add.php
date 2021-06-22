@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_add.
     $returns = array();
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Query Builder/queries_edit.php&queryBuilderQueryID='.$_GET['editID'].'&search='.$_GET['search'].'&sidebar=false';
+        $editLink = $session->get('absoluteURL').'/index.php?q=/modules/Query Builder/queries_edit.php&queryBuilderQueryID='.$_GET['editID'].'&search='.$_GET['search'].'&sidebar=false';
     }
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], $editLink, $returns);
@@ -48,13 +48,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_add.
 
     $search = isset($_GET['search'])? $_GET['search'] : '';
     if ($search != '') { echo "<div class='linkTop'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Query Builder/queries.php&search=$search'>".__($guid, 'Back to Search Results').'</a>';
+        echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Query Builder/queries.php&search=$search'>".__($guid, 'Back to Search Results').'</a>';
         echo '</div>';
     }
 
-    $form = Form::create('queryBuilder', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/queries_addProcess.php?search='.$search);
+    $form = Form::create('queryBuilder', $session->get('absoluteURL').'/modules/'.$session->get('module').'/queries_addProcess.php?search='.$search);
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $form->addHeaderAction('help', __('Help'))
         ->setURL('/modules/Query Builder/queries_help_full.php')
@@ -75,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_add.
         $row->addLabel('name', __('Name'));
         $row->addTextField('name')->maxLength(255)->isRequired();
 
-    $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+    $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
     $sql = "SELECT DISTINCT category FROM queryBuilderQuery WHERE type='School' OR type='gibbonedu.com' OR (type='Personal' AND gibbonPersonID=:gibbonPersonID) ORDER BY category";
     $result = $pdo->executeQuery($data, $sql);
     $categories = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_COLUMN, 0) : array();
@@ -88,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_add.
         $row->addLabel('active', __('Active'));
         $row->addYesNo('active')->isRequired();
 
-    $actions = $queryGateway->selectActionListByPerson($gibbon->session->get('gibbonPersonID'));
+    $actions = $queryGateway->selectActionListByPerson($session->get('gibbonPersonID'));
     $row = $form->addRow();
         $row->addLabel('moduleActionName', __('Limit Access'))->description(__('Only people with the selected permission can run this query.'));
         $row->addSelect('moduleActionName')->fromResults($actions, 'groupBy')->placeholder();
@@ -104,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_add.
             ->autocomplete(getAutocompletions($pdo))
             ->isRequired();
 
-    $bindValues = new BindValues($form->getFactory(), 'bindValues', [], $gibbon->session);
+    $bindValues = new BindValues($form->getFactory(), 'bindValues', [], $session);
     $form->addRow()->addElement($bindValues);
 
     $row = $form->addRow();

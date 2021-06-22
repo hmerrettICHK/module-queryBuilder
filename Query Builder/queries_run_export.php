@@ -34,10 +34,10 @@ ini_set('memory_limit','512M');
 
 $queryBuilderQueryID = $_GET['queryBuilderQueryID'] ?? '';
 $hash = $_GET['hash'] ?? '';
-$query = $gibbon->session->get($hash)['query'] ?? '';
-$queryData = $gibbon->session->get($hash)['queryData'] ?? [];
+$query = $session->get($hash)['query'] ?? '';
+$queryData = $session->get($hash)['queryData'] ?? [];
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Query Builder/queries_run.php&sidebar=false&queryBuilderQueryID='.$queryBuilderQueryID;
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/Query Builder/queries_run.php&sidebar=false&queryBuilderQueryID='.$queryBuilderQueryID;
 
 if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.php') == false) {
     $URL = $URL.'&return=error0';
@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
     } else {
         $queryGateway = $container->get(QueryGateway::class);
 
-        $data = array('queryBuilderQueryID' => $queryBuilderQueryID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+        $data = array('queryBuilderQueryID' => $queryBuilderQueryID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
         $sql = "SELECT name, bindValues, actionName, moduleName FROM queryBuilderQuery WHERE queryBuilderQueryID=:queryBuilderQueryID AND ((gibbonPersonID=:gibbonPersonID AND type='Personal') OR type='School' OR type='gibbonedu.com') AND active='Y'";
         $result = $pdo->select($sql, $data);
 
@@ -79,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
 
             // Check for specific access to this query
             if (!empty($values['actionName']) || !empty($values['moduleName'])) {
-                if (empty($queryGateway->getIsQueryAccessible($queryBuilderQueryID, $gibbon->session->get('gibbonPersonID')))) {
+                if (empty($queryGateway->getIsQueryAccessible($queryBuilderQueryID, $session->get('gibbonPersonID')))) {
                     $URL = $URL.'&return=error0';
                     header("Location: {$URL}");
                     exit;
@@ -96,14 +96,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
             }
 
             //Proceed!
-            $renderer = new SpreadsheetRenderer($_SESSION[$guid]['absolutePath']);
+            $renderer = new SpreadsheetRenderer($session->get('absolutePath'));
             $table = DataTable::create('queryBuilderExport', $renderer);
 
             $filename = substr(preg_replace('/[^a-zA-Z0-9]/', '', $queryDetails['name']), 0, 30);
 
             $table->addMetaData('filename', 'queryExport_'.$filename);
             $table->addMetaData('filetype', getSettingByScope($connection2, 'Query Builder', 'exportDefaultFileType'));
-            $table->addMetaData('creator', formatName('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff'));
+            $table->addMetaData('creator', formatName('', $session->get('preferredName'), $session->get('surname'), 'Staff'));
             $table->addMetaData('name', $queryDetails['name']);
 
             for ($i = 0; $i < $result->columnCount(); ++$i) {
@@ -116,6 +116,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
             echo $table->render($result->toDataSet());
         }
 
-        $gibbon->session->remove($hash);
+        $session->remove($hash);
     }
 }

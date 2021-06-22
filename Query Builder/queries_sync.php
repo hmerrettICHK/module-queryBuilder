@@ -58,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_sync
 						$("#status").html('Success! Your system has a valid license to access value added Query Builder queries from gibbonedu.com. We are now syncing your queries. Watch here for results.') ;
 						$.ajax({
 							type: "POST",
-            				url: "<?php echo $_SESSION[$guid]['absoluteURL'] ?>/modules/Query Builder/queries_gibboneducom_sync_ajax.php",
+            				url: "<?php echo $session->get('absoluteURL') ?>/modules/Query Builder/queries_gibboneducom_sync_ajax.php",
 							data: { gibboneduComOrganisationName: "<?php echo urlencode($gibboneduComOrganisationName) ?>", gibboneduComOrganisationKey: "<?php echo $gibboneduComOrganisationKey ?>", service: "queryBuilder", queries: JSON.stringify(data) },
 							success: function(data) {
 								if (data==="fail") {
@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_sync
 								}
 								else {
 									$("#status").attr("class","success");
-									$("#status").html('Your queries have been successfully synced. Please <a href=\'<?php echo $_SESSION[$guid]['absoluteURL'] ?>/index.php?q=/modules/Query Builder/queries.php\'>click here</a> to return to your query list.') ;
+									$("#status").html('Your queries have been successfully synced. Please <a href=\'<?php echo $session->get('absoluteURL') ?>/index.php?q=/modules/Query Builder/queries.php\'>click here</a> to return to your query list.') ;
 								}
 							},
 							error: function (data, textStatus, errorThrown) {
@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_sync
 					$("#status").attr("class","error");
 					$("#status").html('Checking gibbonedu.com license for access to value added Query Builder queries has failed. You may still use your own queries.') ;
 					$.ajax({
-						url: "<?php echo $_SESSION[$guid]['absoluteURL'] ?>/modules/Query Builder/queries_gibboneducom_remove_ajax.php",
+						url: "<?php echo $session->get('absoluteURL') ?>/modules/Query Builder/queries_gibboneducom_remove_ajax.php",
 						data: "gibboneduComOrganisationName=<?php echo urlencode($gibboneduComOrganisationName) ?>&gibboneduComOrganisationKey=<?php echo $gibboneduComOrganisationKey ?>&service=queryBuilder"
 					});
 				}
@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_sync
 
     echo "<div id='status' class='warning'>";
     echo "<div style='width: 100%; text-align: center'>";
-    echo "<img style='margin: 10px 0 5px 0' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/loading.gif' alt='Loading'/><br/>";
+    echo "<img style='margin: 10px 0 5px 0' src='".$session->get('absoluteURL')."/themes/Default/img/loading.gif' alt='Loading'/><br/>";
     echo 'Checking gibbonedu.com value added license status.';
     echo '</div>';
     echo '</div>';

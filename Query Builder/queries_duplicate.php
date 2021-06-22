@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_dupl
         $search = $_GET['search'];
     }
     if ($search != '') { echo "<div class='linkTop'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Query Builder/queries.php&search=$search'>".__($guid, 'Back to Search Results').'</a>';
+        echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Query Builder/queries.php&search=$search'>".__($guid, 'Back to Search Results').'</a>';
         echo '</div>';
     }
 
@@ -71,15 +71,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_dupl
 
             // Check for specific access to this query
             if (!empty($values['actionName']) || !empty($values['moduleName'])) {
-                if (empty($queryGateway->getIsQueryAccessible($queryBuilderQueryID, $gibbon->session->get('gibbonPersonID')))) {
+                if (empty($queryGateway->getIsQueryAccessible($queryBuilderQueryID, $session->get('gibbonPersonID')))) {
                     $page->addError(__('You do not have access to this action.'));
                     return;
                 }
             }
 
-            $form = Form::create('queryBuilder', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/queries_duplicateProcess.php?queryBuilderQueryID='.$queryBuilderQueryID.'&search='.$search);
+            $form = Form::create('queryBuilder', $session->get('absoluteURL').'/modules/'.$session->get('module').'/queries_duplicateProcess.php?queryBuilderQueryID='.$queryBuilderQueryID.'&search='.$search);
 
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('address', $session->get('address'));
 
             $row = $form->addRow();
                 $row->addLabel('name', __('New Name'));

@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
     } else {
         $queryGateway = $container->get(QueryGateway::class);
 
-        $data = array('queryBuilderQueryID' => $queryBuilderQueryID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+        $data = array('queryBuilderQueryID' => $queryBuilderQueryID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
         $sql = "SELECT * FROM queryBuilderQuery WHERE queryBuilderQueryID=:queryBuilderQueryID AND ((gibbonPersonID=:gibbonPersonID AND type='Personal') OR type='School' OR type='gibbonedu.com') AND active='Y'";
         $result = $pdo->select($sql, $data);
 
@@ -76,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
 
             // Check for specific access to this query
             if (!empty($values['actionName']) || !empty($values['moduleName'])) {
-                if (empty($queryGateway->getIsQueryAccessible($queryBuilderQueryID, $gibbon->session->get('gibbonPersonID')))) {
+                if (empty($queryGateway->getIsQueryAccessible($queryBuilderQueryID, $session->get('gibbonPersonID')))) {
                     $page->addError(__('You do not have access to this action.'));
                     return;
                 }
@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
             echo "<div class='linkTop'>";
             $pipe = false ;
             if ($search != '') {
-                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Query Builder/queries.php&search=$search'>".__($guid, 'Back to Search Results').'</a>';
+                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Query Builder/queries.php&search=$search'>".__($guid, 'Back to Search Results').'</a>';
                 $pipe = true;
             }
             echo '</div>';
@@ -147,10 +147,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
 
             echo $table->render([$values]);
 
-            $form = Form::create('queryBuilder', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/queries_run.php&queryBuilderQueryID='.$queryBuilderQueryID.'&sidebar=false&search='.$search);
+            $form = Form::create('queryBuilder', $session->get('absoluteURL').'/index.php?q=/modules/'.$session->get('module').'/queries_run.php&queryBuilderQueryID='.$queryBuilderQueryID.'&sidebar=false&search='.$search);
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('address', $session->get('address'));
 
             if ($highestAction == 'Manage Queries_viewEditAll') {
                 $queryText = !empty($query)? $query : $values['query'];
@@ -181,9 +181,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
                     $row->addLabel($bindValue['variable'], $bindValue['name'])->description($bindValue['variable']);
 
                     if ($bindValue['type'] == 'schoolYear') {
-                        $row->addSelectSchoolYear($bindValue['variable'])->selected($fieldValue ?? $gibbon->session->get('gibbonSchoolYearID'))->required();
+                        $row->addSelectSchoolYear($bindValue['variable'])->selected($fieldValue ?? $session->get('gibbonSchoolYearID'))->required();
                     } elseif ($bindValue['type'] == 'schoolYear') {
-                        $row->addSelectSchoolYearTerm($bindValue['variable'], $gibbon->session->get('gibbonSchoolYearID'))->selected($fieldValue)->required();
+                        $row->addSelectSchoolYearTerm($bindValue['variable'], $session->get('gibbonSchoolYearID'))->selected($fieldValue)->required();
                     } elseif ($bindValue['type'] == 'reportingCycle') {
                         $row->addSelectReportingCycle($bindValue['variable'])->selected($fieldValue)->required();
                     } elseif ($bindValue['type'] == 'yearGroups') {
@@ -197,7 +197,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
             $row = $form->addRow();
                 $row->addFooter();
                 $col = $row->addColumn()->addClass('inline right');
-                if ($highestAction == 'Manage Queries_viewEditAll' && (($values['type'] == 'Personal' and $values['gibbonPersonID'] == $_SESSION[$guid]['gibbonPersonID']) or $values['type'] == 'School')) {
+                if ($highestAction == 'Manage Queries_viewEditAll' && (($values['type'] == 'Personal' and $values['gibbonPersonID'] == $session->get('gibbonPersonID')) or $values['type'] == 'School')) {
                     $col->addCheckbox('save')->description(__('Save Query?'))->setValue('Y')->checked($save)->wrap('<span class="displayInlineBlock">', '</span>&nbsp;&nbsp;');
                 } else {
                     $col->addContent('');
@@ -269,7 +269,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_run.
 
                         //Set up export header action
                         $hash = md5($query);
-                        $gibbon->session->set($hash, [
+                        $session->set($hash, [
                             'query' => $query,
                             'queryData' => $data,
                         ]);

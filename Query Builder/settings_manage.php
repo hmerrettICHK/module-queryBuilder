@@ -32,9 +32,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/settings_man
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    $form = Form::create('settingsManage', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/settings_manageProcess.php');
+    $form = Form::create('settingsManage', $session->get('absoluteURL').'/modules/'.$session->get('module').'/settings_manageProcess.php');
 
-    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $session->get('address'));
 
     $row = $form->addRow()->addHeading(__('Export Settings'));
 

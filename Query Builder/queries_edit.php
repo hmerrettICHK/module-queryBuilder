@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_edit
         $queryGateway = $container->get(QueryGateway::class);
 
         try {
-            $data = array('queryBuilderQueryID' => $queryBuilderQueryID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+            $data = array('queryBuilderQueryID' => $queryBuilderQueryID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
             $sql = "SELECT * FROM queryBuilderQuery WHERE queryBuilderQueryID=:queryBuilderQueryID AND NOT type='gibbonedu.com' AND (type='School' OR (type='Personal' AND gibbonPersonID=:gibbonPersonID) )";
             $result = $connection2->prepare($sql);
             $result->execute($data);
@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_edit
 
             // Check for specific access to this query
             if (!empty($values['actionName']) || !empty($values['moduleName'])) {
-                if (empty($queryGateway->getIsQueryAccessible($queryBuilderQueryID, $gibbon->session->get('gibbonPersonID')))) {
+                if (empty($queryGateway->getIsQueryAccessible($queryBuilderQueryID, $session->get('gibbonPersonID')))) {
                     $page->addError(__('You do not have access to this action.'));
                     return;
                 }
@@ -78,14 +78,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_edit
             echo "<div class='linkTop'>";
             $pipe = false ;
             if ($search != '') {
-                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Query Builder/queries.php&search=$search'>".__($guid, 'Back to Search Results').'</a>';
+                echo "<a href='".$session->get('absoluteURL')."/index.php?q=/modules/Query Builder/queries.php&search=$search'>".__($guid, 'Back to Search Results').'</a>';
                 $pipe = true;
             }
             echo '</div>';
 
-            $form = Form::create('queryBuilder', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/queries_editProcess.php?queryBuilderQueryID='.$queryBuilderQueryID.'&search='.$search);
+            $form = Form::create('queryBuilder', $session->get('absoluteURL').'/modules/'.$session->get('module').'/queries_editProcess.php?queryBuilderQueryID='.$queryBuilderQueryID.'&search='.$search);
 
-            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('address', $session->get('address'));
 
             $form->addHeaderAction('help', __('Help'))
                 ->setURL('/modules/Query Builder/queries_help_full.php')
@@ -113,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_edit
                 $row->addLabel('name', __('Name'));
                 $row->addTextField('name')->maxLength(255)->isRequired();
 
-            $data = array('gibbonPersonID' => $gibbon->session->get('gibbonPersonID'));
+            $data = array('gibbonPersonID' => $session->get('gibbonPersonID'));
             $sql = "SELECT DISTINCT category FROM queryBuilderQuery WHERE type='School' OR type='gibbonedu.com' OR (type='Personal' AND gibbonPersonID=:gibbonPersonID) ORDER BY category";
             $result = $pdo->executeQuery($data, $sql);
             $categories = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_COLUMN, 0) : array();
@@ -126,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_edit
                 $row->addLabel('active', __('Active'));
                 $row->addYesNo('active')->isRequired();
 
-            $actions = $queryGateway->selectActionListByPerson($gibbon->session->get('gibbonPersonID'));
+            $actions = $queryGateway->selectActionListByPerson($session->get('gibbonPersonID'));
 
             $row = $form->addRow();
                 $row->addLabel('moduleActionName', __('Limit Access'))->description(__('Only people with the selected permission can run this query.'));
@@ -143,7 +143,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_edit
                     ->autocomplete(getAutocompletions($pdo))
                     ->isRequired();
 
-            $bindValues = new BindValues($form->getFactory(), 'bindValues', $values, $gibbon->session);
+            $bindValues = new BindValues($form->getFactory(), 'bindValues', $values, $session);
             $form->addRow()->addElement($bindValues);
 
             $row = $form->addRow();
