@@ -24,7 +24,7 @@ include '../../gibbon.php';
 
 $search = $_GET['search'] ?? '';
 $queryBuilderQueryID = $_GET['queryBuilderQueryID'] ?? '';
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/queries_edit.php&queryBuilderQueryID='.$queryBuilderQueryID."&sidebar=false&search=$search";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/queries_edit.php&queryBuilderQueryID='.$queryBuilderQueryID."&sidebar=false&search=$search";
 
 if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_edit.php') == false) {
     $URL = $URL.'&return=error0';
@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_edit
     }
 
     // Validate this user has access to this query
-    if ($values['type'] == 'gibbonedu.com' || ($values['Personal'] && $values['gibbonPersonID'] != $gibbon->session->get('gibbonPersonID'))) {
+    if ($values['type'] == 'gibbonedu.com' || ($values['Personal'] && $values['gibbonPersonID'] != $session->get('gibbonPersonID'))) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
         exit;

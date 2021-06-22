@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_dele
         echo '</div>';
     } else {
         try {
-            $data = array('queryBuilderQueryID' => $queryBuilderQueryID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+            $data = array('queryBuilderQueryID' => $queryBuilderQueryID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
             $sql = "SELECT * FROM queryBuilderQuery WHERE queryBuilderQueryID=:queryBuilderQueryID AND NOT type='gibbonedu.com' AND (type='School' OR (type='Personal' AND gibbonPersonID=:gibbonPersonID) )";
             $result = $connection2->prepare($sql);
             $result->execute($data);
@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_dele
             echo '</div>';
         } else {
             //Let's go!
-            $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/queries_deleteProcess.php?queryBuilderQueryID=$queryBuilderQueryID&search=$search");
+            $form = DeleteForm::createForm($session->get('absoluteURL').'/modules/'.$session->get('module')."/queries_deleteProcess.php?queryBuilderQueryID=$queryBuilderQueryID&search=$search");
             echo $form->getOutput();
         }
     }

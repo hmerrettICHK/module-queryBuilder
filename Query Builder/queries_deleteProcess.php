@@ -20,13 +20,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../gibbon.php';
 
 
-$search = null;
-if (isset($_GET['search'])) {
-    $search = $_GET['search'];
-}
-$queryBuilderQueryID = $_GET['queryBuilderQueryID'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/queries_delete.php&queryBuilderQueryID='.$queryBuilderQueryID."&search=$search";
-$URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/queries.php&search=$search";
+$search = $_GET['search'] ?? null;
+$queryBuilderQueryID = $_GET['queryBuilderQueryID'] ?? '';
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address']).'/queries_delete.php&queryBuilderQueryID='.$queryBuilderQueryID."&search=$search";
+$URLDelete = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/queries.php&search=$search";
 
 if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_delete.php') == false) {
     //Fail 0
@@ -41,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_dele
         header("Location: {$URL}");
     } else {
         try {
-            $data = array('queryBuilderQueryID' => $queryBuilderQueryID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+            $data = array('queryBuilderQueryID' => $queryBuilderQueryID, 'gibbonPersonID' => $session->get('gibbonPersonID'));
             $sql = "SELECT * FROM queryBuilderQuery WHERE queryBuilderQueryID=:queryBuilderQueryID AND NOT type='gibbonedu.com' AND (type='School' OR (type='Personal' AND gibbonPersonID=:gibbonPersonID) )";
             $result = $connection2->prepare($sql);
             $result->execute($data);

@@ -26,7 +26,7 @@ $_POST['address'] = "/modules/Query Builder/queries_gibboneducom_sync_ajax.php";
 include '../../gibbon.php';
 
 // Module includes
-include $_SESSION[$guid]['absolutePath'].'/modules/Query Builder/moduleFunctions.php';
+include $session->get('absolutePath').'/modules/Query Builder/moduleFunctions.php';
 
 // Setup variables
 $gibboneduComOrganisationName = $_POST['gibboneduComOrganisationName'];

@@ -23,7 +23,7 @@ include '../../gibbon.php';
 
 $search = $_GET['search'] ?? '';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/queries_add.php&sidebar=false&search=$search";
+$URL = $session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_POST['address'])."/queries_add.php&sidebar=false&search=$search";
 
 if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_add.php') == false) {
     //Fail 0
@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Query Builder/queries_add.
         'description' => $_POST['description'] ?? '',
         'query'       => $_POST['query'] ?? '',
         'bindValues'  => $_POST['bindValues'] ?? [],
-        'gibbonPersonID'  => $gibbon->session->get('gibbonPersonID'),
+        'gibbonPersonID'  => $session->get('gibbonPersonID'),
     ];
 
     // Sort and jsonify bindValues
